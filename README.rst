@@ -42,7 +42,7 @@ Usage
 -----
 
 To schema-validate an object, first parse its *Schema Markdown* using the
-`SchemaMarkdownParser <https://craigahobbs.github.io/schema-markdown/reference.html#schema_markdown.SchemaMarkdownParser>`__
+`SchemaMarkdownParser <https://craigahobbs.github.io/schema-markdown/reference.html#schemamarkdownparser>`__
 class:
 
 >>> import schema_markdown
@@ -63,7 +63,7 @@ class:
 ... ''')
 
 Then, validate a dictionary object (or other object) using the
-`validate_types <https://craigahobbs.github.io/schema-markdown/reference.html#schema_markdown.validate_types>`__
+`validate_type <https://craigahobbs.github.io/schema-markdown/reference.html#validate-type>`__
 function:
 
 >>> schema_markdown.validate_type(parser.types, 'Operation', {
