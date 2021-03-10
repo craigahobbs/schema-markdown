@@ -2,10 +2,10 @@
 # https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
 """
-TODO
+Schema Markdown package imports
 """
 
-__version__ = '0.9'
+__version__ = '0.9.1'
 
 from .parser import \
     SchemaMarkdownParser, \

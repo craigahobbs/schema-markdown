@@ -23,7 +23,7 @@ def main():
     # Do the setup
     setup(
         name=PACKAGE_NAME,
-        description='Schema Markdown is a lightweight schema validation package and human-friendly schema definition language.',
+        description='Human-friendly schema definition language and schema validator',
         long_description=long_description,
         long_description_content_type='text/x-rst',
         version=version,
@@ -41,8 +41,7 @@ def main():
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
-            'Programming Language :: Python :: 3.10',
-            'Topic :: Utilities'
+            'Programming Language :: Python :: 3.10'
         ],
         package_dir={'': 'src'},
         packages=[MODULE_NAME]
