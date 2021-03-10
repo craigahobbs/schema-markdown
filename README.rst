@@ -30,6 +30,14 @@ its features at a glance:
 - Pure Python
 
 
+Links
+-----
+
+- `Documentation on GitHub Pages <https://craigahobbs.github.io/schema-markdown/>`__
+- `Package on pypi <https://pypi.org/project/schema-markdown/>`__
+- `Source code on GitHub <https://github.com/craigahobbs/schema-markdown>`__
+
+
 Usage
 -----
 
@@ -83,11 +91,3 @@ Validation also fails if a member contraint is violated:
 ... except schema_markdown.ValidationError as exc:
 ...     str(exc)
 "Invalid value [] (type 'list') for member 'numbers', expected type 'array' [len > 0]"
-
-
-Links
------
-
-- `Documentation on GitHub Pages <https://craigahobbs.github.io/schema-markdown/>`__
-- `Package on pypi <https://pypi.org/project/schema-markdown/>`__
-- `Source code on GitHub <https://github.com/craigahobbs/schema-markdown>`__
