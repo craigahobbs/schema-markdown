@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Type Model &mdash; schema-markdown 0.9 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Command-Line Tool" href="tool.html" />
+    <link rel="prev" title="Schema Markdown" href="parser.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> schema-markdown
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Schema Markdown</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Type Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tool.html">Command-Line Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">schema-markdown</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Type Model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="type-model">
+<span id="schema"></span><h1>Type Model<a class="headerlink" href="#type-model" title="Permalink to this headline">¶</a></h1>
+<p>At the heart of Schema Markdown is the <strong>type model</strong>. The type model is a dictionary object that
+maps schema type names to schema type definitions. The <a class="reference internal" href="parser.html#parser"><span class="std std-ref">Schema Markdown</span></a> definition of type model is
+shown below:</p>
+<div class="code text highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># A type model with a title</span>
+<span class="n">struct</span> <span class="n">TypeModel</span>
+
+    <span class="c1"># The type model&#39;s title</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="n">title</span>
+
+    <span class="c1"># The type model</span>
+    <span class="n">Types</span> <span class="n">types</span>
+
+
+<span class="c1"># Map of user type name to user type model</span>
+<span class="n">typedef</span> <span class="n">UserType</span><span class="p">{</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span> <span class="n">Types</span>
+
+
+<span class="c1"># Union representing a member type</span>
+<span class="n">union</span> <span class="n">Type</span>
+
+    <span class="c1"># A built-in type</span>
+    <span class="n">BuiltinType</span> <span class="n">builtin</span>
+
+    <span class="c1"># An array type</span>
+    <span class="n">Array</span> <span class="n">array</span>
+
+    <span class="c1"># A dictionary type</span>
+    <span class="n">Dict</span> <span class="nb">dict</span>
+
+    <span class="c1"># A user type name</span>
+    <span class="n">string</span> <span class="n">user</span>
+
+
+<span class="c1"># A type or member&#39;s attributes</span>
+<span class="n">struct</span> <span class="n">Attributes</span>
+
+    <span class="c1"># If true, the value may be null</span>
+    <span class="n">optional</span> <span class="nb">bool</span> <span class="n">nullable</span>
+
+    <span class="c1"># The value is equal</span>
+    <span class="n">optional</span> <span class="nb">float</span> <span class="n">eq</span>
+
+    <span class="c1"># The value is less than</span>
+    <span class="n">optional</span> <span class="nb">float</span> <span class="n">lt</span>
+
+    <span class="c1"># The value is less than or equal to</span>
+    <span class="n">optional</span> <span class="nb">float</span> <span class="n">lte</span>
+
+    <span class="c1"># The value is greater than</span>
+    <span class="n">optional</span> <span class="nb">float</span> <span class="n">gt</span>
+
+    <span class="c1"># The value is greater than or equal to</span>
+    <span class="n">optional</span> <span class="nb">float</span> <span class="n">gte</span>
+
+    <span class="c1"># The length is equal to</span>
+    <span class="n">optional</span> <span class="nb">int</span> <span class="n">lenEq</span>
+
+    <span class="c1"># The length is less-than</span>
+    <span class="n">optional</span> <span class="nb">int</span> <span class="n">lenLT</span>
+
+    <span class="c1"># The length is less than or equal to</span>
+    <span class="n">optional</span> <span class="nb">int</span> <span class="n">lenLTE</span>
+
+    <span class="c1"># The length is greater than</span>
+    <span class="n">optional</span> <span class="nb">int</span> <span class="n">lenGT</span>
+
+    <span class="c1"># The length is greater than or equal to</span>
+    <span class="n">optional</span> <span class="nb">int</span> <span class="n">lenGTE</span>
+
+
+<span class="c1"># The built-in type enumeration</span>
+<span class="n">enum</span> <span class="n">BuiltinType</span>
+
+    <span class="c1"># The string type</span>
+    <span class="n">string</span>
+
+    <span class="c1"># The integer type</span>
+    <span class="nb">int</span>
+
+    <span class="c1"># The float type</span>
+    <span class="nb">float</span>
+
+    <span class="c1"># The boolean type</span>
+    <span class="nb">bool</span>
+
+    <span class="c1"># A date formatted as an ISO-8601 date string</span>
+    <span class="n">date</span>
+
+    <span class="c1"># A date/time formatted as an ISO-8601 date/time string</span>
+    <span class="n">datetime</span>
+
+    <span class="c1"># A UUID formatted as string</span>
+    <span class="n">uuid</span>
+
+    <span class="c1"># An object of any type</span>
+    <span class="nb">object</span>
+
+
+<span class="c1"># An array type</span>
+<span class="n">struct</span> <span class="n">Array</span>
+
+    <span class="c1"># The contained type</span>
+    <span class="n">Type</span> <span class="nb">type</span>
+
+    <span class="c1"># The contained type&#39;s attributes</span>
+    <span class="n">optional</span> <span class="n">Attributes</span> <span class="n">attr</span>
+
+
+<span class="c1"># A dictionary type</span>
+<span class="n">struct</span> <span class="n">Dict</span>
+
+    <span class="c1"># The contained key type</span>
+    <span class="n">Type</span> <span class="nb">type</span>
+
+    <span class="c1"># The contained key type&#39;s attributes</span>
+    <span class="n">optional</span> <span class="n">Attributes</span> <span class="n">attr</span>
+
+    <span class="c1"># The contained value type</span>
+    <span class="n">optional</span> <span class="n">Type</span> <span class="n">keyType</span>
+
+    <span class="c1"># The contained value type&#39;s attributes</span>
+    <span class="n">optional</span> <span class="n">Attributes</span> <span class="n">keyAttr</span>
+
+
+<span class="c1"># A user type</span>
+<span class="n">union</span> <span class="n">UserType</span>
+
+    <span class="c1"># An enumeration type</span>
+    <span class="n">Enum</span> <span class="n">enum</span>
+
+    <span class="c1"># A struct type</span>
+    <span class="n">Struct</span> <span class="n">struct</span>
+
+    <span class="c1"># A type definition</span>
+    <span class="n">Typedef</span> <span class="n">typedef</span>
+
+    <span class="c1"># A JSON web API (not reference-able)</span>
+    <span class="n">Action</span> <span class="n">action</span>
+
+
+<span class="c1"># An enumeration type</span>
+<span class="n">struct</span> <span class="n">Enum</span>
+
+    <span class="c1"># The enum type name</span>
+    <span class="n">string</span> <span class="n">name</span>
+
+    <span class="c1"># The documentation markdown text lines</span>
+    <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
+
+    <span class="c1"># The enumeration values</span>
+    <span class="n">optional</span> <span class="n">EnumValue</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">values</span>
+
+
+<span class="c1"># An enumeration type value</span>
+<span class="n">struct</span> <span class="n">EnumValue</span>
+
+    <span class="c1"># The value string</span>
+    <span class="n">string</span> <span class="n">name</span>
+
+    <span class="c1"># The documentation markdown text lines</span>
+    <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
+
+
+<span class="c1"># A struct type</span>
+<span class="n">struct</span> <span class="n">Struct</span>
+
+    <span class="c1"># The struct type name</span>
+    <span class="n">string</span> <span class="n">name</span>
+
+    <span class="c1"># The documentation markdown text lines</span>
+    <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
+
+    <span class="c1"># The struct members</span>
+    <span class="n">optional</span> <span class="n">StructMember</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">members</span>
+
+    <span class="c1"># If true, the struct is a union and exactly one of the optional members is present</span>
+    <span class="n">optional</span> <span class="nb">bool</span> <span class="n">union</span>
+
+
+<span class="c1"># A struct member</span>
+<span class="n">struct</span> <span class="n">StructMember</span>
+
+    <span class="c1"># The member name</span>
+    <span class="n">string</span> <span class="n">name</span>
+
+    <span class="c1"># The documentation markdown text lines</span>
+    <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
+
+    <span class="c1"># The member type</span>
+    <span class="n">Type</span> <span class="nb">type</span>
+
+    <span class="c1"># The member type attributes</span>
+    <span class="n">optional</span> <span class="n">Attributes</span> <span class="n">attr</span>
+
+    <span class="c1"># If true, the member is optional and may not be present</span>
+    <span class="n">optional</span> <span class="nb">bool</span> <span class="n">optional</span>
+
+
+<span class="c1"># A typedef type</span>
+<span class="n">struct</span> <span class="n">Typedef</span>
+
+    <span class="c1"># The typedef type name</span>
+    <span class="n">string</span> <span class="n">name</span>
+
+    <span class="c1"># The documentation markdown text lines</span>
+    <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
+
+    <span class="c1"># The typedef&#39;s type</span>
+    <span class="n">Type</span> <span class="nb">type</span>
+
+    <span class="c1"># The typedef&#39;s type attributes</span>
+    <span class="n">optional</span> <span class="n">Attributes</span> <span class="n">attr</span>
+
+
+<span class="c1"># A JSON web service API</span>
+<span class="n">struct</span> <span class="n">Action</span>
+
+    <span class="c1"># The action name</span>
+    <span class="n">string</span> <span class="n">name</span>
+
+    <span class="c1"># The documentation markdown text lines</span>
+    <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
+
+    <span class="c1"># The action&#39;s documentation group name</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="n">docGroup</span>
+
+    <span class="c1"># The action&#39;s URLs</span>
+    <span class="n">optional</span> <span class="n">ActionURL</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">urls</span>
+
+    <span class="c1"># The path parameters struct type name</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="n">path</span>
+
+    <span class="c1"># The query parameters struct type name</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="n">query</span>
+
+    <span class="c1"># The content body struct type name</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="nb">input</span>
+
+    <span class="c1"># The response body struct type name</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="n">output</span>
+
+    <span class="c1"># The custom error response codes enum type name</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="n">errors</span>
+
+
+<span class="c1"># An action URL model</span>
+<span class="n">struct</span> <span class="n">ActionURL</span>
+
+    <span class="c1"># The HTTP method. If not provided, matches all HTTP methods.</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="n">method</span>
+
+    <span class="c1"># The URL path. If not provided, uses the default URL path of &quot;/&lt;actionName&gt;&quot;.</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="n">path</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="tool.html" class="btn btn-neutral float-right" title="Command-Line Tool" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="parser.html" class="btn btn-neutral float-left" title="Schema Markdown" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2012, Craig Hobbs.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

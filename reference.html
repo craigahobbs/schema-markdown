@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Reference &mdash; schema-markdown 0.9 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Command-Line Tool" href="tool.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> schema-markdown
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Schema Markdown</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema.html">Type Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tool.html">Command-Line Tool</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#schemamarkdownparser">SchemaMarkdownParser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schemamarkdownparsererror">SchemaMarkdownParserError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validate-type">validate_type</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validationerror">ValidationError</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-referenced-types">get_referenced_types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-type-model">get_type_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validate-type-model">validate_type_model</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">schema-markdown</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reference">
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="schemamarkdownparser">
+<span id="id1"></span><h2>SchemaMarkdownParser<a class="headerlink" href="#schemamarkdownparser" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt id="schema_markdown.SchemaMarkdownParser">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">SchemaMarkdownParser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_markdown_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser" title="Permalink to this definition">¶</a></dt>
+<dd><p>The parser class for Schema Markdown. Parsing can occur at initialization time or by calling the
+<a class="reference internal" href="#schema_markdown.SchemaMarkdownParser.parse_string" title="schema_markdown.SchemaMarkdownParser.parse_string"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parse_string()</span></code></a> method, which can be called repeatedly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>schema_markdown_str</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – An optional Schema Markdown string to parse</p></li>
+<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – An optional map of user type name to user type model</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#schema_markdown.SchemaMarkdownParserError" title="schema_markdown.SchemaMarkdownParserError"><strong>SchemaMarkdownParserError</strong></a> – A parsing error occurred</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="schema_markdown.SchemaMarkdownParser.BUILTIN_TYPES">
+<code class="sig-name descname"><span class="pre">BUILTIN_TYPES</span></code><em class="property"> <span class="pre">=</span> <span class="pre">{'bool',</span> <span class="pre">'date',</span> <span class="pre">'datetime',</span> <span class="pre">'float',</span> <span class="pre">'int',</span> <span class="pre">'object',</span> <span class="pre">'string',</span> <span class="pre">'uuid'}</span></em><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser.BUILTIN_TYPES" title="Permalink to this definition">¶</a></dt>
+<dd><p>Built-in types</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="schema_markdown.SchemaMarkdownParser.errors">
+<em class="property"><span class="pre">property</span> </em><code class="sig-name descname"><span class="pre">errors</span></code><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser.errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of parser errors</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="schema_markdown.SchemaMarkdownParser.finalize">
+<code class="sig-name descname"><span class="pre">finalize</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser.finalize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finalize a parsing operation. You only need to call this method if you set
+<a class="reference internal" href="#schema_markdown.SchemaMarkdownParser.parse" title="schema_markdown.SchemaMarkdownParser.parse"><code class="xref py py-meth docutils literal notranslate"><span class="pre">parse()</span></code></a> “finalize” argument to False.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.SchemaMarkdownParserError" title="schema_markdown.SchemaMarkdownParserError"><strong>SchemaMarkdownParserError</strong></a> – If type name resolution fails</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="schema_markdown.SchemaMarkdownParser.load">
+<code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.scm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively load and parse Schema Markdown files. This method can be called repeatedly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Directory or file path from which to load and parse Schema Markdown files</p></li>
+<li><p><strong>ext</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The Schema Markdown file extension.  The default file extension is “.scm”.</p></li>
+<li><p><strong>finalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – If True, resolve names after parsing. Set this argument to False when bulk-parsing related
+Schema Markdown files. Be sure to call <a class="reference internal" href="#schema_markdown.SchemaMarkdownParser.finalize" title="schema_markdown.SchemaMarkdownParser.finalize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">finalize()</span></code></a> when finished.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#schema_markdown.SchemaMarkdownParserError" title="schema_markdown.SchemaMarkdownParserError"><strong>SchemaMarkdownParserError</strong></a> – A parsing error occurred</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="schema_markdown.SchemaMarkdownParser.parse">
+<code class="sig-name descname"><span class="pre">parse</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lines</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse Schema Markdown from an iterator of line strings (e.g an input stream). This method can be called repeatedly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lines</strong> (<a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.9)"><em>Iterable</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>)</em>) – An iterator of Schema Markdown line strings</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The name of file being parsed (for error messages)</p></li>
+<li><p><strong>finalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – If True, resolve names after parsing. Set this argument to False when bulk-parsing related
+Schema Markdown files. Be sure to call <a class="reference internal" href="#schema_markdown.SchemaMarkdownParser.finalize" title="schema_markdown.SchemaMarkdownParser.finalize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">finalize()</span></code></a> when finished.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#schema_markdown.SchemaMarkdownParserError" title="schema_markdown.SchemaMarkdownParserError"><strong>SchemaMarkdownParserError</strong></a> – A parsing error occurred</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="schema_markdown.SchemaMarkdownParser.parse_string">
+<code class="sig-name descname"><span class="pre">parse_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">schema_markdown_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">finalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser.parse_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a Schema Markdown string. This method can be called repeatedly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>schema_markdown_str</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The Schema Markdown string</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The name of file being parsed (for error messages)</p></li>
+<li><p><strong>finalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – If True, resolve names after parsing. Set this argument to False when bulk-parsing related
+Schema Markdown files. Be sure to call <a class="reference internal" href="#schema_markdown.SchemaMarkdownParser.finalize" title="schema_markdown.SchemaMarkdownParser.finalize"><code class="xref py py-meth docutils literal notranslate"><span class="pre">finalize()</span></code></a> when finished.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#schema_markdown.SchemaMarkdownParserError" title="schema_markdown.SchemaMarkdownParserError"><strong>SchemaMarkdownParserError</strong></a> – A parsing error occurred</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="schema_markdown.SchemaMarkdownParser.types">
+<code class="sig-name descname"><span class="pre">types</span></code><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser.types" title="Permalink to this definition">¶</a></dt>
+<dd><p>The dictionary of user type name to user type model</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="schemamarkdownparsererror">
+<span id="id2"></span><h2>SchemaMarkdownParserError<a class="headerlink" href="#schemamarkdownparsererror" title="Permalink to this headline">¶</a></h2>
+<dl class="py exception">
+<dt id="schema_markdown.SchemaMarkdownParserError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">SchemaMarkdownParserError</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParserError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Schema Markdown parser exception</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>errors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>)</em>) – The list of error strings</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="schema_markdown.SchemaMarkdownParserError.errors">
+<code class="sig-name descname"><span class="pre">errors</span></code><a class="headerlink" href="#schema_markdown.SchemaMarkdownParserError.errors" title="Permalink to this definition">¶</a></dt>
+<dd><p>The list of error strings</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="validate-type">
+<span id="id3"></span><h2>validate_type<a class="headerlink" href="#validate-type" title="Permalink to this headline">¶</a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">struct MyStruct</span>
+<span class="gp">... </span><span class="s1">    int a</span>
+<span class="gp">... </span><span class="s1">    uuid b</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;MyStruct&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">uuid</span><span class="o">.</span><span class="n">UUID</span><span class="p">(</span><span class="s1">&#39;8252121c-7f4f-4b6d-a7e5-f42ca6fdb64c&#39;</span><span class="p">)})</span>
+<span class="go">{&#39;a&#39;: 5, &#39;b&#39;: UUID(&#39;8252121c-7f4f-4b6d-a7e5-f42ca6fdb64c&#39;)}</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;MyStruct&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">})</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+<span class="go">&quot;Invalid value 7 (type &#39;int&#39;) for member &#39;b&#39;, expected type &#39;uuid&#39;&quot;</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt id="schema_markdown.validate_type">
+<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">validate_type</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_fqn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type-validate a value using the schema-markdown user type model. Container values are duplicated
+since some member types are transformed during validation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – The map of user type name to user type model</p></li>
+<li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The type name</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The value object to validate</p></li>
+<li><p><strong>member_fqn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The fully-qualified member name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The validated, transformed value object</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="validationerror">
+<span id="id4"></span><h2>ValidationError<a class="headerlink" href="#validationerror" title="Permalink to this headline">¶</a></h2>
+<dl class="py exception">
+<dt id="schema_markdown.ValidationError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">ValidationError</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_fqn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.ValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>schema-markdown type model validation error</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The error message</p></li>
+<li><p><strong>member_fqn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – The fully qualified member name or None</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="schema_markdown.ValidationError.member">
+<code class="sig-name descname"><span class="pre">member</span></code><a class="headerlink" href="#schema_markdown.ValidationError.member" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fully qualified member name or None</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="get-referenced-types">
+<span id="id5"></span><h2>get_referenced_types<a class="headerlink" href="#get-referenced-types" title="Permalink to this headline">¶</a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">types</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;Struct1&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">... </span>                <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct2&#39;</span><span class="p">}}</span>
+<span class="gp">... </span>            <span class="p">]</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="s1">&#39;Struct2&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct2&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">... </span>                <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;builtin&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">}}</span>
+<span class="gp">... </span>            <span class="p">]</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="s1">&#39;MyTypedef&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;typedef&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;MyTypedef&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;builtin&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">},</span>
+<span class="gp">... </span>            <span class="s1">&#39;attr&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;lt&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">get_referenced_types</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">))</span>
+<span class="go">{&#39;Struct1&#39;: {&#39;struct&#39;: {&#39;members&#39;: [{&#39;name&#39;: &#39;a&#39;, &#39;type&#39;: {&#39;user&#39;: &#39;Struct2&#39;}}],</span>
+<span class="go">                        &#39;name&#39;: &#39;Struct1&#39;}},</span>
+<span class="go"> &#39;Struct2&#39;: {&#39;struct&#39;: {&#39;members&#39;: [{&#39;name&#39;: &#39;b&#39;, &#39;type&#39;: {&#39;builtin&#39;: &#39;int&#39;}}],</span>
+<span class="go">                        &#39;name&#39;: &#39;Struct2&#39;}}}</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt id="schema_markdown.get_referenced_types">
+<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">get_referenced_types</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">referenced_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_referenced_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a type’s referenced type model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – The map of user type name to user type model</p></li>
+<li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The type name</p></li>
+<li><p><strong>referenced_types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – An optional map of referenced user type name to user type</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The map of referenced user type name to user type model</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-type-model">
+<span id="id6"></span><h2>get_type_model<a class="headerlink" href="#get-type-model" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="schema_markdown.get_type_model">
+<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">get_type_model</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_type_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of the schema-markdown type model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The map of referenced user type name to user type model</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="validate-type-model">
+<span id="id7"></span><h2>validate_type_model<a class="headerlink" href="#validate-type-model" title="Permalink to this headline">¶</a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model</span><span class="p">({</span>
+<span class="gp">... </span>    <span class="s1">&#39;Struct1&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">... </span>                <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct2&#39;</span><span class="p">}}</span>
+<span class="gp">... </span>            <span class="p">]</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span><span class="p">})</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model</span><span class="p">({</span>
+<span class="gp">... </span>        <span class="s1">&#39;MyStruct&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">})</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="go">&quot;Required member &#39;MyStruct.struct.name&#39; missing&quot;</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt id="schema_markdown.validate_type_model">
+<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">validate_type_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a user type model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – The map of user type name to user type model</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="tool.html" class="btn btn-neutral float-left" title="Command-Line Tool" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2012, Craig Hobbs.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

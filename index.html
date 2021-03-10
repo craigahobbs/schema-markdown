@@ -1,0 +1,295 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>schema-markdown &mdash; schema-markdown 0.9 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Schema Markdown" href="parser.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> schema-markdown
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Schema Markdown</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema.html">Type Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tool.html">Command-Line Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">schema-markdown</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>schema-markdown</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="schema-markdown">
+<h1>schema-markdown<a class="headerlink" href="#schema-markdown" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://pypi.python.org/pypi/schema-markdown/"><img alt="PyPI - Status" src="https://img.shields.io/pypi/status/schema-markdown" /></a> <a class="reference external" href="https://pypi.python.org/pypi/schema-markdown/"><img alt="PyPI" src="https://img.shields.io/pypi/v/schema-markdown" /></a> <a class="reference external" href="https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/craigahobbs/schema-markdown" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="PyPI - Python Version" src="https://img.shields.io/pypi/pyversions/schema-markdown" /></a></p>
+<p><strong>Schema Markdown</strong> is a human-friendly schema definition language and schema validator. Here are
+its features at a glance:</p>
+<ul class="simple">
+<li><p>Schema-validate JSON objects</p></li>
+<li><p>Human-friendly schema definition</p></li>
+<li><p>Validates member value and length contraints</p></li>
+<li><p>Validation <em>type-massages</em> string member values</p></li>
+<li><p>Pure Python</p></li>
+</ul>
+<div class="section" id="links">
+<h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://craigahobbs.github.io/schema-markdown/">Documentation on GitHub Pages</a></p></li>
+<li><p><a class="reference external" href="https://pypi.org/project/schema-markdown/">Package on pypi</a></p></li>
+<li><p><a class="reference external" href="https://github.com/craigahobbs/schema-markdown">Source code on GitHub</a></p></li>
+</ul>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>To schema-validate an object, first parse its <em>Schema Markdown</em> using the
+<a class="reference external" href="https://craigahobbs.github.io/schema-markdown/reference.html#schema_markdown.SchemaMarkdownParser">SchemaMarkdownParser</a>
+class:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="gp">... </span><span class="s1"># An aggregation function</span>
+<span class="gp">... </span><span class="s1">enum Aggregation</span>
+<span class="gp">... </span><span class="s1">    Average</span>
+<span class="gp">... </span><span class="s1">    Sum</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1"># An aggregate numerical operation</span>
+<span class="gp">... </span><span class="s1">struct Operation</span>
+<span class="gp">... </span><span class="s1">    # The aggregation function - default is &quot;Sum&quot;</span>
+<span class="gp">... </span><span class="s1">    optional Aggregation aggregation</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # The numbers to operate on</span>
+<span class="gp">... </span><span class="s1">    int[len &gt; 0] numbers</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then, validate a dictionary object (or other object) using the
+<a class="reference external" href="https://craigahobbs.github.io/schema-markdown/reference.html#schema_markdown.validate_types">validate_types</a>
+function:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Operation&#39;</span><span class="p">,</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">})</span>
+<span class="go">{&#39;numbers&#39;: [1, 2, 3, 4]}</span>
+</pre></div>
+</div>
+<p>Notice that the numerical input ‘3’ above is massaged to the integer <cite>3</cite> by validation. Validation
+fails if the object does not match the schema:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Operation&#39;</span><span class="p">,</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;asdf&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<span class="gp">... </span>    <span class="p">})</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+<span class="go">&quot;Invalid value &#39;asdf&#39; (type &#39;str&#39;) for member &#39;numbers.2&#39;, expected type &#39;int&#39;&quot;</span>
+</pre></div>
+</div>
+<p>Validation also fails if a member contraint is violated:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Operation&#39;</span><span class="p">,</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[]</span>
+<span class="gp">... </span>    <span class="p">})</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+<span class="go">&quot;Invalid value [] (type &#39;list&#39;) for member &#39;numbers&#39;, expected type &#39;array&#39; [len &gt; 0]&quot;</span>
+</pre></div>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="parser.html">Schema Markdown</a></li>
+<li class="toctree-l1"><a class="reference internal" href="schema.html">Type Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tool.html">Command-Line Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="index">
+<h2>Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="parser.html" class="btn btn-neutral float-right" title="Schema Markdown" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2012, Craig Hobbs.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

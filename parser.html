@@ -1,0 +1,462 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Schema Markdown &mdash; schema-markdown 0.9 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Type Model" href="schema.html" />
+    <link rel="prev" title="schema-markdown" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> schema-markdown
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Schema Markdown</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#comments">Comments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#built-in-types">Built-in Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#structure-types">Structure Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#typedefs">Typedefs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#type-attributes">Type Attributes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#enumeration-types">Enumeration Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#actions">Actions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inheritance">Inheritance</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="schema.html">Type Model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tool.html">Command-Line Tool</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">schema-markdown</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Schema Markdown</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="schema-markdown">
+<span id="parser"></span><h1>Schema Markdown<a class="headerlink" href="#schema-markdown" title="Permalink to this headline">¶</a></h1>
+<p>Schema Markdown is a human-friendly schema definition language. It is used to define structure
+types, enumeration types, typedef types, and actions (JSON APIs). Schema Markdown parsing is done by
+the <a class="reference internal" href="reference.html#schemamarkdownparser"><span class="std std-ref">SchemaMarkdownParser</span></a> class. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1"># A number pair structure</span>
+<span class="gp">... </span><span class="s1">struct NumberPair</span>
+<span class="gp">... </span><span class="s1">    # The first number of the pair</span>
+<span class="gp">... </span><span class="s1">    float first</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # The second number of the pair</span>
+<span class="gp">... </span><span class="s1">    float second</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1"># A number pair list type</span>
+<span class="gp">... </span><span class="s1">typedef NumberPair[len &gt; 0] NumberPairList</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1"># Color enumeration</span>
+<span class="gp">... </span><span class="s1">enum Colors</span>
+<span class="gp">... </span><span class="s1">    # A rose by any other color...</span>
+<span class="gp">... </span><span class="s1">    Red</span>
+<span class="gp">... </span><span class="s1">    Blue</span>
+<span class="gp">... </span><span class="s1">    Green</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The parser’s <cite>types</cite> member contains the schema’s <a class="reference internal" href="schema.html#schema"><span class="std std-ref">Type Model</span></a> dictionary:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="go">[&#39;Colors&#39;, &#39;NumberPair&#39;, &#39;NumberPairList&#39;]</span>
+</pre></div>
+</div>
+<p>The type model is used to validate objects in concunction with the
+<a class="reference internal" href="reference.html#validate-type"><span class="std std-ref">validate_type</span></a> function.</p>
+<div class="section" id="comments">
+<h2>Comments<a class="headerlink" href="#comments" title="Permalink to this headline">¶</a></h2>
+<p>Schema Markdown comments are lines beginning with the “#” character preceded only by whitespace.
+Comments are interpreted as documentation markdown text lines to be applied to the next Schema
+Markdown definition. If you want a non-documentation comment use the “#-” form of commment.</p>
+</div>
+<div class="section" id="built-in-types">
+<h2>Built-in Types<a class="headerlink" href="#built-in-types" title="Permalink to this headline">¶</a></h2>
+<p>Schema Markdown contains the following built-in types:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bool</span></code> - a boolean</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">date</span></code> - a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">datetime</span></code> - a <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">float</span></code> - a floating point number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">int</span></code> - an integer number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">object</span></code> - a generic, unvalidated object (use sparingly)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">string</span></code> - a string</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">uuid</span></code> - a <a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UUID</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="structure-types">
+<h2>Structure Types<a class="headerlink" href="#structure-types" title="Permalink to this headline">¶</a></h2>
+<p>Structure definitions contain zero or more member definitions. Member definitions may take the
+following forms:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1"># My test struct</span>
+<span class="gp">... </span><span class="s1">struct MyStruct</span>
+<span class="gp">... </span><span class="s1">    # A required member</span>
+<span class="gp">... </span><span class="s1">    int a</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # A member with type attributes</span>
+<span class="gp">... </span><span class="s1">    int(&gt; 0) b</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # An optional member</span>
+<span class="gp">... </span><span class="s1">    optional float c</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # An optional, nullable member - value may be null</span>
+<span class="gp">... </span><span class="s1">    optional string(nullable) d</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # An array member</span>
+<span class="gp">... </span><span class="s1">    bool[] e</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # An array member with type attributes</span>
+<span class="gp">... </span><span class="s1">    string(len &gt; 0)[len &gt; 0] f</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # A dictionary member</span>
+<span class="gp">... </span><span class="s1">    date</span><span class="si">{}</span><span class="s1"> g</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # A dictionary member with attributes</span>
+<span class="gp">... </span><span class="s1">    date{len &gt; 0} h</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # A dictionary member with key type</span>
+<span class="gp">... </span><span class="s1">    MyEnum : uuid</span><span class="si">{}</span><span class="s1"> i</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">enum MyEnum</span>
+<span class="gp">... </span><span class="s1">    A</span>
+<span class="gp">... </span><span class="s1">    B</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;MyStruct&#39;</span><span class="p">,</span> <span class="p">{})</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+<span class="go">&quot;Required member &#39;a&#39; missing&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="typedefs">
+<h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline">¶</a></h2>
+<p>Typedefs are a type definition and its associated attributes. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">typedef int(&gt; 0) PositiveInt</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;PositiveInt&#39;</span><span class="p">,</span> <span class="o">-</span><span class="mi">9</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+<span class="go">&quot;Invalid value -9 (type &#39;int&#39;), expected type &#39;PositiveInt&#39; [&gt; 0.0]&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="type-attributes">
+<h2>Type Attributes<a class="headerlink" href="#type-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Type attributes are used to add validation constraints to struct members and typedefs.</p>
+<p>The following type attributes are available for <code class="docutils literal notranslate"><span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">float</span></code> types:</p>
+<ul class="simple">
+<li><p>“&lt; <code class="docutils literal notranslate"><span class="pre">number</span></code>” - the value is less than a number</p></li>
+<li><p>“&lt;= <code class="docutils literal notranslate"><span class="pre">number</span></code>” - the value is less than or equal to a number</p></li>
+<li><p>“&gt; <code class="docutils literal notranslate"><span class="pre">number</span></code>” - the value is greater than a number</p></li>
+<li><p>“&gt;= <code class="docutils literal notranslate"><span class="pre">number</span></code>” - the value is less greater or equal to a number</p></li>
+<li><p>“== <code class="docutils literal notranslate"><span class="pre">number</span></code>” - the value is equal to a number</p></li>
+</ul>
+<p>The following type attributes are available for <code class="docutils literal notranslate"><span class="pre">string</span></code>, array, and dictionary types:</p>
+<ul class="simple">
+<li><p>“len &lt; <code class="docutils literal notranslate"><span class="pre">integer</span></code>” - the length is less than an integer</p></li>
+<li><p>“len &lt;= <code class="docutils literal notranslate"><span class="pre">integer</span></code>” - the length is less than or equal to an integer</p></li>
+<li><p>“len &gt; <code class="docutils literal notranslate"><span class="pre">integer</span></code>” - the length is greater than an integer</p></li>
+<li><p>“len &gt;= <code class="docutils literal notranslate"><span class="pre">integer</span></code>” - the length is greater than or equal to an integer</p></li>
+<li><p>“len == <code class="docutils literal notranslate"><span class="pre">integer</span></code>” - the length is equal to an integer</p></li>
+</ul>
+</div>
+<div class="section" id="enumeration-types">
+<h2>Enumeration Types<a class="headerlink" href="#enumeration-types" title="Permalink to this headline">¶</a></h2>
+<p>An enumeration is a set of enumeration value strings. An enumeration member will validate only
+strings in the enumeration value set. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1"># My test enumeration</span>
+<span class="gp">... </span><span class="s1">enum TestEnum</span>
+<span class="gp">... </span><span class="s1">    # An enumeration value</span>
+<span class="gp">... </span><span class="s1">    Value1</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # Another enumeration value</span>
+<span class="gp">... </span><span class="s1">    Value2</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">    # A quoted enumeration value</span>
+<span class="gp">... </span><span class="s1">    &quot;Value 3&quot;</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;TestEnum&#39;</span><span class="p">,</span> <span class="s1">&#39;Value4&#39;</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
+<span class="go">&quot;Invalid value &#39;Value4&#39; (type &#39;str&#39;), expected type &#39;TestEnum&#39;&quot;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="actions">
+<h2>Actions<a class="headerlink" href="#actions" title="Permalink to this headline">¶</a></h2>
+<p>Actions are JSON APIs defined using the “action” keyword as shown above. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1"># Sum a list of number pairs</span>
+<span class="gp">... </span><span class="s1">action sum_number_pairs</span>
+<span class="gp">... </span><span class="s1">    urls</span>
+<span class="gp">... </span><span class="s1">        GET</span>
+<span class="gp">... </span><span class="s1">    query</span>
+<span class="gp">... </span><span class="s1">        # The list of number pairs to sum</span>
+<span class="gp">... </span><span class="s1">        int[len &gt; 0] numbers</span>
+<span class="gp">... </span><span class="s1">    output</span>
+<span class="gp">... </span><span class="s1">        # The sum of the numbers</span>
+<span class="gp">... </span><span class="s1">        int sum</span>
+<span class="gp">... </span><span class="s1">    errors</span>
+<span class="gp">... </span><span class="s1">        # The number list contains a negative number</span>
+<span class="gp">... </span><span class="s1">        NegativeNumber</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Actions can contain any the following sections:</p>
+<ul class="simple">
+<li><p>“urls” - Contains a list of URL status/path specifications. By default actions are hosted as
+“POST” at the default URL path (“/my_action” if the action is named “my_action). URL
+specifications can have the follow forms:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span></code> - Match the HTTP request method with the default path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/path/</span></code> - Match the HTTP request method and the exact path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">*</span> <span class="pre">/path/</span></code> - Match any HTTP request method and the exact path</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/path/{name}</span></code> - A URL path with a <strong>path parameter</strong> called “name”. Path parameters
+should have a corresponding member in the “path” section.</p></li>
+</ul>
+</li>
+<li><p>“path” - The path parameters structure type - see <a class="reference internal" href="#structure-types">Structure Types</a> below</p></li>
+<li><p>“query” - The query string parameters structure type - see <a class="reference internal" href="#structure-types">Structure Types</a> below</p></li>
+<li><p>“input” - The request JSON content parameters structure type - see <a class="reference internal" href="#structure-types">Structure Types</a> below</p></li>
+<li><p>“output” - The response JSON content parameters structure type - see <a class="reference internal" href="#structure-types">Structure Types</a> below</p></li>
+<li><p>“errors” - The action’s custom error code enumeration type - see <a class="reference internal" href="#enumeration-types">Enumeration Types</a> below</p></li>
+</ul>
+</div>
+<div class="section" id="inheritance">
+<h2>Inheritance<a class="headerlink" href="#inheritance" title="Permalink to this headline">¶</a></h2>
+<p>Structure types can multiple-inherit members from other structure types. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">struct s1</span>
+<span class="gp">... </span><span class="s1">    int a</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">struct s2</span>
+<span class="gp">... </span><span class="s1">    string b</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">struct s3 (s1, s2)</span>
+<span class="gp">... </span><span class="s1">    datetime c</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Structure inheritance also works for the <code class="docutils literal notranslate"><span class="pre">path</span></code>, <code class="docutils literal notranslate"><span class="pre">query</span></code>, <code class="docutils literal notranslate"><span class="pre">input</span></code>, and <code class="docutils literal notranslate"><span class="pre">output</span></code> action
+structure sections.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">struct s1</span>
+<span class="gp">... </span><span class="s1">    int a</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">struct s2</span>
+<span class="gp">... </span><span class="s1">    string b</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">action my_action</span>
+<span class="gp">... </span><span class="s1">    query (s1, s2)</span>
+<span class="gp">... </span><span class="s1">        datetime c</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Likewise, enumeration types can inerit values from other enumeration types:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1">enum e1</span>
+<span class="gp">... </span><span class="s1">    A</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">enum e2</span>
+<span class="gp">... </span><span class="s1">    B</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">enum e3 (e1, e2)</span>
+<span class="gp">... </span><span class="s1">    C</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="schema.html" class="btn btn-neutral float-right" title="Type Model" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="schema-markdown" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2012, Craig Hobbs.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
