@@ -177,7 +177,7 @@ its features at a glance:</p>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>To schema-validate an object, first parse its <em>Schema Markdown</em> using the
-<a class="reference external" href="https://craigahobbs.github.io/schema-markdown/reference.html#schema_markdown.SchemaMarkdownParser">SchemaMarkdownParser</a>
+<a class="reference external" href="https://craigahobbs.github.io/schema-markdown/reference.html#schemamarkdownparser">SchemaMarkdownParser</a>
 class:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
 <span class="gp">...</span>
@@ -198,7 +198,7 @@ class:</p>
 </pre></div>
 </div>
 <p>Then, validate a dictionary object (or other object) using the
-<a class="reference external" href="https://craigahobbs.github.io/schema-markdown/reference.html#schema_markdown.validate_types">validate_types</a>
+<a class="reference external" href="https://craigahobbs.github.io/schema-markdown/reference.html#validate-type">validate_type</a>
 function:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Operation&#39;</span><span class="p">,</span> <span class="p">{</span>
 <span class="gp">... </span>    <span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
