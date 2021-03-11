@@ -1,15 +1,12 @@
 Command-Line Tool
 =================
 
-The ``schema_markdown`` package can be used as a command like tool like so::
+The ``schema_markdown`` package can be used as a command like tool like so:
 
-  python3 -m schema_markdown
+.. code-block:: sh
 
-It exposes several commands:
-
-.. code-block:: text
-
-   usage: __main__.py [-h] {compile,validate,model} ...
+   $ python3 -m schema_markdown --help
+   usage: schema_markdown [-h] {compile,validate,model} ...
 
    positional arguments:
      {compile,validate,model}
@@ -25,7 +22,7 @@ The **compile** command compiles one or more :ref:`parser` files and outputs a :
 
 .. code-block:: text
 
-   usage: __main__.py compile [-h] [-o PATH] [--compact] [paths ...]
+   usage: schema_markdown compile [-h] [-o PATH] [--compact] [paths ...]
 
    positional arguments:
      paths       Schema Markdown file paths. If none, default is stdin.
@@ -40,7 +37,7 @@ JSON files:
 
 .. code-block:: text
 
-   usage: __main__.py validate [-h] schema type [paths ...]
+   usage: schema_markdown validate [-h] schema type [paths ...]
 
    positional arguments:
      schema      Schema Markdown file path
@@ -50,11 +47,11 @@ JSON files:
    options:
      -h, --help  show this help message and exit
 
-The **model** command dumps the :ref:`schema`'s ``TypeModel`` object:
+The **model** command dumps the :ref:`schema`'s type model:
 
 .. code-block:: text
 
-   usage: __main__.py model [-h] [-o PATH] [--compact]
+   usage: schema_markdown model [-h] [-o PATH] [--compact]
 
    options:
      -h, --help  show this help message and exit

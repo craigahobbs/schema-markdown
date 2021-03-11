@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Command-Line Tool &mdash; schema-markdown 0.9.1 documentation</title>
+  <title>Command-Line Tool &mdash; schema-markdown 0.9.2 documentation</title>
   
 
   
@@ -158,25 +158,22 @@
   <div class="section" id="command-line-tool">
 <h1>Command-Line Tool<a class="headerlink" href="#command-line-tool" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">schema_markdown</span></code> package can be used as a command like tool like so:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python3</span> <span class="o">-</span><span class="n">m</span> <span class="n">schema_markdown</span>
-</pre></div>
-</div>
-<p>It exposes several commands:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: __main__.py [-h] {compile,validate,model} ...
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ python3 -m schema_markdown --help
+usage: schema_markdown <span class="o">[</span>-h<span class="o">]</span> <span class="o">{</span>compile,validate,model<span class="o">}</span> ...
 
 positional arguments:
-  {compile,validate,model}
+  <span class="o">{</span>compile,validate,model<span class="o">}</span>
     compile             Parse Schema Markdown files
     validate            Schema-validate JSON files
-    model               Dump the type model
+    model               Dump the <span class="nb">type</span> model
 
 options:
-  -h, --help            show this help message and exit
+  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
 </pre></div>
 </div>
 <p>The <strong>compile</strong> command compiles one or more <a class="reference internal" href="parser.html#parser"><span class="std std-ref">Schema Markdown</span></a> files and outputs a <a class="reference internal" href="schema.html#schema"><span class="std std-ref">Type Model</span></a>
 <code class="docutils literal notranslate"><span class="pre">TypeModel</span></code> object:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: __main__.py compile [-h] [-o PATH] [--compact] [paths ...]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema_markdown compile [-h] [-o PATH] [--compact] [paths ...]
 
 positional arguments:
   paths       Schema Markdown file paths. If none, default is stdin.
@@ -189,7 +186,7 @@ options:
 </div>
 <p>The <strong>validate</strong> command parses a <a class="reference internal" href="parser.html#parser"><span class="std std-ref">Schema Markdown</span></a> file and a type and schema-validates one or more
 JSON files:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: __main__.py validate [-h] schema type [paths ...]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema_markdown validate [-h] schema type [paths ...]
 
 positional arguments:
   schema      Schema Markdown file path
@@ -200,8 +197,8 @@ options:
   -h, --help  show this help message and exit
 </pre></div>
 </div>
-<p>The <strong>model</strong> command dumps the <a class="reference internal" href="schema.html#schema"><span class="std std-ref">Type Model</span></a>’s <code class="docutils literal notranslate"><span class="pre">TypeModel</span></code> object:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: __main__.py model [-h] [-o PATH] [--compact]
+<p>The <strong>model</strong> command dumps the <a class="reference internal" href="schema.html#schema"><span class="std std-ref">Type Model</span></a>’s type model:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema_markdown model [-h] [-o PATH] [--compact]
 
 options:
   -h, --help  show this help message and exit

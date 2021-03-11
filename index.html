@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>schema-markdown &mdash; schema-markdown 0.9.1 documentation</title>
+  <title>schema-markdown &mdash; schema-markdown 0.9.2 documentation</title>
   
 
   
@@ -206,8 +206,8 @@ function:</p>
 <span class="go">{&#39;numbers&#39;: [1, 2, 3, 4]}</span>
 </pre></div>
 </div>
-<p>Notice that the numerical input ‘3’ above is massaged to the integer <cite>3</cite> by validation. Validation
-fails if the object does not match the schema:</p>
+<p>Notice that the numerical input ‘3’ above is <em>type-massaged</em> to the integer 3 by validation.
+Validation fails if the object does not match the schema:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Operation&#39;</span><span class="p">,</span> <span class="p">{</span>
 <span class="gp">... </span>        <span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;asdf&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
