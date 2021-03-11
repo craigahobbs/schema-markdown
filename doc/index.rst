@@ -4,8 +4,8 @@
    :caption: Contents:
    :maxdepth: 1
 
-   parser
-   schema
+   schema-markdown
+   type-model
    tool
    reference
 

@@ -91,3 +91,11 @@ Validation also fails if a member contraint is violated:
 ... except schema_markdown.ValidationError as exc:
 ...     str(exc)
 "Invalid value [] (type 'list') for member 'numbers', expected type 'array' [len > 0]"
+
+
+Development
+-----------
+
+This project is developed using `Python Build <https://github.com/craigahobbs/python-build#readme>`__.
+Refer to the Python Build `documentation <https://github.com/craigahobbs/python-build#make-targets>`__
+for development instructions.

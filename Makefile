@@ -27,6 +27,6 @@ clean:
 
 $(BUILD)/doc/type_model.smd: $(DOC_PYTHON_3_9_VENV_BUILD)
 	mkdir -p $(dir $@)
-	$(DOC_PYTHON_3_9_VENV_CMD)/python3 -c 'import schema_markdown.type_model as tm; print(tm.TYPE_MODEL_SCHEMA_MARKDOWN)' > $@
+	$(DOC_PYTHON_3_9_VENV_CMD)/python3 -c 'import schema_markdown.type_model as tm; print(tm.TYPE_MODEL_SMD)' > $@
 
 doc-python-3-9: $(BUILD)/doc/type_model.smd

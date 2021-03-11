@@ -71,7 +71,7 @@ class SchemaMarkdownParser:
     The parser class for Schema Markdown. Parsing can occur at initialization time or by calling the
     :meth:`~schema_markdown.SchemaMarkdownParser.parse_string` method, which can be called repeatedly.
 
-    :param str schema_markdown_str: An optional Schema Markdown string to parse
+    :param str text: An optional Schema Markdown string to parse
     :param dict types: An optional map of user type name to user type model
     :raises SchemaMarkdownParserError: A parsing error occurred
     """
@@ -81,7 +81,7 @@ class SchemaMarkdownParser:
     #: Built-in types
     BUILTIN_TYPES = {'bool', 'date', 'datetime', 'float', 'int', 'object', 'string', 'uuid'}
 
-    def __init__(self, schema_markdown_str=None, types=None):
+    def __init__(self, text=None, types=None):
 
         #: The dictionary of user type name to user type model
         self.types = {} if types is None else types
@@ -91,8 +91,8 @@ class SchemaMarkdownParser:
         self._bases = {}
 
         # Parse the Schema Markdown string, if any
-        if schema_markdown_str is not None:
-            self.parse_string(schema_markdown_str)
+        if text is not None:
+            self.parse_string(text)
 
     @property
     def errors(self):
@@ -145,18 +145,18 @@ class SchemaMarkdownParser:
         if finalize:
             self.finalize()
 
-    def parse_string(self, schema_markdown_str, filename='', finalize=True):
+    def parse_string(self, text, filename='', finalize=True):
         """
         Parse a Schema Markdown string. This method can be called repeatedly.
 
-        :param str schema_markdown_str: The Schema Markdown string
+        :param str text: The Schema Markdown string
         :param str filename: The name of file being parsed (for error messages)
         :param bool finalize: If True, resolve names after parsing. Set this argument to False when bulk-parsing related
             Schema Markdown files. Be sure to call :meth:`~schema_markdown.SchemaMarkdownParser.finalize` when finished.
         :raises SchemaMarkdownParserError: A parsing error occurred
         """
 
-        self.parse(schema_markdown_str.splitlines(), finalize=finalize, filename=filename)
+        self.parse(text.splitlines(), finalize=finalize, filename=filename)
 
     def parse(self, lines, filename='', finalize=True):
         """

@@ -8,7 +8,7 @@ The schema-markdown type model definition
 from .parser import SchemaMarkdownParser
 
 
-TYPE_MODEL_SCHEMA_MARKDOWN = '''\
+TYPE_MODEL_SMD = '''\
 # A type model with a title
 struct TypeModel
 
@@ -261,7 +261,7 @@ struct ActionURL
     optional string path
 '''
 
-TYPE_MODEL = SchemaMarkdownParser(TYPE_MODEL_SCHEMA_MARKDOWN).types
+TYPE_MODEL = SchemaMarkdownParser(TYPE_MODEL_SMD).types
 
 
 def get_type_model():
