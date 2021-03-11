@@ -288,6 +288,8 @@ class SchemaMarkdownParser:
                     user_type = self.types[definition_id] = {'struct': struct}
                     if definition_doc is not None:
                         struct['doc'] = definition_doc
+                    if doc_group is not None:
+                        struct['docGroup'] = doc_group
                     if definition_string == 'union':
                         struct['union'] = True
 
@@ -301,6 +303,8 @@ class SchemaMarkdownParser:
                     user_type = self.types[definition_id] = {'enum': enum}
                     if definition_doc is not None:
                         enum['doc'] = definition_doc
+                    if doc_group is not None:
+                        enum['docGroup'] = doc_group
 
                 # Record finalization information
                 self._filepos[definition_id] = (filename, linenum)
@@ -437,6 +441,8 @@ class SchemaMarkdownParser:
                     typedef['attr'] = typedef_attr
                 if typedef_doc is not None:
                     typedef['doc'] = typedef_doc
+                if doc_group is not None:
+                    typedef['docGroup'] = doc_group
 
                 # Record finalization information
                 self._filepos[definition_id] = (filename, linenum)

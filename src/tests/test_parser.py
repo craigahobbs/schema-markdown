@@ -366,13 +366,25 @@ action MyAction
         parser = SchemaMarkdownParser('''\
 action MyAction
 
+enum MyEnum
+
+struct MyStruct
+
+typedef int MyTypedef
+
 group "Stuff"
 
 action MyAction2
 
+enum MyEnum2
+
 group "Other Stuff"
 
 action MyAction3
+
+struct MyStruct2
+
+typedef int MyTypedef3
 
 group
 
@@ -382,7 +394,13 @@ action MyAction4
             'MyAction': {'action': {'name': 'MyAction'}},
             'MyAction2': {'action': {'docGroup': 'Stuff', 'name': 'MyAction2'}},
             'MyAction3': {'action': {'docGroup': 'Other Stuff', 'name': 'MyAction3'}},
-            'MyAction4': {'action': {'name': 'MyAction4'}}
+            'MyAction4': {'action': {'name': 'MyAction4'}},
+            'MyEnum': {'enum': {'name': 'MyEnum'}},
+            'MyEnum2': {'enum': {'docGroup': 'Stuff', 'name': 'MyEnum2'}},
+            'MyStruct': {'struct': {'name': 'MyStruct'}},
+            'MyStruct2': {'struct': {'docGroup': 'Other Stuff', 'name': 'MyStruct2'}},
+            'MyTypedef': {'typedef': {'name': 'MyTypedef', 'type': {'builtin': 'int'}}},
+            'MyTypedef3': {'typedef': {'docGroup': 'Other Stuff', 'name': 'MyTypedef3', 'type': {'builtin': 'int'}}}
         })
         self.assertListEqual(parser.errors, [])
 
@@ -1345,10 +1363,10 @@ struct MyStruct
         })
         self.assertListEqual(parser.errors, [])
 
-    def _test_parser_error(self, errors, schema_markdown_str):
+    def _test_parser_error(self, errors, text):
         parser = SchemaMarkdownParser()
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
-            parser.parse_string(schema_markdown_str)
+            parser.parse_string(text)
         self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
         self.assertEqual(len(parser.errors), len(errors))
         self.assertListEqual(parser.errors, errors)

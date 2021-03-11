@@ -273,3 +273,34 @@ Likewise, enumeration types can inerit values from other enumeration types:
 ... enum e3 (e1, e2)
 ...     C
 ... ''')
+
+
+Documentation Groups
+--------------------
+
+Schema Markdown user types can be grouped for documentation purposes. To set an active documentation
+group, use the ``group`` keyword with a group name string. The group applies to all types defined
+afterward. To clear the active documentation group, use the ``group`` keyword without a string.
+
+>>> parser = schema_markdown.SchemaMarkdownParser('''
+... # This struct has no documentation group
+... struct Struct1
+...
+... group "Stuff"
+...
+... # This struct is a member of documentation group "Stuff"
+... struct Struct2
+...
+... # This struct is also a member of documentation group "Stuff"
+... struct Struct3
+...
+... group "Other Stuff"
+...
+... # This struct is also a member of documentation group "Other Stuff"
+... struct Struct4
+...
+... group
+...
+... # This struct has no documentation group
+... struct Struct5
+... ''')

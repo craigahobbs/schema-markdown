@@ -146,14 +146,21 @@ union UserType
     Action action
 
 
-# An enumeration type
-struct Enum
+# User type base struct
+struct UserBase
 
-    # The enum type name
+    # The user type name
     string name
 
     # The documentation markdown text lines
     optional string[] doc
+
+    # The documentation group name
+    optional string docGroup
+
+
+# An enumeration type
+struct Enum (UserBase)
 
     # The enumeration values
     optional EnumValue[len > 0] values
@@ -170,13 +177,7 @@ struct EnumValue
 
 
 # A struct type
-struct Struct
-
-    # The struct type name
-    string name
-
-    # The documentation markdown text lines
-    optional string[] doc
+struct Struct (UserBase)
 
     # The struct members
     optional StructMember[len > 0] members
@@ -205,13 +206,7 @@ struct StructMember
 
 
 # A typedef type
-struct Typedef
-
-    # The typedef type name
-    string name
-
-    # The documentation markdown text lines
-    optional string[] doc
+struct Typedef (UserBase)
 
     # The typedef's type
     Type type
@@ -221,16 +216,7 @@ struct Typedef
 
 
 # A JSON web service API
-struct Action
-
-    # The action name
-    string name
-
-    # The documentation markdown text lines
-    optional string[] doc
-
-    # The action's documentation group name
-    optional string docGroup
+struct Action (UserBase)
 
     # The action's URLs
     optional ActionURL[len > 0] urls
