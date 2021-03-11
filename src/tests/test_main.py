@@ -410,6 +410,6 @@ schema_markdown validate: error: the following arguments are required: schema, t
 
         self.assertEqual(stdout.getvalue(), '')
         self.assertEqual(stderr.getvalue(), '''\
-usage: python3 -m schema_markdown [-h] {compile,validate,model} ...
-python3 -m schema_markdown: error: the following arguments are required: command
+usage: schema_markdown [-h] {compile,validate,model} ...
+schema_markdown: error: the following arguments are required: command
 ''')

@@ -71,8 +71,8 @@ function:
 ... })
 {'numbers': [1, 2, 3, 4]}
 
-Notice that the numerical input '3' above is massaged to the integer `3` by validation. Validation
-fails if the object does not match the schema:
+Notice that the numerical input '3' above is *type-massaged* to the integer 3 by validation.
+Validation fails if the object does not match the schema:
 
 >>> try:
 ...     schema_markdown.validate_type(parser.types, 'Operation', {

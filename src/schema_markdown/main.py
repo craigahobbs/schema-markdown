@@ -20,7 +20,7 @@ def main():
     """
 
     # Command line arguments
-    arg_parser = argparse.ArgumentParser()
+    arg_parser = argparse.ArgumentParser(prog='schema_markdown')
     subparsers = arg_parser.add_subparsers(required=True, dest='command')
     parser_compile = subparsers.add_parser('compile', help='Parse Schema Markdown files')
     parser_compile.add_argument('paths', nargs='*', help='Schema Markdown file paths. If none, default is stdin.')
