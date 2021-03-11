@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Schema Markdown &mdash; schema-markdown 0.9.3 documentation</title>
+  <title>Schema Markdown &mdash; schema-markdown 0.9.4 documentation</title>
   
 
   
@@ -95,6 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#enumeration-types">Enumeration Types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#actions">Actions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#inheritance">Inheritance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation-groups">Documentation Groups</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="type-model.html">Type Model</a></li>
@@ -405,6 +406,36 @@ structure sections.</p>
 <span class="gp">...</span><span class="s1"></span>
 <span class="gp">... </span><span class="s1">enum e3 (e1, e2)</span>
 <span class="gp">... </span><span class="s1">    C</span>
+<span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="documentation-groups">
+<h2>Documentation Groups<a class="headerlink" href="#documentation-groups" title="Permalink to this headline">¶</a></h2>
+<p>Schema Markdown user types can be grouped for documentation purposes. To set an active documentation
+group, use the <code class="docutils literal notranslate"><span class="pre">group</span></code> keyword with a group name string. The group applies to all types defined
+afterward. To clear the active documentation group, use the <code class="docutils literal notranslate"><span class="pre">group</span></code> keyword without a string.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
+<span class="gp">... </span><span class="s1"># This struct has no documentation group</span>
+<span class="gp">... </span><span class="s1">struct Struct1</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">group &quot;Stuff&quot;</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1"># This struct is a member of documentation group &quot;Stuff&quot;</span>
+<span class="gp">... </span><span class="s1">struct Struct2</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1"># This struct is also a member of documentation group &quot;Stuff&quot;</span>
+<span class="gp">... </span><span class="s1">struct Struct3</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">group &quot;Other Stuff&quot;</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1"># This struct is also a member of documentation group &quot;Other Stuff&quot;</span>
+<span class="gp">... </span><span class="s1">struct Struct4</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1">group</span>
+<span class="gp">...</span><span class="s1"></span>
+<span class="gp">... </span><span class="s1"># This struct has no documentation group</span>
+<span class="gp">... </span><span class="s1">struct Struct5</span>
 <span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>

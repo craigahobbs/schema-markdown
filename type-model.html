@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Type Model &mdash; schema-markdown 0.9.3 documentation</title>
+  <title>Type Model &mdash; schema-markdown 0.9.4 documentation</title>
   
 
   
@@ -297,14 +297,21 @@ shown below:</p>
     <span class="n">Action</span> <span class="n">action</span>
 
 
-<span class="c1"># An enumeration type</span>
-<span class="n">struct</span> <span class="n">Enum</span>
+<span class="c1"># User type base struct</span>
+<span class="n">struct</span> <span class="n">UserBase</span>
 
-    <span class="c1"># The enum type name</span>
+    <span class="c1"># The user type name</span>
     <span class="n">string</span> <span class="n">name</span>
 
     <span class="c1"># The documentation markdown text lines</span>
     <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
+
+    <span class="c1"># The documentation group name</span>
+    <span class="n">optional</span> <span class="n">string</span> <span class="n">docGroup</span>
+
+
+<span class="c1"># An enumeration type</span>
+<span class="n">struct</span> <span class="n">Enum</span> <span class="p">(</span><span class="n">UserBase</span><span class="p">)</span>
 
     <span class="c1"># The enumeration values</span>
     <span class="n">optional</span> <span class="n">EnumValue</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">values</span>
@@ -321,13 +328,7 @@ shown below:</p>
 
 
 <span class="c1"># A struct type</span>
-<span class="n">struct</span> <span class="n">Struct</span>
-
-    <span class="c1"># The struct type name</span>
-    <span class="n">string</span> <span class="n">name</span>
-
-    <span class="c1"># The documentation markdown text lines</span>
-    <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
+<span class="n">struct</span> <span class="n">Struct</span> <span class="p">(</span><span class="n">UserBase</span><span class="p">)</span>
 
     <span class="c1"># The struct members</span>
     <span class="n">optional</span> <span class="n">StructMember</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">members</span>
@@ -356,13 +357,7 @@ shown below:</p>
 
 
 <span class="c1"># A typedef type</span>
-<span class="n">struct</span> <span class="n">Typedef</span>
-
-    <span class="c1"># The typedef type name</span>
-    <span class="n">string</span> <span class="n">name</span>
-
-    <span class="c1"># The documentation markdown text lines</span>
-    <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
+<span class="n">struct</span> <span class="n">Typedef</span> <span class="p">(</span><span class="n">UserBase</span><span class="p">)</span>
 
     <span class="c1"># The typedef&#39;s type</span>
     <span class="n">Type</span> <span class="nb">type</span>
@@ -372,16 +367,7 @@ shown below:</p>
 
 
 <span class="c1"># A JSON web service API</span>
-<span class="n">struct</span> <span class="n">Action</span>
-
-    <span class="c1"># The action name</span>
-    <span class="n">string</span> <span class="n">name</span>
-
-    <span class="c1"># The documentation markdown text lines</span>
-    <span class="n">optional</span> <span class="n">string</span><span class="p">[]</span> <span class="n">doc</span>
-
-    <span class="c1"># The action&#39;s documentation group name</span>
-    <span class="n">optional</span> <span class="n">string</span> <span class="n">docGroup</span>
+<span class="n">struct</span> <span class="n">Action</span> <span class="p">(</span><span class="n">UserBase</span><span class="p">)</span>
 
     <span class="c1"># The action&#39;s URLs</span>
     <span class="n">optional</span> <span class="n">ActionURL</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">urls</span>
