@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Schema Markdown &mdash; schema-markdown 0.9.4 documentation</title>
+  <title>Schema Markdown &mdash; schema-markdown 0.9.5 documentation</title>
   
 
   
@@ -167,7 +167,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="schema-markdown">
-<span id="parser"></span><h1>Schema Markdown<a class="headerlink" href="#schema-markdown" title="Permalink to this headline">¶</a></h1>
+<h1>Schema Markdown<a class="headerlink" href="#schema-markdown" title="Permalink to this headline">¶</a></h1>
 <p>Schema Markdown is a human-friendly schema definition language. It is used to define structure
 types, enumeration types, typedef types, and actions (JSON APIs). Schema Markdown parsing is done by
 the <a class="reference internal" href="reference.html#schemamarkdownparser"><span class="std std-ref">SchemaMarkdownParser</span></a> class. For example:</p>
@@ -192,7 +192,7 @@ the <a class="reference internal" href="reference.html#schemamarkdownparser"><sp
 <span class="gp">... </span><span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The parser’s <cite>types</cite> member contains the schema’s <a class="reference internal" href="type-model.html#schema"><span class="std std-ref">Type Model</span></a> dictionary:</p>
+<p>The parser’s <cite>types</cite> member contains the schema’s <a class="reference internal" href="type-model.html#type-model"><span class="std std-ref">Type Model</span></a> dictionary:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">sorted</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 <span class="go">[&#39;Colors&#39;, &#39;NumberPair&#39;, &#39;NumberPairList&#39;]</span>
 </pre></div>

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Type Model &mdash; schema-markdown 0.9.4 documentation</title>
+  <title>Type Model &mdash; schema-markdown 0.9.5 documentation</title>
   
 
   
@@ -156,10 +156,10 @@
            <div itemprop="articleBody">
             
   <div class="section" id="type-model">
-<span id="schema"></span><h1>Type Model<a class="headerlink" href="#type-model" title="Permalink to this headline">¶</a></h1>
+<h1>Type Model<a class="headerlink" href="#type-model" title="Permalink to this headline">¶</a></h1>
 <p>At the heart of Schema Markdown is the <strong>type model</strong>. The type model is a dictionary object that
-maps schema type names to schema type definitions. The <a class="reference internal" href="schema-markdown.html#parser"><span class="std std-ref">Schema Markdown</span></a> definition of type model is
-shown below:</p>
+maps schema type names to schema type definitions. The <a class="reference internal" href="schema-markdown.html#schema-markdown"><span class="std std-ref">Schema Markdown</span></a>
+definition of type model is shown below:</p>
 <div class="code text highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># A type model with a title</span>
 <span class="n">struct</span> <span class="n">TypeModel</span>
 
@@ -396,6 +396,10 @@ shown below:</p>
 
     <span class="c1"># The URL path. If not provided, uses the default URL path of &quot;/&lt;actionName&gt;&quot;.</span>
     <span class="n">optional</span> <span class="n">string</span> <span class="n">path</span>
+</pre></div>
+</div>
+<p>If needed, the compiled type model can be imported as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">schema_markdown.type_model</span> <span class="kn">import</span> <span class="n">TYPE_MODEL</span>
 </pre></div>
 </div>
 </div>

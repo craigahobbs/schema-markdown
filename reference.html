@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Reference &mdash; schema-markdown 0.9.4 documentation</title>
+  <title>Reference &mdash; schema-markdown 0.9.5 documentation</title>
   
 
   
@@ -94,8 +94,8 @@
 <li class="toctree-l2"><a class="reference internal" href="#validate-type">validate_type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validationerror">ValidationError</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-referenced-types">get_referenced_types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-type-model">get_type_model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validate-type-model">validate_type_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validate-type-model-types">validate_type_model_types</a></li>
 </ul>
 </li>
 </ul>
@@ -166,7 +166,7 @@
   <div class="section" id="reference">
 <h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="schemamarkdownparser">
-<span id="id1"></span><h2>SchemaMarkdownParser<a class="headerlink" href="#schemamarkdownparser" title="Permalink to this headline">¶</a></h2>
+<h2>SchemaMarkdownParser<a class="headerlink" href="#schemamarkdownparser" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="schema_markdown.SchemaMarkdownParser">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">SchemaMarkdownParser</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser" title="Permalink to this definition">¶</a></dt>
@@ -274,7 +274,7 @@ Schema Markdown files. Be sure to call <a class="reference internal" href="#sche
 
 </div>
 <div class="section" id="schemamarkdownparsererror">
-<span id="id2"></span><h2>SchemaMarkdownParserError<a class="headerlink" href="#schemamarkdownparsererror" title="Permalink to this headline">¶</a></h2>
+<h2>SchemaMarkdownParserError<a class="headerlink" href="#schemamarkdownparsererror" title="Permalink to this headline">¶</a></h2>
 <dl class="py exception">
 <dt id="schema_markdown.SchemaMarkdownParserError">
 <em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">SchemaMarkdownParserError</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParserError" title="Permalink to this definition">¶</a></dt>
@@ -294,7 +294,7 @@ Schema Markdown files. Be sure to call <a class="reference internal" href="#sche
 
 </div>
 <div class="section" id="validate-type">
-<span id="id3"></span><h2>validate_type<a class="headerlink" href="#validate-type" title="Permalink to this headline">¶</a></h2>
+<h2>validate_type<a class="headerlink" href="#validate-type" title="Permalink to this headline">¶</a></h2>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">struct MyStruct</span>
@@ -337,7 +337,7 @@ since some member types are transformed during validation.</p>
 
 </div>
 <div class="section" id="validationerror">
-<span id="id4"></span><h2>ValidationError<a class="headerlink" href="#validationerror" title="Permalink to this headline">¶</a></h2>
+<h2>ValidationError<a class="headerlink" href="#validationerror" title="Permalink to this headline">¶</a></h2>
 <dl class="py exception">
 <dt id="schema_markdown.ValidationError">
 <em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">ValidationError</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_fqn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.ValidationError" title="Permalink to this definition">¶</a></dt>
@@ -360,7 +360,7 @@ since some member types are transformed during validation.</p>
 
 </div>
 <div class="section" id="get-referenced-types">
-<span id="id5"></span><h2>get_referenced_types<a class="headerlink" href="#get-referenced-types" title="Permalink to this headline">¶</a></h2>
+<h2>get_referenced_types<a class="headerlink" href="#get-referenced-types" title="Permalink to this headline">¶</a></h2>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">types</span> <span class="o">=</span> <span class="p">{</span>
 <span class="gp">... </span>    <span class="s1">&#39;Struct1&#39;</span><span class="p">:</span> <span class="p">{</span>
@@ -387,7 +387,7 @@ since some member types are transformed during validation.</p>
 <span class="gp">... </span>        <span class="p">}</span>
 <span class="gp">... </span>    <span class="p">}</span>
 <span class="gp">... </span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model_types</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> 
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">get_referenced_types</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">))</span>
 <span class="go">{&#39;Struct1&#39;: {&#39;struct&#39;: {&#39;members&#39;: [{&#39;name&#39;: &#39;a&#39;, &#39;type&#39;: {&#39;user&#39;: &#39;Struct2&#39;}}],</span>
@@ -415,24 +415,30 @@ since some member types are transformed during validation.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="get-type-model">
-<span id="id6"></span><h2>get_type_model<a class="headerlink" href="#get-type-model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="validate-type-model">
+<h2>validate_type_model<a class="headerlink" href="#validate-type-model" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="schema_markdown.get_type_model">
-<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">get_type_model</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_type_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a copy of the schema-markdown type model</p>
+<dt id="schema_markdown.validate_type_model">
+<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">validate_type_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a user type model</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The map of referenced user type name to user type model</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type_model</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – The user type model</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The validated, transformed type model</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
 </dd>
 </dl>
 </dd></dl>
 
 </div>
-<div class="section" id="validate-type-model">
-<span id="id7"></span><h2>validate_type_model<a class="headerlink" href="#validate-type-model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="validate-type-model-types">
+<h2>validate_type_model_types<a class="headerlink" href="#validate-type-model-types" title="Permalink to this headline">¶</a></h2>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model</span><span class="p">({</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model_types</span><span class="p">({</span>
 <span class="gp">... </span>    <span class="s1">&#39;Struct1&#39;</span><span class="p">:</span> <span class="p">{</span>
 <span class="gp">... </span>        <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{</span>
 <span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">,</span>
@@ -443,7 +449,7 @@ since some member types are transformed during validation.</p>
 <span class="gp">... </span>    <span class="p">}</span>
 <span class="gp">... </span><span class="p">})</span> 
 <span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model</span><span class="p">({</span>
+<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model_types</span><span class="p">({</span>
 <span class="gp">... </span>        <span class="s1">&#39;MyStruct&#39;</span><span class="p">:</span> <span class="p">{</span>
 <span class="gp">... </span>            <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{}</span>
 <span class="gp">... </span>        <span class="p">}</span>
@@ -454,15 +460,18 @@ since some member types are transformed during validation.</p>
 </pre></div>
 </div>
 <dl class="py function">
-<dt id="schema_markdown.validate_type_model">
-<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">validate_type_model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model" title="Permalink to this definition">¶</a></dt>
-<dd><p>Validate a user type model</p>
+<dt id="schema_markdown.validate_type_model_types">
+<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">validate_type_model_types</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a user type model’s types</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – The map of user type name to user type model</p>
 </dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The validated, transformed type-model types dict</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
 </dd>
 </dl>
 </dd></dl>

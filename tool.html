@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Command-Line Tool &mdash; schema-markdown 0.9.4 documentation</title>
+  <title>Command-Line Tool &mdash; schema-markdown 0.9.5 documentation</title>
   
 
   
@@ -171,8 +171,8 @@ options:
   -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
 </pre></div>
 </div>
-<p>The <strong>compile</strong> command compiles one or more <a class="reference internal" href="schema-markdown.html#parser"><span class="std std-ref">Schema Markdown</span></a> files and outputs a <a class="reference internal" href="type-model.html#schema"><span class="std std-ref">Type Model</span></a>
-<code class="docutils literal notranslate"><span class="pre">TypeModel</span></code> object:</p>
+<p>The <strong>compile</strong> command compiles one or more <a class="reference internal" href="schema-markdown.html#schema-markdown"><span class="std std-ref">Schema Markdown</span></a> files and
+outputs a <a class="reference internal" href="type-model.html#type-model"><span class="std std-ref">Type Model</span></a> object:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema_markdown compile [-h] [-o PATH] [--compact] [paths ...]
 
 positional arguments:
@@ -184,8 +184,8 @@ options:
   --compact   Generate compact JSON
 </pre></div>
 </div>
-<p>The <strong>validate</strong> command parses a <a class="reference internal" href="schema-markdown.html#parser"><span class="std std-ref">Schema Markdown</span></a> file and a type and schema-validates one or more
-JSON files:</p>
+<p>The <strong>validate</strong> command parses a <a class="reference internal" href="schema-markdown.html#schema-markdown"><span class="std std-ref">Schema Markdown</span></a> file and a type and
+schema-validates one or more JSON files:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema_markdown validate [-h] schema type [paths ...]
 
 positional arguments:
@@ -197,7 +197,7 @@ options:
   -h, --help  show this help message and exit
 </pre></div>
 </div>
-<p>The <strong>model</strong> command dumps the <a class="reference internal" href="type-model.html#schema"><span class="std std-ref">Type Model</span></a>’s type model:</p>
+<p>The <strong>model</strong> command dumps the <a class="reference internal" href="type-model.html#type-model"><span class="std std-ref">Type Model</span></a>’s type model:</p>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema_markdown model [-h] [-o PATH] [--compact]
 
 options:

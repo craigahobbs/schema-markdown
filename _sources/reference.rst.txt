@@ -2,8 +2,6 @@ Reference
 =========
 
 
-.. _SchemaMarkdownParser:
-
 SchemaMarkdownParser
 --------------------
 
@@ -11,16 +9,12 @@ SchemaMarkdownParser
    :members:
 
 
-.. _SchemaMarkdownParserError:
-
 SchemaMarkdownParserError
 -------------------------
 
 .. autoexception:: schema_markdown.SchemaMarkdownParserError
    :members:
 
-
-.. _validate_type:
 
 validate_type
 -------------
@@ -43,16 +37,12 @@ validate_type
 .. autofunction:: schema_markdown.validate_type
 
 
-.. _ValidationError:
-
 ValidationError
 ---------------
 
 .. autoexception:: schema_markdown.ValidationError
    :members:
 
-
-.. _get_referenced_types:
 
 get_referenced_types
 --------------------
@@ -83,7 +73,7 @@ get_referenced_types
     ...         }
     ...     }
     ... }
-    >>> schema_markdown.validate_type_model(types) # doctest: +SKIP
+    >>> schema_markdown.validate_type_model_types(types) # doctest: +SKIP
     >>> from pprint import pprint
     >>> pprint(schema_markdown.get_referenced_types(types, 'Struct1'))
     {'Struct1': {'struct': {'members': [{'name': 'a', 'type': {'user': 'Struct2'}}],
@@ -94,21 +84,17 @@ get_referenced_types
 .. autofunction:: schema_markdown.get_referenced_types
 
 
-.. _get_type_model:
-
-get_type_model
---------------
-
-.. autofunction:: schema_markdown.get_type_model
-
-
-.. _validate_type_model:
-
 validate_type_model
 -------------------
 
+.. autofunction:: schema_markdown.validate_type_model
+
+
+validate_type_model_types
+-------------------------
+
     >>> import schema_markdown
-    >>> schema_markdown.validate_type_model({
+    >>> schema_markdown.validate_type_model_types({
     ...     'Struct1': {
     ...         'struct': {
     ...             'name': 'Struct1',
@@ -119,7 +105,7 @@ validate_type_model
     ...     }
     ... }) # doctest: +SKIP
     >>> try:
-    ...     schema_markdown.validate_type_model({
+    ...     schema_markdown.validate_type_model_types({
     ...         'MyStruct': {
     ...             'struct': {}
     ...         }
@@ -128,4 +114,4 @@ validate_type_model
     ...     f'{exc}'
     "Required member 'MyStruct.struct.name' missing"
 
-.. autofunction:: schema_markdown.validate_type_model
+.. autofunction:: schema_markdown.validate_type_model_types
