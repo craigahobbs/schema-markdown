@@ -11,7 +11,7 @@ import sys
 
 from .parser import SchemaMarkdownParser
 from .schema import validate_type
-from .type_model import get_type_model
+from .type_model import TYPE_MODEL
 
 
 def main():
@@ -81,16 +81,10 @@ def main():
 
     # Model command?
     else: # args.command == 'model'
-        # Create the type model with title
-        type_model = {
-            'title': 'Schema Markdown Type Model',
-            'types': get_type_model()
-        }
-
         # Write the JSON
         json_encoder = json.JSONEncoder(indent=None if args.compact else 4, sort_keys=True)
         if args.output is not None:
             with open(args.output, 'w') as json_file:
-                json_file.write(json_encoder.encode(type_model))
+                json_file.write(json_encoder.encode(TYPE_MODEL))
         else:
-            sys.stdout.write(json_encoder.encode(type_model))
+            sys.stdout.write(json_encoder.encode(TYPE_MODEL))

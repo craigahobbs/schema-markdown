@@ -5,7 +5,7 @@
 
 import os
 
-from schema_markdown import SchemaMarkdownParser, SchemaMarkdownParserError, validate_type_model
+from schema_markdown import SchemaMarkdownParser, SchemaMarkdownParserError, validate_type_model_types
 
 from . import TestCase
 
@@ -423,7 +423,7 @@ typedef MyStruct4 MyTypedef
 struct MyStruct5 (MyStruct2, MyTypedef)
     datetime e
 ''')
-        validate_type_model(parser.types)
+        validate_type_model_types(parser.types)
         self.assertDictEqual(parser.types, {
             'MyStruct': {
                 'struct': {

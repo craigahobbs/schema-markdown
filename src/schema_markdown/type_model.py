@@ -8,6 +8,7 @@ The schema-markdown type model definition
 from .parser import SchemaMarkdownParser
 
 
+#: The Schema Markdown type model defined as Schema Markdown.
 TYPE_MODEL_SMD = '''\
 # A type model with a title
 struct TypeModel
@@ -247,14 +248,9 @@ struct ActionURL
     optional string path
 '''
 
-TYPE_MODEL = SchemaMarkdownParser(TYPE_MODEL_SMD).types
 
-
-def get_type_model():
-    """
-    Get a copy of the schema-markdown type model
-
-    :returns: The map of referenced user type name to user type model
-    """
-
-    return dict(TYPE_MODEL)
+#: The Schema Markdown type model.
+TYPE_MODEL = {
+    'title': 'Schema Markdown Type Model',
+    'types': SchemaMarkdownParser(TYPE_MODEL_SMD).types
+}

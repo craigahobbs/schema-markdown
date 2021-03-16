@@ -9,7 +9,7 @@ from itertools import chain
 import os
 import re
 
-from .schema_util import get_effective_type, validate_type_model_errors
+from .schema_util import get_effective_type, validate_type_model_types_errors
 
 
 # Schema Markdown regex
@@ -112,7 +112,7 @@ class SchemaMarkdownParser:
 
         # Do the finalization
         self._finalize_bases()
-        for type_name, member_name, error_msg in validate_type_model_errors(self.types):
+        for type_name, member_name, error_msg in validate_type_model_types_errors(self.types):
             self._error(error_msg, *self._get_filepos(type_name, member_name))
 
         # Raise a parser exception if there are any errors

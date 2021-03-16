@@ -1,11 +1,9 @@
-.. _parser:
-
 Schema Markdown
 ===============
 
 Schema Markdown is a human-friendly schema definition language. It is used to define structure
 types, enumeration types, typedef types, and actions (JSON APIs). Schema Markdown parsing is done by
-the :ref:`SchemaMarkdownParser` class. For example:
+the :ref:`reference:SchemaMarkdownParser` class. For example:
 
 >>> parser = schema_markdown.SchemaMarkdownParser('''
 ... # A number pair structure
@@ -27,13 +25,13 @@ the :ref:`SchemaMarkdownParser` class. For example:
 ...     Green
 ... ''')
 
-The parser's `types` member contains the schema's :ref:`schema` dictionary:
+The parser's `types` member contains the schema's :ref:`type-model:Type Model` dictionary:
 
 >>> sorted(parser.types.keys())
 ['Colors', 'NumberPair', 'NumberPairList']
 
 The type model is used to validate objects in concunction with the
-:ref:`validate_type` function.
+:ref:`reference:validate_type` function.
 
 
 Comments

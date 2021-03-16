@@ -33,6 +33,7 @@ release = schema_markdown.__version__
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinx.ext.autosectionlabel',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
     'sphinx.ext.githubpages'
@@ -64,6 +65,9 @@ html_show_sourcelink = False
 
 
 # -- Extension configuration -------------------------------------------------
+
+autosectionlabel_prefix_document = True
+autosectionlabel_maxdepth = 2
 
 doctest_global_setup = 'import schema_markdown'
 

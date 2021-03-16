@@ -7,18 +7,10 @@ from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
 from uuid import UUID
 
-from schema_markdown import ValidationError, get_referenced_types, get_type_model, validate_type, validate_type_model
+from schema_markdown import ValidationError, get_referenced_types, validate_type, validate_type_model, validate_type_model_types
+from schema_markdown.type_model import TYPE_MODEL
 
 from . import TestCase
-
-
-class TestTypeModel(TestCase):
-
-    def test_get_type_model(self):
-        types = get_type_model()
-        types2 = get_type_model()
-        self.assertDictEqual(types, types2)
-        self.assertIsNot(types, types2)
 
 
 class TestReferencedTypes(TestCase):
@@ -1269,24 +1261,24 @@ class TestValidateType(TestCase):
         self.assertEqual(validate_type(types, 'MyBadUser', 'abc'), 'abc')
 
 
-class TestValidateTypeModel(TestCase):
+class TestValidateTypeModelTypes(TestCase):
 
-    def test_validate_type_model(self):
-        types = get_type_model()
-        self.assertDictEqual(types, validate_type_model(types))
+    def test_validate_type_model_types(self):
+        types = TYPE_MODEL['types']
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_error(self):
+    def test_validate_type_model_types_error(self):
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model({
+            validate_type_model_types({
                 'MyStruct': {
                     'struct': {}
                 }
             })
         self.assertEqual(str(cm_exc.exception), "Required member 'MyStruct.struct.name' missing")
 
-    def test_validate_type_model_inconsistent_struct_type_name(self):
+    def test_validate_type_model_types_inconsistent_struct_type_name(self):
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model({
+            validate_type_model_types({
                 'MyStruct': {
                     'struct': {
                         'name': 'MyStruct2'
@@ -1295,9 +1287,9 @@ class TestValidateTypeModel(TestCase):
             })
         self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyStruct2' for 'MyStruct'")
 
-    def test_validate_type_model_unknown_member_type(self):
+    def test_validate_type_model_types_unknown_member_type(self):
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model({
+            validate_type_model_types({
                 'MyStruct': {
                     'struct': {
                         'name': 'MyStruct',
@@ -1309,9 +1301,9 @@ class TestValidateTypeModel(TestCase):
             })
         self.assertEqual(str(cm_exc.exception), "Unknown type 'UnknownType' from 'MyStruct' member 'a'")
 
-    def test_validate_type_model_duplicate_member(self):
+    def test_validate_type_model_types_duplicate_member(self):
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model({
+            validate_type_model_types({
                 'MyStruct': {
                     'struct': {
                         'name': 'MyStruct',
@@ -1325,7 +1317,7 @@ class TestValidateTypeModel(TestCase):
             })
         self.assertEqual(str(cm_exc.exception), "Redefinition of 'MyStruct' member 'a'")
 
-    def test_validate_type_model_empty_enum(self):
+    def test_validate_type_model_types_empty_enum(self):
         types = {
             'MyEnum': {
                 'enum': {
@@ -1333,11 +1325,11 @@ class TestValidateTypeModel(TestCase):
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_inconsistent_enum_type_name(self):
+    def test_validate_type_model_types_inconsistent_enum_type_name(self):
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model({
+            validate_type_model_types({
                 'MyEnum': {
                     'enum': {
                         'name': 'MyEnum2'
@@ -1346,7 +1338,7 @@ class TestValidateTypeModel(TestCase):
             })
         self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyEnum2' for 'MyEnum'")
 
-    def test_validate_type_model_enum_duplicate_value(self):
+    def test_validate_type_model_types_enum_duplicate_value(self):
         types = {
             'MyEnum': {
                 'enum': {
@@ -1360,10 +1352,10 @@ class TestValidateTypeModel(TestCase):
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Redefinition of 'MyEnum' value 'A'")
 
-    def test_validate_type_model_array(self):
+    def test_validate_type_model_types_array(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1372,9 +1364,9 @@ class TestValidateTypeModel(TestCase):
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_array_attributes(self):
+    def test_validate_type_model_types_array_attributes(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1383,9 +1375,9 @@ class TestValidateTypeModel(TestCase):
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_array_invalid_attribute(self):
+    def test_validate_type_model_types_array_invalid_attribute(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1395,10 +1387,10 @@ class TestValidateTypeModel(TestCase):
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid attribute 'len > 0' from 'MyTypedef'")
 
-    def test_validate_type_model_array_unknown_type(self):
+    def test_validate_type_model_types_array_unknown_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1408,10 +1400,10 @@ class TestValidateTypeModel(TestCase):
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyTypedef'")
 
-    def test_validate_type_model_dict(self):
+    def test_validate_type_model_types_dict(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1420,9 +1412,9 @@ class TestValidateTypeModel(TestCase):
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_dict_key_type(self):
+    def test_validate_type_model_types_dict_key_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1440,9 +1432,9 @@ class TestValidateTypeModel(TestCase):
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_dict_attributes(self):
+    def test_validate_type_model_types_dict_attributes(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1451,9 +1443,9 @@ class TestValidateTypeModel(TestCase):
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_dict_key_attributes(self):
+    def test_validate_type_model_types_dict_key_attributes(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1462,9 +1454,9 @@ class TestValidateTypeModel(TestCase):
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_dict_invalid_attribute(self):
+    def test_validate_type_model_types_dict_invalid_attribute(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1474,10 +1466,10 @@ class TestValidateTypeModel(TestCase):
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid attribute 'len > 0' from 'MyTypedef'")
 
-    def test_validate_type_model_dict_invalid_key_attribute(self):
+    def test_validate_type_model_types_dict_invalid_key_attribute(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1487,10 +1479,10 @@ class TestValidateTypeModel(TestCase):
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid attribute '> 0' from 'MyTypedef'")
 
-    def test_validate_type_model_dict_unknown_type(self):
+    def test_validate_type_model_types_dict_unknown_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1500,10 +1492,10 @@ class TestValidateTypeModel(TestCase):
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyTypedef'")
 
-    def test_validate_type_model_dict_unknown_key_type(self):
+    def test_validate_type_model_types_dict_unknown_key_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1513,13 +1505,13 @@ class TestValidateTypeModel(TestCase):
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), '''\
 Invalid dictionary key type from 'MyTypedef'
 Unknown type 'Unknown' from 'MyTypedef'\
 ''')
 
-    def test_validate_type_model_user_type_invalid_attribute(self):
+    def test_validate_type_model_types_user_type_invalid_attribute(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1535,10 +1527,10 @@ Unknown type 'Unknown' from 'MyTypedef'\
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid attribute '< 0' from 'MyTypedef'")
 
-    def test_validate_type_model_user_type_nullable(self):
+    def test_validate_type_model_types_user_type_nullable(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1553,9 +1545,9 @@ Unknown type 'Unknown' from 'MyTypedef'\
                 }
             }
         }
-        self.assertDictEqual(validate_type_model(types), types)
+        self.assertDictEqual(validate_type_model_types(types), types)
 
-    def test_validate_type_model_typedef_attributes(self):
+    def test_validate_type_model_types_typedef_attributes(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1571,11 +1563,11 @@ Unknown type 'Unknown' from 'MyTypedef'\
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_inconsistent_typedef_type_name(self):
+    def test_validate_type_model_types_inconsistent_typedef_type_name(self):
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model({
+            validate_type_model_types({
                 'MyTypedef': {
                     'typedef': {
                         'name': 'MyTypedef2',
@@ -1585,7 +1577,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
             })
         self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyTypedef2' for 'MyTypedef'")
 
-    def test_validate_type_model_typedef_unknown_type(self):
+    def test_validate_type_model_types_typedef_unknown_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1601,10 +1593,10 @@ Unknown type 'Unknown' from 'MyTypedef'\
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Unknown type 'MyTypedef3' from 'MyTypedef2'")
 
-    def test_validate_type_model_action_empty_struct(self):
+    def test_validate_type_model_types_action_empty_struct(self):
         types = {
             'MyAction': {
                 'action': {
@@ -1618,11 +1610,11 @@ Unknown type 'Unknown' from 'MyTypedef'\
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_inconsistent_action_type_name(self):
+    def test_validate_type_model_types_inconsistent_action_type_name(self):
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model({
+            validate_type_model_types({
                 'MyAction': {
                     'action': {
                         'name': 'MyAction2'
@@ -1631,7 +1623,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
             })
         self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyAction2' for 'MyAction'")
 
-    def test_validate_type_model_action_unknown_type(self):
+    def test_validate_type_model_types_action_unknown_type(self):
         types = {
             'MyAction': {
                 'action': {
@@ -1641,10 +1633,10 @@ Unknown type 'Unknown' from 'MyTypedef'\
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyAction'")
 
-    def test_validate_type_model_action_action(self):
+    def test_validate_type_model_types_action_action(self):
         types = {
             'MyAction': {
                 'action': {
@@ -1659,10 +1651,10 @@ Unknown type 'Unknown' from 'MyTypedef'\
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid reference to action 'MyAction2' from 'MyAction'")
 
-    def test_validate_type_model_action_duplicate_member(self):
+    def test_validate_type_model_types_action_duplicate_member(self):
         types = {
             'MyAction': {
                 'action': {
@@ -1691,13 +1683,13 @@ Unknown type 'Unknown' from 'MyTypedef'\
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), '''\
 Redefinition of 'MyAction_input' member 'c'
 Redefinition of 'MyAction_query' member 'c'\
 ''')
 
-    def test_validate_type_model_member_attributes(self):
+    def test_validate_type_model_types_member_attributes(self):
         types = {
             'MyStruct': {
                 'struct': {
@@ -1708,9 +1700,9 @@ Redefinition of 'MyAction_query' member 'c'\
                 }
             }
         }
-        self.assertDictEqual(types, validate_type_model(types))
+        self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_invalid_member_attributes(self):
+    def test_validate_type_model_types_invalid_member_attributes(self):
         types = {
             'MyStruct': {
                 'struct': {
@@ -1722,8 +1714,44 @@ Redefinition of 'MyAction_query' member 'c'\
             }
         }
         with self.assertRaises(ValidationError) as cm_exc:
-            validate_type_model(types)
+            validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), '''\
 Invalid attribute 'len <= 10' from 'MyStruct' member 'a'
 Invalid attribute 'len > 0' from 'MyStruct' member 'a'\
 ''')
+
+
+class TestValidateTypeModel(TestCase):
+
+    def test_validate_type_model(self):
+        type_model = {
+            'title': 'My Type Model',
+            'types': {
+                'MyStruct': {
+                    'struct': {
+                        'name': 'MyStruct'
+                    }
+                }
+            }
+        }
+        type_model_validated = validate_type_model(type_model)
+        self.assertDictEqual(type_model_validated, type_model)
+        self.assertIsNot(type_model_validated, type_model)
+
+    def test_validate_type_model_types_error(self):
+        type_model = {
+            'title': 'My Type Model',
+            'types': {
+                'MyStruct': {
+                    'struct': {
+                        'name': 'MyStruct',
+                        'members': [
+                            {'name': 'a', 'type': {'user': 'Unknown'}}
+                        ]
+                    }
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model(type_model)
+        self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyStruct' member 'a'")

@@ -8,8 +8,9 @@ import json
 import os
 import unittest.mock as unittest_mock
 
-from schema_markdown import SchemaMarkdownParserError, ValidationError, get_type_model
+from schema_markdown import SchemaMarkdownParserError, ValidationError
 from schema_markdown.main import main
+from schema_markdown.type_model import TYPE_MODEL
 import schema_markdown.__main__
 
 from . import TestCase
@@ -347,14 +348,7 @@ schema_markdown validate: error: the following arguments are required: schema, t
 
         self.assertEqual(
             stdout.getvalue(),
-            json.dumps(
-                {
-                    'title': 'Schema Markdown Type Model',
-                    'types': get_type_model()
-                },
-                indent=4,
-                sort_keys=True
-            )
+            json.dumps(TYPE_MODEL, indent=4, sort_keys=True)
         )
         self.assertEqual(stderr.getvalue(), '')
 
@@ -367,13 +361,7 @@ schema_markdown validate: error: the following arguments are required: schema, t
 
         self.assertEqual(
             stdout.getvalue(),
-            json.dumps(
-                {
-                    'title': 'Schema Markdown Type Model',
-                    'types': get_type_model()
-                },
-                sort_keys=True
-            )
+            json.dumps(TYPE_MODEL, sort_keys=True)
         )
         self.assertEqual(stderr.getvalue(), '')
 
@@ -391,13 +379,7 @@ schema_markdown validate: error: the following arguments are required: schema, t
             with open(output_path, 'r', encoding='utf-8') as output_file:
                 self.assertEqual(
                     output_file.read(),
-                    json.dumps(
-                        {
-                            'title': 'Schema Markdown Type Model',
-                            'types': get_type_model()
-                        },
-                        sort_keys=True
-                    )
+                    json.dumps(TYPE_MODEL, sort_keys=True)
                 )
 
     def test_no_command(self):

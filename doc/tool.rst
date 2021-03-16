@@ -17,8 +17,8 @@ The ``schema_markdown`` package can be used as a command like tool like so:
    options:
      -h, --help            show this help message and exit
 
-The **compile** command compiles one or more :ref:`parser` files and outputs a :ref:`schema`
-``TypeModel`` object:
+The **compile** command compiles one or more :ref:`schema-markdown:Schema Markdown` files and
+outputs a :ref:`type-model:Type Model` object:
 
 .. code-block:: text
 
@@ -32,8 +32,8 @@ The **compile** command compiles one or more :ref:`parser` files and outputs a :
      -o PATH     Optional JSON type model output file path. Default is stdout.
      --compact   Generate compact JSON
 
-The **validate** command parses a :ref:`parser` file and a type and schema-validates one or more
-JSON files:
+The **validate** command parses a :ref:`schema-markdown:Schema Markdown` file and a type and
+schema-validates one or more JSON files:
 
 .. code-block:: text
 
@@ -47,7 +47,7 @@ JSON files:
    options:
      -h, --help  show this help message and exit
 
-The **model** command dumps the :ref:`schema`'s type model:
+The **model** command dumps the :ref:`type-model:Type Model`'s type model:
 
 .. code-block:: text
 

@@ -23,9 +23,9 @@ def get_effective_type(types, type_):
     return type_
 
 
-def validate_type_model_errors(types):
+def validate_type_model_types_errors(types):
     """
-    Validate a user type model
+    Validate a user type model's types
 
     :param dict types: The map of user type name to user type model
     :returns: The list of type name, member name, and error message tuples

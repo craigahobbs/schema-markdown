@@ -10,7 +10,7 @@ from decimal import Decimal
 from math import isnan, isinf
 from uuid import UUID
 
-from .schema_util import validate_type_model_errors
+from .schema_util import validate_type_model_types_errors
 from .type_model import TYPE_MODEL
 
 
@@ -415,20 +415,41 @@ def _validate_attr(type_, attr, value, member_fqn):
             raise _member_error(type_, value, member_fqn, f'len >= {attr["lenGTE"]}')
 
 
-def validate_type_model(types):
+def validate_type_model_types(types):
     """
-    Validate a user type model
+    Validate a user type model's types
 
     :param dict types: The map of user type name to user type model
+    :returns: The validated, transformed type-model types dict
     :raises ValidationError: A validation error occurred
     """
 
     # Validate with the type model
-    validated_types = validate_type(TYPE_MODEL, 'Types', types)
+    validated_types = validate_type(TYPE_MODEL['types'], 'Types', types)
 
     # Do additional type model validation
-    errors = validate_type_model_errors(validated_types)
+    errors = validate_type_model_types_errors(validated_types)
     if errors:
         raise ValidationError('\n'.join(message for _, _, message in sorted(errors)))
 
     return validated_types
+
+
+def validate_type_model(type_model):
+    """
+    Validate a user type model
+
+    :param dict type_model: The user type model
+    :returns: The validated, transformed type model
+    :raises ValidationError: A validation error occurred
+    """
+
+    # Validate with the type model
+    validated_type_model = validate_type(TYPE_MODEL['types'], 'TypeModel', type_model)
+
+    # Do additional type model validation
+    errors = validate_type_model_types_errors(validated_type_model['types'])
+    if errors:
+        raise ValidationError('\n'.join(message for _, _, message in sorted(errors)))
+
+    return validated_type_model

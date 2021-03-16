@@ -5,7 +5,7 @@
 Schema Markdown package imports
 """
 
-__version__ = '0.9.4'
+__version__ = '0.9.5'
 
 from .parser import \
     SchemaMarkdownParser, \
@@ -15,7 +15,5 @@ from .schema import \
     ValidationError, \
     get_referenced_types, \
     validate_type, \
-    validate_type_model
-
-from .type_model import \
-    get_type_model
+    validate_type_model, \
+    validate_type_model_types
