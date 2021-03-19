@@ -191,6 +191,10 @@ class TestValidateType(TestCase):
         obj = 7
         self.assertIs(self._validate_type({'builtin': 'int'}, obj), obj)
 
+    def test_int_string(self):
+        obj = '7'
+        self.assertEqual(self._validate_type({'builtin': 'int'}, obj), 7)
+
     def test_int_float(self):
         obj = 7.
         self.assertEqual(self._validate_type({'builtin': 'int'}, obj), 7)
@@ -360,21 +364,21 @@ class TestValidateType(TestCase):
         obj = UUID('AED91C7B-DCFD-49B3-A483-DBC9EA2031A3')
         self.assertIs(self._validate_type({'builtin': 'uuid'}, obj), obj)
 
-    def test_uuid_string(self):
-        obj = 'AED91C7B-DCFD-49B3-A483-DBC9EA2031A3'
-        self.assertEqual(self._validate_type({'builtin': 'uuid'}, obj), UUID(obj))
-
-    def test_uuid_string_error(self):
-        obj = 'abc'
-        with self.assertRaises(ValidationError) as cm_exc:
-            self._validate_type({'builtin': 'uuid'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'uuid'")
+    def test_uuid_lowercase(self):
+        obj = UUID('aed91c7b-dcfd-49b3-a483-dbc9ea2031a3')
+        self.assertIs(self._validate_type({'builtin': 'uuid'}, obj), obj)
 
     def test_uuid_error(self):
         obj = 0
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'uuid'}, obj)
         self.assertEqual(str(cm_exc.exception), "Invalid value 0 (type 'int'), expected type 'uuid'")
+
+    def test_uuid_error_string(self):
+        obj = 'abc'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'uuid'}, obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'uuid'")
 
     def test_object(self):
         obj = object()
@@ -441,6 +445,12 @@ class TestValidateType(TestCase):
             self._validate_type({'array': {'type': {'array': {'type': {'builtin': 'int'}}}}}, obj)
         self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str') for member '1.1', expected type 'int'")
 
+    def test_array_attribute_error(self):
+        obj = [1, 2, 5]
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'array': {'type': {'builtin': 'int'}, 'attr': {'lt': 5}}}, obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int') for member '2', expected type 'int' [< 5]")
+
     def test_dict(self):
         obj = {'a': 1, 'b': 2, 'c': 3}
         self.assertDictEqual(self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj), obj)
@@ -506,6 +516,12 @@ class TestValidateType(TestCase):
             self._validate_type({'array': {'type': {'dict': {'type': {'builtin': 'int'}}}}}, obj)
         self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str') for member '1.b', expected type 'int'")
 
+    def test_dict_attribute_error(self):
+        obj = {'a': 1, 'b': 2, 'c': 5}
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'dict': {'type': {'builtin': 'int'}, 'attr': {'lt': 5}}}, obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int') for member 'c', expected type 'int' [< 5]")
+
     def test_dict_key_type(self):
         types = {
             'MyEnum': {
@@ -550,6 +566,259 @@ class TestValidateType(TestCase):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', obj)
         self.assertEqual(str(cm_exc.exception), "Invalid value 'abcdefghij' (type 'str'), expected type 'string' [len < 10]")
+
+    def test_enum(self):
+        types = {
+            'enum': {
+                'enum': {
+                    'name': 'enum',
+                    'values': [
+                        {'name': 'a'},
+                        {'name': 'b'}
+                    ]
+                }
+            }
+        }
+
+        obj = 'a'
+        self.assertEqual(validate_type(types, 'enum', obj), obj)
+
+        obj = 'c'
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'enum', obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 'c' (type 'str'), expected type 'enum'")
+
+    def test_typedef(self):
+        types = {
+            'typedef': {
+                'typedef': {
+                    'name': 'typedef',
+                    'type': {'builtin': 'int'},
+                    'attr': {'gte': 5}
+                }
+            }
+        }
+        obj = 5
+        self.assertIs(validate_type(types, 'typedef', obj), obj)
+
+        obj = 4
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'typedef', obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 4 (type 'int'), expected type 'typedef' [>= 5]")
+
+        obj = None
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'typedef', obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'typedef'")
+
+        obj = 'null'
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'typedef', obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 'null' (type 'str'), expected type 'int'")
+
+    def test_typedef_no_attr(self):
+        types = {
+            'typedef': {
+                'typedef': {
+                    'name': 'typedef',
+                    'type': {'builtin': 'int'}
+                }
+            }
+        }
+        obj = 5
+        self.assertIs(validate_type(types, 'typedef', obj), obj)
+
+    def test_typedef_type_error(self):
+        types = {
+            'typedef': {
+                'typedef': {
+                    'name': 'typedef',
+                    'type': {'builtin': 'int'},
+                    'attr': {'gte': 5}
+                }
+            }
+        }
+        obj = 'abc'
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'typedef', obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'int'")
+
+    def test_typedef_attr_eq(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'builtin': 'int'},
+                    'attr': {'eq': 5}
+                }
+            }
+        }
+        validate_type(types, 'MyTypedef', 5)
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', 7)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'MyTypedef' [== 5]")
+
+    def test_typedef_attr_nullable(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'builtin': 'int'},
+                    'attr': {'nullable': True}
+                }
+            }
+        }
+        self.assertEqual(validate_type(types, 'MyTypedef', 5), 5)
+        self.assertEqual(validate_type(types, 'MyTypedef', None), None)
+        self.assertEqual(validate_type(types, 'MyTypedef', 'null'), None)
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', 'abc')
+        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'int'")
+
+    def test_typedef_attr_lt(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'builtin': 'int'},
+                    'attr': {'lt': 5}
+                }
+            }
+        }
+        validate_type(types, 'MyTypedef', 3)
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', 5)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int'), expected type 'MyTypedef' [< 5]")
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', 7)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'MyTypedef' [< 5]")
+
+    def test_typedef_attr_lte(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'builtin': 'int'},
+                    'attr': {'lte': 5}
+                }
+            }
+        }
+        validate_type(types, 'MyTypedef', 5)
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', 7)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'MyTypedef' [<= 5]")
+
+    def test_typedef_attr_gt(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'builtin': 'int'},
+                    'attr': {'gt': 5}
+                }
+            }
+        }
+        validate_type(types, 'MyTypedef', 7)
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', 3)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 3 (type 'int'), expected type 'MyTypedef' [> 5]")
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', 5)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int'), expected type 'MyTypedef' [> 5]")
+
+    def test_typedef_attr_gte(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'builtin': 'int'},
+                    'attr': {'gte': 5}
+                }
+            }
+        }
+        validate_type(types, 'MyTypedef', 5)
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', 3)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 3 (type 'int'), expected type 'MyTypedef' [>= 5]")
+
+    def test_typedef_attr_len_eq(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'array': {'type': {'builtin': 'int'}}},
+                    'attr': {'lenEq': 5}
+                }
+            }
+        }
+        validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', [1, 2, 3])
+        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3] (type 'list'), expected type 'MyTypedef' [len == 5]")
+
+    def test_typedef_attr_len_lt(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'array': {'type': {'builtin': 'int'}}},
+                    'attr': {'lenLT': 5}
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
+        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5] (type 'list'), expected type 'MyTypedef' [len < 5]")
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5, 6, 7])
+        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5, 6, 7] (type 'list'), expected type 'MyTypedef' [len < 5]")
+
+    def test_typedef_attr_len_lte(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'array': {'type': {'builtin': 'int'}}},
+                    'attr': {'lenLTE': 5}
+                }
+            }
+        }
+        validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5, 6, 7])
+        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5, 6, 7] (type 'list'), expected type 'MyTypedef' [len <= 5]")
+
+    def test_typedef_attr_len_gt(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'array': {'type': {'builtin': 'int'}}},
+                    'attr': {'lenGT': 5}
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
+        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5] (type 'list'), expected type 'MyTypedef' [len > 5]")
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', [1, 2, 3])
+        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3] (type 'list'), expected type 'MyTypedef' [len > 5]")
+
+    def test_typedef_attr_len_gte(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'array': {'type': {'builtin': 'int'}}},
+                    'attr': {'lenGTE': 5}
+                }
+            }
+        }
+        validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', [1, 2, 3])
+        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3] (type 'list'), expected type 'MyTypedef' [len >= 5]")
 
     def test_struct(self):
         types = {
@@ -966,259 +1235,6 @@ class TestValidateType(TestCase):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
         self.assertEqual(str(cm_exc.exception), "Required member 'a' missing")
-
-    def test_enum(self):
-        types = {
-            'enum': {
-                'enum': {
-                    'name': 'enum',
-                    'values': [
-                        {'name': 'a'},
-                        {'name': 'b'}
-                    ]
-                }
-            }
-        }
-
-        obj = 'a'
-        self.assertEqual(validate_type(types, 'enum', obj), obj)
-
-        obj = 'c'
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'enum', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'c' (type 'str'), expected type 'enum'")
-
-    def test_typedef(self):
-        types = {
-            'typedef': {
-                'typedef': {
-                    'name': 'typedef',
-                    'type': {'builtin': 'int'},
-                    'attr': {'gte': 5}
-                }
-            }
-        }
-        obj = 5
-        self.assertIs(validate_type(types, 'typedef', obj), obj)
-
-        obj = 4
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'typedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 4 (type 'int'), expected type 'typedef' [>= 5]")
-
-        obj = None
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'typedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'typedef'")
-
-        obj = 'null'
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'typedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'null' (type 'str'), expected type 'int'")
-
-    def test_typedef_no_attr(self):
-        types = {
-            'typedef': {
-                'typedef': {
-                    'name': 'typedef',
-                    'type': {'builtin': 'int'}
-                }
-            }
-        }
-        obj = 5
-        self.assertIs(validate_type(types, 'typedef', obj), obj)
-
-    def test_typedef_type_error(self):
-        types = {
-            'typedef': {
-                'typedef': {
-                    'name': 'typedef',
-                    'type': {'builtin': 'int'},
-                    'attr': {'gte': 5}
-                }
-            }
-        }
-        obj = 'abc'
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'typedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'int'")
-
-    def test_typedef_attr_eq(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'builtin': 'int'},
-                    'attr': {'eq': 5}
-                }
-            }
-        }
-        validate_type(types, 'MyTypedef', 5)
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', 7)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'MyTypedef' [== 5]")
-
-    def test_typedef_attr_nullable(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'builtin': 'int'},
-                    'attr': {'nullable': True}
-                }
-            }
-        }
-        self.assertEqual(validate_type(types, 'MyTypedef', 5), 5)
-        self.assertEqual(validate_type(types, 'MyTypedef', None), None)
-        self.assertEqual(validate_type(types, 'MyTypedef', 'null'), None)
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', 'abc')
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'int'")
-
-    def test_typedef_attr_lt(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'builtin': 'int'},
-                    'attr': {'lt': 5}
-                }
-            }
-        }
-        validate_type(types, 'MyTypedef', 3)
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', 5)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int'), expected type 'MyTypedef' [< 5]")
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', 7)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'MyTypedef' [< 5]")
-
-    def test_typedef_attr_lte(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'builtin': 'int'},
-                    'attr': {'lte': 5}
-                }
-            }
-        }
-        validate_type(types, 'MyTypedef', 5)
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', 7)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'MyTypedef' [<= 5]")
-
-    def test_typedef_attr_gt(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'builtin': 'int'},
-                    'attr': {'gt': 5}
-                }
-            }
-        }
-        validate_type(types, 'MyTypedef', 7)
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', 3)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 3 (type 'int'), expected type 'MyTypedef' [> 5]")
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', 5)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int'), expected type 'MyTypedef' [> 5]")
-
-    def test_typedef_attr_gte(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'builtin': 'int'},
-                    'attr': {'gte': 5}
-                }
-            }
-        }
-        validate_type(types, 'MyTypedef', 5)
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', 3)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 3 (type 'int'), expected type 'MyTypedef' [>= 5]")
-
-    def test_typedef_attr_len_eq(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'array': {'type': {'builtin': 'int'}}},
-                    'attr': {'lenEq': 5}
-                }
-            }
-        }
-        validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', [1, 2, 3])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3] (type 'list'), expected type 'MyTypedef' [len == 5]")
-
-    def test_typedef_attr_len_lt(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'array': {'type': {'builtin': 'int'}}},
-                    'attr': {'lenLT': 5}
-                }
-            }
-        }
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5] (type 'list'), expected type 'MyTypedef' [len < 5]")
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5, 6, 7])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5, 6, 7] (type 'list'), expected type 'MyTypedef' [len < 5]")
-
-    def test_typedef_attr_len_lte(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'array': {'type': {'builtin': 'int'}}},
-                    'attr': {'lenLTE': 5}
-                }
-            }
-        }
-        validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5, 6, 7])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5, 6, 7] (type 'list'), expected type 'MyTypedef' [len <= 5]")
-
-    def test_typedef_attr_len_gt(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'array': {'type': {'builtin': 'int'}}},
-                    'attr': {'lenGT': 5}
-                }
-            }
-        }
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5] (type 'list'), expected type 'MyTypedef' [len > 5]")
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', [1, 2, 3])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3] (type 'list'), expected type 'MyTypedef' [len > 5]")
-
-    def test_typedef_attr_len_gte(self):
-        types = {
-            'MyTypedef': {
-                'typedef': {
-                    'name': 'MyTypedef',
-                    'type': {'array': {'type': {'builtin': 'int'}}},
-                    'attr': {'lenGTE': 5}
-                }
-            }
-        }
-        validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyTypedef', [1, 2, 3])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3] (type 'list'), expected type 'MyTypedef' [len >= 5]")
 
     def test_action(self):
         types = {
