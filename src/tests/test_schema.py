@@ -15,7 +15,7 @@ from . import TestCase
 
 class TestReferencedTypes(TestCase):
 
-    def test_get_referenced_types(self):
+    def test_simple(self):
         types = {
             'my_action': {
                 'action': {
@@ -101,17 +101,16 @@ class TestReferencedTypes(TestCase):
             }
         }
 
-        referenced_types = dict(types)
-        del referenced_types['MyEnumNoref']
-        del referenced_types['MyStructNoref']
-        del referenced_types['MyTypedefNoref']
+        expected_types = validate_type_model_types(types)
+        del expected_types['MyEnumNoref']
+        del expected_types['MyStructNoref']
+        del expected_types['MyTypedefNoref']
 
-        self.assertDictEqual(
-            get_referenced_types(types, 'my_action'),
-            referenced_types
-        )
+        referenced_types = get_referenced_types(types, 'my_action')
+        validate_type_model_types(referenced_types)
+        self.assertDictEqual(referenced_types, expected_types)
 
-    def test_get_referenced_types_empty_action(self):
+    def test_empty_action(self):
         types = {
             'my_action': {
                 'action': {
@@ -120,21 +119,20 @@ class TestReferencedTypes(TestCase):
             },
             'MyTypedefNoref': {
                 'typedef': {
-                    'name': 'MyTypedef',
+                    'name': 'MyTypedefNoref',
                     'type': {'builtin': 'int'}
                 }
             }
         }
 
-        referenced_types = dict(types)
-        del referenced_types['MyTypedefNoref']
+        expected_types = validate_type_model_types(types)
+        del expected_types['MyTypedefNoref']
 
-        self.assertDictEqual(
-            get_referenced_types(types, 'my_action'),
-            referenced_types
-        )
+        referenced_types = get_referenced_types(types, 'my_action')
+        validate_type_model_types(referenced_types)
+        self.assertDictEqual(referenced_types, expected_types)
 
-    def test_get_referenced_types_circular(self):
+    def test_circular(self):
         types = {
             'MyStruct': {
                 'struct': {
@@ -151,12 +149,95 @@ class TestReferencedTypes(TestCase):
                         {'name': 'a', 'type': {'user': 'MyStruct'}}
                     ]
                 }
+            },
+            'MyTypedefNoref': {
+                'typedef': {
+                    'name': 'MyTypedefNoref',
+                    'type': {'builtin': 'int'}
+                }
             }
         }
-        self.assertDictEqual(
-            get_referenced_types(types, 'MyStruct'),
-            types
-        )
+
+        expected_types = validate_type_model_types(types)
+        del expected_types['MyTypedefNoref']
+
+        referenced_types = get_referenced_types(types, 'MyStruct')
+        validate_type_model_types(referenced_types)
+        self.assertDictEqual(referenced_types, expected_types)
+
+    def test_struct_base(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['MyStruct2'],
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            },
+            'MyStruct2': {
+                'struct': {
+                    'name': 'MyStruct2',
+                    'members': [
+                        {'name': 'b', 'type': {'user': 'MyTypedef'}}
+                    ]
+                }
+            },
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'builtin': 'int'}
+                }
+            },
+            'MyTypedefNoref': {
+                'typedef': {
+                    'name': 'MyTypedefNoref',
+                    'type': {'builtin': 'int'}
+                }
+            }
+        }
+
+        expected_types = validate_type_model_types(types)
+        del expected_types['MyTypedefNoref']
+
+        referenced_types = get_referenced_types(types, 'MyStruct')
+        validate_type_model_types(referenced_types)
+        self.assertDictEqual(referenced_types, expected_types)
+
+    def test_enum_base(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'bases': ['MyEnum2'],
+                    'values': [
+                        {'name': 'a'}
+                    ]
+                }
+            },
+            'MyEnum2': {
+                'enum': {
+                    'name': 'MyEnum2',
+                    'values': [
+                        {'name': 'b'}
+                    ]
+                }
+            },
+            'MyTypedefNoref': {
+                'typedef': {
+                    'name': 'MyTypedefNoref',
+                    'type': {'builtin': 'int'}
+                }
+            }
+        }
+
+        expected_types = validate_type_model_types(types)
+        del expected_types['MyTypedefNoref']
+
+        referenced_types = get_referenced_types(types, 'MyEnum')
+        validate_type_model_types(referenced_types)
+        self.assertDictEqual(referenced_types, expected_types)
 
 
 class TestValidateType(TestCase):
@@ -588,6 +669,50 @@ class TestValidateType(TestCase):
             validate_type(types, 'enum', obj)
         self.assertEqual(str(cm_exc.exception), "Invalid value 'c' (type 'str'), expected type 'enum'")
 
+    def test_enum_base(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'bases': ['MyEnum2'],
+                    'values': [
+                        {'name': 'a'}
+                    ]
+                }
+            },
+            'MyEnum2': {
+                'enum': {
+                    'name': 'MyEnum2',
+                    'bases': ['MyTypedef']
+                }
+            },
+            'MyEnum3': {
+                'enum': {
+                    'name': 'MyEnum3',
+                    'values': [
+                        {'name': 'b'}
+                    ]
+                }
+            },
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'user': 'MyEnum3'}
+                }
+            }
+        }
+
+        obj = 'a'
+        self.assertEqual(validate_type(types, 'MyEnum', obj), obj)
+
+        obj = 'b'
+        self.assertEqual(validate_type(types, 'MyEnum', obj), obj)
+
+        obj = 'c'
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyEnum', obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 'c' (type 'str'), expected type 'MyEnum'")
+
     def test_typedef(self):
         types = {
             'typedef': {
@@ -958,6 +1083,47 @@ class TestValidateType(TestCase):
             validate_type(types, 'MyUnion', obj)
         self.assertEqual(str(cm_exc.exception), "Unknown member 'c'")
 
+    def test_struct_base(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['MyStruct2'],
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            },
+            'MyStruct2': {
+                'struct': {
+                    'name': 'MyStruct2',
+                    'bases': ['MyTypedef']
+                }
+            },
+            'MyStruct3': {
+                'struct': {
+                    'name': 'MyStruct3',
+                    'members': [
+                        {'name': 'b', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            },
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'user': 'MyStruct3'}
+                }
+            }
+        }
+
+        obj = {'a': 7, 'b': 11}
+        self.assertDictEqual(validate_type(types, 'MyStruct', obj), obj)
+
+        obj = {'a': 7}
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyStruct', obj)
+        self.assertEqual(str(cm_exc.exception), "Required member 'b' missing")
+
     def test_struct_optional(self):
         types = {
             'MyStruct': {
@@ -1279,11 +1445,11 @@ class TestValidateType(TestCase):
 
 class TestValidateTypeModelTypes(TestCase):
 
-    def test_validate_type_model_types(self):
+    def test_simple(self):
         types = TYPE_MODEL['types']
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_error(self):
+    def test_error(self):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model_types({
                 'MyStruct': {
@@ -1292,7 +1458,17 @@ class TestValidateTypeModelTypes(TestCase):
             })
         self.assertEqual(str(cm_exc.exception), "Required member 'MyStruct.struct.name' missing")
 
-    def test_validate_type_model_types_inconsistent_struct_type_name(self):
+    def test_struct_empty(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct'
+                }
+            }
+        }
+        self.assertDictEqual(types, validate_type_model_types(types))
+
+    def test_struct_inconsistent_type_name(self):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model_types({
                 'MyStruct': {
@@ -1303,7 +1479,7 @@ class TestValidateTypeModelTypes(TestCase):
             })
         self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyStruct2' for 'MyStruct'")
 
-    def test_validate_type_model_types_unknown_member_type(self):
+    def test_struct_unknown_member_type(self):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model_types({
                 'MyStruct': {
@@ -1317,7 +1493,7 @@ class TestValidateTypeModelTypes(TestCase):
             })
         self.assertEqual(str(cm_exc.exception), "Unknown type 'UnknownType' from 'MyStruct' member 'a'")
 
-    def test_validate_type_model_types_duplicate_member(self):
+    def test_struct_duplicate_member(self):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model_types({
                 'MyStruct': {
@@ -1333,7 +1509,192 @@ class TestValidateTypeModelTypes(TestCase):
             })
         self.assertEqual(str(cm_exc.exception), "Redefinition of 'MyStruct' member 'a'")
 
-    def test_validate_type_model_types_empty_enum(self):
+    def test_struct_member_attributes(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}, 'attr': {'gt': 0, 'lte': 10}}
+                    ]
+                }
+            }
+        }
+        self.assertDictEqual(types, validate_type_model_types(types))
+
+    def test_struct_member_attributes_invalid(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}, 'attr': {'gt': 0, 'lte': 10, 'lenGT': 0, 'lenLTE': 10}}
+                    ]
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid attribute 'len <= 10' from 'MyStruct' member 'a'
+Invalid attribute 'len > 0' from 'MyStruct' member 'a'\
+''')
+
+    def test_struct_base(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['MyStruct2']
+                }
+            },
+            'MyStruct2': {
+                'struct': {
+                    'name': 'MyStruct2',
+                    'bases': ['MyTypedef']
+                }
+            },
+            'MyStruct3': {
+                'struct': {
+                    'name': 'MyStruct3'
+                }
+            },
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'user': 'MyStruct3'}
+                }
+            }
+        }
+        self.assertDictEqual(validate_type_model_types(types), types)
+
+    def test_struct_base_unknown(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['MyStruct2']
+                }
+            },
+            'MyStruct2': {
+                'struct': {
+                    'name': 'MyStruct2',
+                    'bases': ['Unknown']
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid struct base type 'Unknown'\
+''')
+
+    def test_struct_base_non_user(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['MyInt']
+                }
+            },
+            'MyInt': {
+                'typedef': {
+                    'name': 'MyInt',
+                    'type': {'builtin': 'int'}
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid struct base type 'MyInt'\
+''')
+
+    def test_struct_base_enum(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['MyEnum']
+                }
+            },
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid struct base type 'MyEnum'\
+''')
+
+    def test_struct_base_circular(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['MyStruct2']
+                }
+            },
+            'MyStruct2': {
+                'struct': {
+                    'name': 'MyStruct2',
+                    'bases': ['MyStruct']
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Circular base type detected for type 'MyStruct'
+Circular base type detected for type 'MyStruct2'\
+''')
+
+    def test_struct_base_union(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['MyUnion']
+                }
+            },
+            'MyUnion': {
+                'struct': {
+                    'name': 'MyUnion',
+                    'union': True
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid struct base type 'MyUnion'\
+''')
+
+    def test_struct_base_union_struct(self):
+        types = {
+            'MyUnion': {
+                'struct': {
+                    'name': 'MyUnion',
+                    'bases': ['MyStruct'],
+                    'union': True
+                }
+            },
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid struct base type 'MyStruct'\
+''')
+
+    def test_enum_empty(self):
         types = {
             'MyEnum': {
                 'enum': {
@@ -1343,7 +1704,7 @@ class TestValidateTypeModelTypes(TestCase):
         }
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_inconsistent_enum_type_name(self):
+    def test_enum_inconsistent_type_name(self):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model_types({
                 'MyEnum': {
@@ -1354,7 +1715,7 @@ class TestValidateTypeModelTypes(TestCase):
             })
         self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyEnum2' for 'MyEnum'")
 
-    def test_validate_type_model_types_enum_duplicate_value(self):
+    def test_enum_duplicate_value(self):
         types = {
             'MyEnum': {
                 'enum': {
@@ -1371,7 +1732,119 @@ class TestValidateTypeModelTypes(TestCase):
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Redefinition of 'MyEnum' value 'A'")
 
-    def test_validate_type_model_types_array(self):
+    def test_enum_base(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'bases': ['MyEnum2']
+                }
+            },
+            'MyEnum2': {
+                'enum': {
+                    'name': 'MyEnum2',
+                    'bases': ['MyTypedef']
+                }
+            },
+            'MyEnum3': {
+                'enum': {
+                    'name': 'MyEnum3'
+                }
+            },
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'user': 'MyEnum3'}
+                }
+            }
+        }
+        self.assertDictEqual(validate_type_model_types(types), types)
+
+    def test_enum_base_unknown(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'bases': ['MyEnum2']
+                }
+            },
+            'MyEnum2': {
+                'enum': {
+                    'name': 'MyEnum2',
+                    'bases': ['Unknown']
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid enum base type 'Unknown'\
+''')
+
+    def test_enum_base_non_user(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'bases': ['MyInt']
+                }
+            },
+            'MyInt': {
+                'typedef': {
+                    'name': 'MyInt',
+                    'type': {'builtin': 'int'}
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid enum base type 'MyInt'\
+''')
+
+    def test_enum_base_struct(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'bases': ['MyStruct']
+                }
+            },
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid enum base type 'MyStruct'\
+''')
+
+    def test_enum_base_circular(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'bases': ['MyEnum2']
+                }
+            },
+            'MyEnum2': {
+                'enum': {
+                    'name': 'MyEnum2',
+                    'bases': ['MyEnum']
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Circular base type detected for type 'MyEnum'
+Circular base type detected for type 'MyEnum2'\
+''')
+
+    def test_array(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1382,7 +1855,7 @@ class TestValidateTypeModelTypes(TestCase):
         }
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_array_attributes(self):
+    def test_array_attributes(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1393,7 +1866,7 @@ class TestValidateTypeModelTypes(TestCase):
         }
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_array_invalid_attribute(self):
+    def test_array_invalid_attribute(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1406,7 +1879,7 @@ class TestValidateTypeModelTypes(TestCase):
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid attribute 'len > 0' from 'MyTypedef'")
 
-    def test_validate_type_model_types_array_unknown_type(self):
+    def test_array_unknown_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1419,7 +1892,7 @@ class TestValidateTypeModelTypes(TestCase):
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyTypedef'")
 
-    def test_validate_type_model_types_dict(self):
+    def test_dict(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1430,7 +1903,7 @@ class TestValidateTypeModelTypes(TestCase):
         }
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_dict_key_type(self):
+    def test_dict_key_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1450,7 +1923,7 @@ class TestValidateTypeModelTypes(TestCase):
         }
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_dict_attributes(self):
+    def test_dict_attributes(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1461,7 +1934,7 @@ class TestValidateTypeModelTypes(TestCase):
         }
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_dict_key_attributes(self):
+    def test_dict_key_attributes(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1472,7 +1945,7 @@ class TestValidateTypeModelTypes(TestCase):
         }
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_dict_invalid_attribute(self):
+    def test_dict_invalid_attribute(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1485,7 +1958,7 @@ class TestValidateTypeModelTypes(TestCase):
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid attribute 'len > 0' from 'MyTypedef'")
 
-    def test_validate_type_model_types_dict_invalid_key_attribute(self):
+    def test_dict_invalid_key_attribute(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1498,7 +1971,7 @@ class TestValidateTypeModelTypes(TestCase):
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid attribute '> 0' from 'MyTypedef'")
 
-    def test_validate_type_model_types_dict_unknown_type(self):
+    def test_dict_unknown_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1511,7 +1984,7 @@ class TestValidateTypeModelTypes(TestCase):
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyTypedef'")
 
-    def test_validate_type_model_types_dict_unknown_key_type(self):
+    def test_dict_unknown_key_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1527,7 +2000,7 @@ Invalid dictionary key type from 'MyTypedef'
 Unknown type 'Unknown' from 'MyTypedef'\
 ''')
 
-    def test_validate_type_model_types_user_type_invalid_attribute(self):
+    def test_typedef_invalid_attribute(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1546,7 +2019,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid attribute '< 0' from 'MyTypedef'")
 
-    def test_validate_type_model_types_user_type_nullable(self):
+    def test_typedef_nullable(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1563,7 +2036,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
         }
         self.assertDictEqual(validate_type_model_types(types), types)
 
-    def test_validate_type_model_types_typedef_attributes(self):
+    def test_typedef_attributes(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1581,7 +2054,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
         }
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_inconsistent_typedef_type_name(self):
+    def test_typedef_inconsistent_type_name(self):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model_types({
                 'MyTypedef': {
@@ -1593,7 +2066,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
             })
         self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyTypedef2' for 'MyTypedef'")
 
-    def test_validate_type_model_types_typedef_unknown_type(self):
+    def test_typedef_unknown_type(self):
         types = {
             'MyTypedef': {
                 'typedef': {
@@ -1612,7 +2085,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Unknown type 'MyTypedef3' from 'MyTypedef2'")
 
-    def test_validate_type_model_types_action_empty_struct(self):
+    def test_action_empty_struct(self):
         types = {
             'MyAction': {
                 'action': {
@@ -1628,7 +2101,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
         }
         self.assertDictEqual(types, validate_type_model_types(types))
 
-    def test_validate_type_model_types_inconsistent_action_type_name(self):
+    def test_action_inconsistent_type_name(self):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model_types({
                 'MyAction': {
@@ -1639,7 +2112,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
             })
         self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyAction2' for 'MyAction'")
 
-    def test_validate_type_model_types_action_unknown_type(self):
+    def test_action_unknown_type(self):
         types = {
             'MyAction': {
                 'action': {
@@ -1652,7 +2125,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyAction'")
 
-    def test_validate_type_model_types_action_action(self):
+    def test_action_action(self):
         types = {
             'MyAction': {
                 'action': {
@@ -1670,7 +2143,7 @@ Unknown type 'Unknown' from 'MyTypedef'\
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), "Invalid reference to action 'MyAction2' from 'MyAction'")
 
-    def test_validate_type_model_types_action_duplicate_member(self):
+    def test_action_duplicate_member(self):
         types = {
             'MyAction': {
                 'action': {
@@ -1705,26 +2178,38 @@ Redefinition of 'MyAction_input' member 'c'
 Redefinition of 'MyAction_query' member 'c'\
 ''')
 
-    def test_validate_type_model_types_member_attributes(self):
+    def test_action_duplicate_member_inherited(self):
         types = {
-            'MyStruct': {
+            'MyAction': {
+                'action': {
+                    'name': 'MyAction',
+                    'query': 'MyAction_query',
+                    'input': 'MyAction_input'
+                }
+            },
+            'MyAction_query': {
                 'struct': {
-                    'name': 'MyStruct',
+                    'name': 'MyAction_query',
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}, 'attr': {'gt': 0, 'lte': 10}}
+                        {'name': 'a', 'type': {'builtin': 'int'}},
+                        {'name': 'c', 'type': {'builtin': 'int'}}
                     ]
                 }
-            }
-        }
-        self.assertDictEqual(types, validate_type_model_types(types))
-
-    def test_validate_type_model_types_invalid_member_attributes(self):
-        types = {
-            'MyStruct': {
+            },
+            'MyAction_input': {
                 'struct': {
-                    'name': 'MyStruct',
+                    'name': 'MyAction_input',
+                    'bases': ['MyBase'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}, 'attr': {'gt': 0, 'lte': 10, 'lenGT': 0, 'lenLTE': 10}}
+                        {'name': 'b', 'type': {'builtin': 'int'}},
+                    ]
+                }
+            },
+            'MyBase': {
+                'struct': {
+                    'name': 'MyBase',
+                    'members': [
+                        {'name': 'c', 'type': {'builtin': 'int'}}
                     ]
                 }
             }
@@ -1732,14 +2217,58 @@ Redefinition of 'MyAction_query' member 'c'\
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model_types(types)
         self.assertEqual(str(cm_exc.exception), '''\
-Invalid attribute 'len <= 10' from 'MyStruct' member 'a'
-Invalid attribute 'len > 0' from 'MyStruct' member 'a'\
+Redefinition of 'MyAction_input' member 'c'
+Redefinition of 'MyAction_query' member 'c'\
+''')
+
+    def test_action_duplicate_member_circular(self):
+        types = {
+            'MyAction': {
+                'action': {
+                    'name': 'MyAction',
+                    'query': 'MyAction_query',
+                    'input': 'MyAction_input'
+                }
+            },
+            'MyAction_query': {
+                'struct': {
+                    'name': 'MyAction_query',
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}},
+                        {'name': 'c', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            },
+            'MyAction_input': {
+                'struct': {
+                    'name': 'MyAction_input',
+                    'bases': ['MyBase'],
+                    'members': [
+                        {'name': 'b', 'type': {'builtin': 'int'}},
+                    ]
+                }
+            },
+            'MyBase': {
+                'struct': {
+                    'name': 'MyBase',
+                    'bases': ['MyAction_input'],
+                    'members': [
+                        {'name': 'c', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Circular base type detected for type 'MyAction_input'
+Circular base type detected for type 'MyBase'\
 ''')
 
 
 class TestValidateTypeModel(TestCase):
 
-    def test_validate_type_model(self):
+    def test_simple(self):
         type_model = {
             'title': 'My Type Model',
             'types': {
@@ -1754,7 +2283,7 @@ class TestValidateTypeModel(TestCase):
         self.assertDictEqual(type_model_validated, type_model)
         self.assertIsNot(type_model_validated, type_model)
 
-    def test_validate_type_model_types_error(self):
+    def test_error(self):
         type_model = {
             'title': 'My Type Model',
             'types': {

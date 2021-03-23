@@ -163,6 +163,9 @@ struct UserBase
 # An enumeration type
 struct Enum (UserBase)
 
+    # The enum's base enumerations
+    optional string[len > 0] bases
+
     # The enumeration values
     optional EnumValue[len > 0] values
 
@@ -180,11 +183,14 @@ struct EnumValue
 # A struct type
 struct Struct (UserBase)
 
-    # The struct members
-    optional StructMember[len > 0] members
+    # The struct's base classes
+    optional string[len > 0] bases
 
     # If true, the struct is a union and exactly one of the optional members is present
     optional bool union
+
+    # The struct members
+    optional StructMember[len > 0] members
 
 
 # A struct member

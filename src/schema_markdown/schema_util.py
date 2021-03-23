@@ -5,23 +5,6 @@
 schema-markdown schema type model utilities
 """
 
-from collections import Counter, defaultdict
-
-
-def get_effective_type(types, type_):
-    """
-    Get a type model's effective type (e.g. typedef int is an int)
-
-    :param dict types: The map of user type name to user type model
-    :param dict type_: The type model
-    """
-
-    if 'user' in type_ and type_['user'] in types:
-        user_type = types[type_['user']]
-        if 'typedef' in user_type:
-            return get_effective_type(types, user_type['typedef']['type'])
-    return type_
-
 
 def validate_type_model_types_errors(types):
     """
@@ -44,17 +27,35 @@ def validate_type_model_types_errors(types):
             if type_name != struct['name']:
                 errors.append((type_name, None, f'Inconsistent type name {struct["name"]!r} for {type_name!r}'))
 
-            # Has members?
-            if 'members' in struct:
+            # Check base types
+            if 'bases' in struct:
+                is_union = struct.get('union', False)
+                for base_name in struct['bases']:
+                    invalid_base = True
+                    base_user_type = _get_effective_user_type(types, base_name)
+                    if base_user_type is not None and 'struct' in base_user_type:
+                        if is_union == base_user_type['struct'].get('union', False):
+                            invalid_base = False
+                    if invalid_base:
+                        errors.append((type_name, None, f'Invalid struct base type {base_name!r}'))
 
-                # Check member types and their attributes
-                for member in struct['members']:
+            # Iterate the members
+            try:
+                members = set()
+                for member in _get_struct_members(types, struct, set()):
+                    member_name = member['name']
+
+                    # Duplicate member?
+                    if member_name not in members:
+                        members.add(member_name)
+                    else:
+                        errors.append((type_name, member_name, f'Redefinition of {type_name!r} member {member_name!r}'))
+
+                    # Check member type and attributes
                     _validate_type_model_type(errors, types, member['type'], member.get('attr'), struct['name'], member['name'])
 
-                # Check for duplicate members
-                member_counts = Counter(member['name'] for member in struct['members'])
-                for member_name in (member_name for member_name, member_count in member_counts.items() if member_count > 1):
-                    errors.append((type_name, member_name, f'Redefinition of {type_name!r} member {member_name!r}'))
+            except RecursionError:
+                errors.append((type_name, None, f'Circular base type detected for type {type_name!r}'))
 
         # Enum?
         elif 'enum' in user_type:
@@ -64,11 +65,27 @@ def validate_type_model_types_errors(types):
             if type_name != enum['name']:
                 errors.append((type_name, None, f'Inconsistent type name {enum["name"]!r} for {type_name!r}'))
 
-            # Check for duplicate enumeration values
-            if 'values' in enum:
-                value_counts = Counter(value['name'] for value in enum['values'])
-                for value_name in (value_name for value_name, value_count in value_counts.items() if value_count > 1):
-                    errors.append((type_name, value_name, f'Redefinition of {type_name!r} value {value_name!r}'))
+            # Check base types
+            if 'bases' in enum:
+                for base_name in enum['bases']:
+                    base_user_type = _get_effective_user_type(types, base_name)
+                    if base_user_type is None or 'enum' not in base_user_type:
+                        errors.append((type_name, None, f'Invalid enum base type {base_name!r}'))
+
+            # Get the enumeration values
+            try:
+                values = set()
+                for value in _get_enum_values(types, enum, set()):
+                    value_name = value['name']
+
+                    # Duplicate value?
+                    if value_name not in values:
+                        values.add(value_name)
+                    else:
+                        errors.append((type_name, value_name, f'Redefinition of {type_name!r} value {value_name!r}'))
+
+            except RecursionError:
+                errors.append((type_name, None, f'Circular base type detected for type {type_name!r}'))
 
         # Typedef?
         elif 'typedef' in user_type:
@@ -98,26 +115,73 @@ def validate_type_model_types_errors(types):
                     _validate_type_model_type(errors, types, {'user': section_type_name}, None, type_name, None)
 
             # Compute effective input member counts
-            member_counts = Counter()
-            member_sections = defaultdict(list)
+            member_sections = {}
             for section in ('path', 'query', 'input'):
                 if section in action:
                     section_type_name = action[section]
                     if section_type_name in types:
-                        section_type = get_effective_type(types, {'user': section_type_name})
-                        if 'user' in section_type and 'struct' in types[section_type['user']]:
-                            section_struct = types[section_type['user']]['struct']
-                            if 'members' in section_struct:
-                                member_counts.update(member['name'] for member in section_struct['members'])
-                                for member in section_struct['members']:
-                                    member_sections[member['name']].append(section_struct['name'])
+                        section_user_type = _get_effective_user_type(types, section_type_name)
+                        if section_user_type is not None and 'struct' in section_user_type:
+                            section_struct = section_user_type['struct']
+
+                            # Get the section struct's members and count member occurrences
+                            try:
+                                for member in _get_struct_members(types, section_struct, set()):
+                                    member_name = member['name']
+                                    if member_name not in member_sections:
+                                        member_sections[member_name] = []
+                                    member_sections[member_name].append(section_struct['name'])
+                            except RecursionError:
+                                pass
 
             # Check for duplicate input members
-            for member_name in (member_name for member_name, member_count in member_counts.items() if member_count > 1):
-                for section_type in member_sections[member_name]:
-                    errors.append((section_type, member_name, f'Redefinition of {section_type!r} member {member_name!r}'))
+            for member_name, member_section_names in member_sections.items():
+                if len(member_section_names) > 1:
+                    for section_type in member_section_names:
+                        errors.append((section_type, member_name, f'Redefinition of {section_type!r} member {member_name!r}'))
 
     return errors
+
+
+def _get_effective_type(types, type_):
+    if 'user' in type_ and type_['user'] in types:
+        user_type = types[type_['user']]
+        if 'typedef' in user_type:
+            return _get_effective_type(types, user_type['typedef']['type'])
+    return type_
+
+
+def _get_effective_user_type(types, user_type_name):
+    user_type = types.get(user_type_name)
+    if user_type is not None and 'typedef' in user_type:
+        type_effective = _get_effective_type(types, user_type['typedef']['type'])
+        if 'user' not in type_effective:
+            return None
+        return types.get(type_effective['user'])
+    return user_type
+
+
+def _get_struct_members(types, struct, visited=None):
+    yield from _get_type_items(types, struct, visited, 'struct', 'members')
+
+
+def _get_enum_values(types, enum, visited=None):
+    yield from _get_type_items(types, enum, visited, 'enum', 'values')
+
+
+def _get_type_items(types, type_, visited, def_name, member_name):
+    if 'bases' in type_:
+        for base in type_['bases']:
+            user_type = _get_effective_user_type(types, base)
+            if user_type is not None and def_name in user_type:
+                user_type_name = user_type[def_name]['name']
+                if user_type_name not in visited:
+                    visited.add(user_type_name)
+                    yield from _get_type_items(types, user_type[def_name], visited, def_name, member_name)
+                else:
+                    raise RecursionError()
+    if member_name in type_:
+        yield from type_[member_name]
 
 
 # Map of attribute struct member name to attribute description
@@ -159,7 +223,7 @@ def _validate_type_model_type(errors, types, type_, attr, type_name, member_name
         array = type_['array']
 
         # Check the type and its attributes
-        array_type = get_effective_type(types, array['type'])
+        array_type = _get_effective_type(types, array['type'])
         _validate_type_model_type(errors, types, array_type, array.get('attr'), type_name, member_name)
 
     # Dict?
@@ -167,12 +231,12 @@ def _validate_type_model_type(errors, types, type_, attr, type_name, member_name
         dict_ = type_['dict']
 
         # Check the type and its attributes
-        dict_type = get_effective_type(types, dict_['type'])
+        dict_type = _get_effective_type(types, dict_['type'])
         _validate_type_model_type(errors, types, dict_type, dict_.get('attr'), type_name, member_name)
 
         # Check the dict key type and its attributes
         if 'keyType' in dict_:
-            dict_key_type = get_effective_type(types, dict_['keyType'])
+            dict_key_type = _get_effective_type(types, dict_['keyType'])
             _validate_type_model_type(errors, types, dict_key_type, dict_.get('keyAttr'), type_name, member_name)
 
             # Valid dict key type (string or enum)
@@ -196,7 +260,7 @@ def _validate_type_model_type(errors, types, type_, attr, type_name, member_name
 
     # Any not-allowed attributes?
     if attr is not None:
-        type_effective = get_effective_type(types, type_)
+        type_effective = _get_effective_type(types, type_)
         type_key = next(iter(type_effective.keys()), None)
         allowed_attr = _TYPE_TO_ALLOWED_ATTR.get(type_effective[type_key] if type_key == 'builtin' else type_key)
         disallowed_attr = set(attr)

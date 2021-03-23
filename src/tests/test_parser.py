@@ -428,9 +428,8 @@ struct MyStruct5 (MyStruct2, MyTypedef)
             'MyStruct': {
                 'struct': {
                     'name': 'MyStruct',
+                    'bases': ['MyStruct2'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'string'}},
-                        {'name': 'b', 'type': {'builtin': 'float'}},
                         {'name': 'c', 'type': {'builtin': 'int'}}
                     ]
                 }
@@ -438,8 +437,8 @@ struct MyStruct5 (MyStruct2, MyTypedef)
             'MyStruct2': {
                 'struct': {
                     'name': 'MyStruct2',
+                    'bases': ['MyStruct3'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'string'}},
                         {'name': 'b', 'type': {'builtin': 'float'}}
                     ]
                 }
@@ -463,10 +462,8 @@ struct MyStruct5 (MyStruct2, MyTypedef)
             'MyStruct5': {
                 'struct': {
                     'name': 'MyStruct5',
+                    'bases': ['MyStruct2', 'MyTypedef'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'string'}},
-                        {'name': 'b', 'type': {'builtin': 'float'}},
-                        {'name': 'd', 'type': {'builtin': 'bool'}},
                         {'name': 'e', 'type': {'builtin': 'datetime'}}
                     ]
                 }
@@ -503,7 +500,6 @@ struct MyStruct5 (MyStruct4, MyDict)
 ''')
         self.assertListEqual(cm_exc.exception.errors, [
             ":1: error: Invalid struct base type 'MyEnum'",
-            ":7: error: Invalid struct base type 'MyEnum'",
             ":8: error: Redefinition of 'MyStruct3' member 'a'",
             ":15: error: Invalid struct base type 'MyDict'",
             ":16: error: Redefinition of 'MyStruct5' member 'b'"
@@ -551,11 +547,11 @@ enum MyEnum5 (MyEnum2, MyTypedef)
     e
 ''')
         self.assertDictEqual(parser.types, {
-            'MyEnum': {'enum': {'name': 'MyEnum', 'values': [{'name': 'a'}, {'name': 'b'}, {'name': 'c'}]}},
-            'MyEnum2': {'enum': {'name': 'MyEnum2', 'values': [{'name': 'a'}, {'name': 'b'}]}},
+            'MyEnum': {'enum': {'bases': ['MyEnum2'], 'name': 'MyEnum', 'values': [{'name': 'c'}]}},
+            'MyEnum2': {'enum': {'bases': ['MyEnum3'], 'name': 'MyEnum2', 'values': [{'name': 'b'}]}},
             'MyEnum3': {'enum': {'name': 'MyEnum3', 'values': [{'name': 'a'}]}},
             'MyEnum4': {'enum': {'name': 'MyEnum4', 'values': [{'name': 'd'}]}},
-            'MyEnum5': {'enum': {'name': 'MyEnum5', 'values': [{'name': 'a'}, {'name': 'b'}, {'name': 'd'}, {'name': 'e'}]}},
+            'MyEnum5': {'enum': {'bases': ['MyEnum2', 'MyTypedef'], 'name': 'MyEnum5', 'values': [{'name': 'e'}]}},
             'MyTypedef': {'typedef': {'name': 'MyTypedef', 'type': {'user': 'MyEnum4'}}}
         })
         self.assertListEqual(parser.errors, [])
@@ -583,7 +579,6 @@ enum MyEnum5 (MyEnum4, MyDict)
 ''')
         self.assertListEqual(cm_exc.exception.errors, [
             ":1: error: Invalid enum base type 'MyStruct'",
-            ":7: error: Invalid enum base type 'MyStruct'",
             ":8: error: Redefinition of 'MyEnum3' value 'A'",
             ":15: error: Invalid enum base type 'MyDict'",
             ":16: error: Redefinition of 'MyEnum5' value 'B'"
@@ -1764,10 +1759,8 @@ action BarAction
             'BarAction_path': {
                 'struct': {
                     'name': 'BarAction_path',
+                    'bases': ['Foo', 'Bar'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}},
-                        {'name': 'b', 'optional': True, 'type': {'builtin': 'string'}},
-                        {'name': 'c', 'type': {'builtin': 'float'}, 'attr': {'nullable': True}},
                         {'name': 'd', 'type': {'builtin': 'datetime'}}
                     ]
                 }
@@ -1798,9 +1791,8 @@ action BarAction
             'FooAction_path': {
                 'struct': {
                     'name': 'FooAction_path',
+                    'bases': ['Foo'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}},
-                        {'name': 'b', 'optional': True, 'type': {'builtin': 'string'}},
                         {'name': 'c', 'type': {'builtin': 'bool'}}
                     ]
                 }
@@ -1885,10 +1877,8 @@ action BarAction
             'BarAction_query': {
                 'struct': {
                     'name': 'BarAction_query',
+                    'bases': ['Foo', 'Bar'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}},
-                        {'name': 'b', 'optional': True, 'type': {'builtin': 'string'}},
-                        {'name': 'c', 'type': {'builtin': 'float'}, 'attr': {'nullable': True}},
                         {'name': 'd', 'type': {'builtin': 'datetime'}}
                     ]
                 }
@@ -1919,9 +1909,8 @@ action BarAction
             'FooAction_query': {
                 'struct': {
                     'name': 'FooAction_query',
+                    'bases': ['Foo'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}},
-                        {'name': 'b', 'optional': True, 'type': {'builtin': 'string'}},
                         {'name': 'c', 'type': {'builtin': 'bool'}}
                     ]
                 }
@@ -2006,10 +1995,8 @@ action BarAction
             'BarAction_input': {
                 'struct': {
                     'name': 'BarAction_input',
+                    'bases': ['Foo', 'Bar'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}},
-                        {'name': 'b', 'optional': True, 'type': {'builtin': 'string'}},
-                        {'name': 'c', 'type': {'builtin': 'float'}, 'attr': {'nullable': True}},
                         {'name': 'd', 'type': {'builtin': 'datetime'}}
                     ]
                 }
@@ -2040,9 +2027,8 @@ action BarAction
             'FooAction_input': {
                 'struct': {
                     'name': 'FooAction_input',
+                    'bases': ['Foo'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}},
-                        {'name': 'b', 'optional': True, 'type': {'builtin': 'string'}},
                         {'name': 'c', 'type': {'builtin': 'bool'}}
                     ]
                 }
@@ -2168,10 +2154,8 @@ action BarAction
             'BarAction_output': {
                 'struct': {
                     'name': 'BarAction_output',
+                    'bases': ['Foo', 'Bar'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}},
-                        {'name': 'b', 'optional': True, 'type': {'builtin': 'string'}},
-                        {'name': 'c', 'type': {'builtin': 'float'}, 'attr': {'nullable': True}},
                         {'name': 'd', 'type': {'builtin': 'datetime'}}
                     ]
                 }
@@ -2202,9 +2186,8 @@ action BarAction
             'FooAction_output': {
                 'struct': {
                     'name': 'FooAction_output',
+                    'bases': ['Foo'],
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}},
-                        {'name': 'b', 'optional': True, 'type': {'builtin': 'string'}},
                         {'name': 'c', 'type': {'builtin': 'bool'}}
                     ]
                 }
@@ -2290,10 +2273,8 @@ action BarAction
             'BarAction_errors': {
                 'enum': {
                     'name': 'BarAction_errors',
+                    'bases': ['Foo', 'Bar'],
                     'values': [
-                        {'name': 'A'},
-                        {'name': 'B'},
-                        {'name': 'C'},
                         {'name': 'D'}
                     ]
                 }
@@ -2324,9 +2305,8 @@ action BarAction
             'FooAction_errors': {
                 'enum': {
                     'name': 'FooAction_errors',
+                    'bases': ['Foo'],
                     'values': [
-                        {'name': 'A'},
-                        {'name': 'B'},
                         {'name': 'C'}
                     ]
                 }

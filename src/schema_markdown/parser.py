@@ -9,7 +9,7 @@ from itertools import chain
 import os
 import re
 
-from .schema_util import get_effective_type, validate_type_model_types_errors
+from .schema_util import validate_type_model_types_errors
 
 
 # Schema Markdown regex
@@ -76,7 +76,7 @@ class SchemaMarkdownParser:
     :raises SchemaMarkdownParserError: A parsing error occurred
     """
 
-    __slots__ = ('types', '_errors', '_filepos', '_bases')
+    __slots__ = ('types', '_errors', '_filepos')
 
     #: Built-in types
     BUILTIN_TYPES = {'bool', 'date', 'datetime', 'float', 'int', 'object', 'string', 'uuid'}
@@ -88,7 +88,6 @@ class SchemaMarkdownParser:
 
         self._errors = set()
         self._filepos = {}
-        self._bases = {}
 
         # Parse the Schema Markdown string, if any
         if text is not None:
@@ -111,7 +110,6 @@ class SchemaMarkdownParser:
         """
 
         # Do the finalization
-        self._finalize_bases()
         for type_name, member_name, error_msg in validate_type_model_types_errors(self.types):
             self._error(error_msg, *self._get_filepos(type_name, member_name))
 
@@ -292,6 +290,8 @@ class SchemaMarkdownParser:
                         struct['docGroup'] = doc_group
                     if definition_string == 'union':
                         struct['union'] = True
+                    if definition_base_ids is not None:
+                        struct['bases'] = RE_BASE_IDS_SPLIT.split(definition_base_ids)
 
                 # Enum definition
                 else:  # definition_string == 'enum':
@@ -305,11 +305,11 @@ class SchemaMarkdownParser:
                         enum['doc'] = definition_doc
                     if doc_group is not None:
                         enum['docGroup'] = doc_group
+                    if definition_base_ids is not None:
+                        enum['bases'] = RE_BASE_IDS_SPLIT.split(definition_base_ids)
 
                 # Record finalization information
                 self._filepos[definition_id] = (filename, linenum)
-                if definition_base_ids is not None:
-                    self._bases[definition_id] = RE_BASE_IDS_SPLIT.split(definition_base_ids)
 
             # Action section?
             elif match_name == 'section':
@@ -327,14 +327,18 @@ class SchemaMarkdownParser:
                 section_type_name = f'{action["name"]}_{section_string}'
                 action[section_string] = section_type_name
                 if section_string == 'errors':
-                    user_type = self.types[section_type_name] = {'enum': {'name': section_type_name}}
+                    enum = {'name': section_type_name}
+                    user_type = self.types[section_type_name] = {'enum': enum}
+                    if section_base_ids is not None:
+                        enum['bases'] = RE_BASE_IDS_SPLIT.split(section_base_ids)
                 else:
-                    user_type = self.types[section_type_name] = {'struct': {'name': section_type_name}}
+                    struct = {'name': section_type_name}
+                    user_type = self.types[section_type_name] = {'struct': struct}
+                    if section_base_ids is not None:
+                        struct['bases'] = RE_BASE_IDS_SPLIT.split(section_base_ids)
 
                 # Record finalization information
                 self._filepos[section_type_name] = (filename, linenum)
-                if section_base_ids is not None:
-                    self._bases[section_type_name] = RE_BASE_IDS_SPLIT.split(section_base_ids)
 
             # Plain action section?
             elif match_name == 'section_plain':
@@ -547,72 +551,12 @@ class SchemaMarkdownParser:
                         attrs['lenEq'] = attr_value
         return attrs
 
-    def _finalize_bases(self):
-
-        # Compute the base type members/values
-        type_objects = []
-        for type_name in self._bases:
-            user_type = self.types[type_name]
-            filepos = self._get_filepos(type_name)
-            if 'struct' in user_type:
-                type_objects.append(
-                    (type_name, 'struct', 'members', self._get_base_objects(type_name, 'struct', 'members', filepos, set()))
-                )
-            else:
-                type_objects.append(
-                    (type_name, 'enum', 'values', self._get_base_objects(type_name, 'enum', 'values', filepos, set()))
-                )
-
-        # Update the members/values
-        for type_name, user_type_key, object_key, objects in type_objects:
-            self.types[type_name][user_type_key][object_key] = objects
-
-        # Clear the base type state (so we don't process again)
-        self._bases = {}
-
     def _get_filepos(self, type_name, type_key=None):
-        if type_key is None:
-            filepos = self._filepos.get(type_name)
-        else:
+        filepos = None
+        if type_key is not None:
             filepos = self._filepos.get((type_name, type_key))
+        if filepos is None:
+            filepos = self._filepos.get(type_name)
         if filepos is None:
             filepos = ('', 1)
         return filepos
-
-    def _get_base_objects(self, type_name, user_type_key, object_key, filepos, type_names):
-        base_objects = []
-
-        # Check for cycle
-        is_cycle = type_name in type_names
-        type_names.add(type_name)
-        if is_cycle:
-            self._error(f'Circular base type detected for type {type_name!r}', *filepos)
-            return base_objects
-
-        # Compute the base objects
-        if type_name in self._bases:
-            for base_name in self._bases[type_name]:
-                base_type = get_effective_type(self.types, {'user': base_name})
-                invalid_base = True
-                if 'user' in base_type:
-                    user_type = self.types[base_type['user']]
-                    if user_type_key in user_type:
-                        type_model = user_type[user_type_key]
-                        if not type_model.get('union', False):
-                            base_objects.extend(self._get_base_objects(base_type['user'], user_type_key, object_key, filepos, type_names))
-                            invalid_base = False
-                if invalid_base:
-                    self._error(f'Invalid {user_type_key} base type {base_name!r}', *filepos)
-
-        # Add missing filepos
-        for obj in base_objects:
-            filepos_key = (type_name, obj['name'])
-            if filepos_key not in self._filepos:
-                self._filepos[filepos_key] = filepos
-
-        # Add the type's objects
-        type_model = self.types[type_name][user_type_key]
-        if object_key in type_model:
-            base_objects.extend(type_model[object_key])
-
-        return base_objects

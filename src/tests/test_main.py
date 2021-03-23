@@ -139,20 +139,8 @@ class TestMain(TestCase):
         },
         "MyStruct2": {
             "struct": {
-                "members": [
-                    {
-                        "name": "a",
-                        "type": {
-                            "builtin": "int"
-                        }
-                    },
-                    {
-                        "name": "b",
-                        "optional": true,
-                        "type": {
-                            "builtin": "bool"
-                        }
-                    }
+                "bases": [
+                    "MyStruct"
                 ],
                 "name": "MyStruct2"
             }
