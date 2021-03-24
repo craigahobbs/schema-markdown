@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Type Model &mdash; schema-markdown 0.9.5 documentation</title>
+  <title>Type Model &mdash; schema-markdown 0.9.6 documentation</title>
   
 
   
@@ -313,6 +313,9 @@ definition of type model is shown below:</p>
 <span class="c1"># An enumeration type</span>
 <span class="n">struct</span> <span class="n">Enum</span> <span class="p">(</span><span class="n">UserBase</span><span class="p">)</span>
 
+    <span class="c1"># The enum&#39;s base enumerations</span>
+    <span class="n">optional</span> <span class="n">string</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">bases</span>
+
     <span class="c1"># The enumeration values</span>
     <span class="n">optional</span> <span class="n">EnumValue</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">values</span>
 
@@ -330,11 +333,14 @@ definition of type model is shown below:</p>
 <span class="c1"># A struct type</span>
 <span class="n">struct</span> <span class="n">Struct</span> <span class="p">(</span><span class="n">UserBase</span><span class="p">)</span>
 
-    <span class="c1"># The struct members</span>
-    <span class="n">optional</span> <span class="n">StructMember</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">members</span>
+    <span class="c1"># The struct&#39;s base classes</span>
+    <span class="n">optional</span> <span class="n">string</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">bases</span>
 
     <span class="c1"># If true, the struct is a union and exactly one of the optional members is present</span>
     <span class="n">optional</span> <span class="nb">bool</span> <span class="n">union</span>
+
+    <span class="c1"># The struct members</span>
+    <span class="n">optional</span> <span class="n">StructMember</span><span class="p">[</span><span class="nb">len</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span> <span class="n">members</span>
 
 
 <span class="c1"># A struct member</span>
