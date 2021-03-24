@@ -60,7 +60,7 @@ def _get_referenced_types(types, type_, referenced_types=None):
                 if 'bases' in struct:
                     for base in struct['bases']:
                         _get_referenced_types(types, {'user': base}, referenced_types)
-                for member in _get_struct_members(types, struct):
+                for member in get_struct_members(types, struct):
                     _get_referenced_types(types, member['type'], referenced_types)
 
             # Enum
@@ -330,7 +330,7 @@ def _validate_type(types, type_, value, member_fqn=None):
             enum = user_type['enum']
 
             # Not a valid enum value?
-            if value not in (enum_value['name'] for enum_value in _get_enum_values(types, enum)):
+            if value not in (enum_value['name'] for enum_value in get_enum_values(types, enum)):
                 raise _member_error(type_, value, member_fqn)
 
         # struct?
@@ -351,7 +351,7 @@ def _validate_type(types, type_, value, member_fqn=None):
 
             # Validate the struct members
             value_copy = {}
-            for member in _get_struct_members(types, struct):
+            for member in get_struct_members(types, struct):
                 member_name = member['name']
                 member_fqn_member = member_name if member_fqn is None else f'{member_fqn}.{member_name}'
                 member_optional = member.get('optional', False)
@@ -372,7 +372,7 @@ def _validate_type(types, type_, value, member_fqn=None):
 
             # Any unknown members?
             if len(value_copy) != len(value_new):
-                member_set = {member['name'] for member in _get_struct_members(types, struct)}
+                member_set = {member['name'] for member in get_struct_members(types, struct)}
                 unknown_key = next(value_name for value_name in value_new.keys() if value_name not in member_set) # pragma: no branch
                 unknown_fqn = unknown_key if member_fqn is None else f'{member_fqn}.{unknown_key}'
                 raise ValidationError(f"Unknown member {unknown_fqn!r:.100s}")
@@ -381,28 +381,6 @@ def _validate_type(types, type_, value, member_fqn=None):
             value_new = value_copy
 
     return value_new
-
-
-def _get_struct_members(types, struct):
-    if 'bases' in struct:
-        for base in struct['bases']:
-            base_user_type = types[base]
-            while 'typedef' in base_user_type:
-                base_user_type = types[base_user_type['typedef']['type']['user']]
-            yield from _get_struct_members(types, base_user_type['struct'])
-    if 'members' in struct:
-        yield from struct['members']
-
-
-def _get_enum_values(types, enum):
-    if 'bases' in enum:
-        for base in enum['bases']:
-            base_user_type = types[base]
-            while 'typedef' in base_user_type:
-                base_user_type = types[base_user_type['typedef']['type']['user']]
-            yield from _get_enum_values(types, base_user_type['enum'])
-    if 'values' in enum:
-        yield from enum['values']
 
 
 def _member_error(type_, value, member_fqn, attr=None):
@@ -440,6 +418,44 @@ def _validate_attr(type_, attr, value, member_fqn):
             raise _member_error(type_, value, member_fqn, f'len > {attr["lenGT"]}')
         if 'lenGTE' in attr and not len(value) >= attr['lenGTE']:
             raise _member_error(type_, value, member_fqn, f'len >= {attr["lenGTE"]}')
+
+
+def get_struct_members(types, struct):
+    """
+    Iterate the struct's members (inherited members first)
+
+    :param dict types: The map of user type name to user type model
+    :param dict struct: The struct model
+    :returns: The array of struct member models
+    """
+
+    if 'bases' in struct:
+        for base in struct['bases']:
+            base_user_type = types[base]
+            while 'typedef' in base_user_type:
+                base_user_type = types[base_user_type['typedef']['type']['user']]
+            yield from get_struct_members(types, base_user_type['struct'])
+    if 'members' in struct:
+        yield from struct['members']
+
+
+def get_enum_values(types, enum):
+    """
+    Iterate the enum's values (inherited values first)
+
+    :param dict types: The map of user type name to user type model
+    :param dict enum: The enum model
+    :returns: The array of enum value models
+    """
+
+    if 'bases' in enum:
+        for base in enum['bases']:
+            base_user_type = types[base]
+            while 'typedef' in base_user_type:
+                base_user_type = types[base_user_type['typedef']['type']['user']]
+            yield from get_enum_values(types, base_user_type['enum'])
+    if 'values' in enum:
+        yield from enum['values']
 
 
 def validate_type_model_types(types):

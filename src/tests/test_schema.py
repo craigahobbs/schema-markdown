@@ -1589,6 +1589,28 @@ Invalid attribute 'len > 0' from 'MyStruct' member 'a'\
 Invalid struct base type 'Unknown'\
 ''')
 
+    def test_struct_base_typedef_unknown(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['MyTypedef']
+                }
+            },
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'user': 'Unknown'}
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model_types(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Invalid struct base type 'MyTypedef'
+Unknown type 'Unknown' from 'MyTypedef'\
+''')
+
     def test_struct_base_non_user(self):
         types = {
             'MyStruct': {
