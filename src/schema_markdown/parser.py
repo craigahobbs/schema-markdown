@@ -46,8 +46,106 @@ RE_PART_TYPEDEF = \
     r'\s+(?P<id>' + RE_PART_ID + r')'
 RE_TYPEDEF = re.compile(r'^typedef\s+' + RE_PART_TYPEDEF + r'\s*$')
 RE_MEMBER = re.compile(r'^\s+(?P<optional>optional\s+)?' + RE_PART_TYPEDEF + r'\s*$')
-RE_VALUE = re.compile(r'^\s+"?(?P<id>(?<!")' + RE_PART_ID + r'(?!")|(?<=").*?(?="))"?\s*$')
+RE_VALUE = re.compile(r'^\s+(?P<id>' + RE_PART_ID + r')\s*$')
+RE_VALUE_QUOTED = re.compile(r'^\s+"(?P<id>' + RE_PART_ID + r'.*?)"\s*$')
 RE_URL = re.compile(r'^\s+(?P<method>[A-Za-z]+|\*)(?:\s+(?P<path>/[^\s]*))?')
+
+
+#: Built-in types
+BUILTIN_TYPES = {'bool', 'date', 'datetime', 'float', 'int', 'object', 'string', 'uuid'}
+
+
+# Helper function to parse an attributes string - returns an attributes model
+def _parse_attr(attrs_string):
+    attrs = None
+    if attrs_string is not None:
+        for attr_string in RE_FIND_ATTRS.findall(attrs_string):
+            if attrs is None:
+                attrs = {}
+            match_attr = RE_ATTR_GROUP.match(attr_string)
+            attr_op = match_attr.group('op')
+            attr_length_op = match_attr.group('lop') if attr_op is None else None
+
+            if match_attr.group('nullable') is not None:
+                attrs['nullable'] = True
+            elif attr_op is not None:
+                attr_value = float(match_attr.group('opnum'))
+                if attr_op == '<':
+                    attrs['lt'] = attr_value
+                elif attr_op == '<=':
+                    attrs['lte'] = attr_value
+                elif attr_op == '>':
+                    attrs['gt'] = attr_value
+                elif attr_op == '>=':
+                    attrs['gte'] = attr_value
+                else:  # ==
+                    attrs['eq'] = attr_value
+            else:  # attr_length_op is not None:
+                attr_value = int(match_attr.group('lopnum'))
+                if attr_length_op == '<':
+                    attrs['lenLT'] = attr_value
+                elif attr_length_op == '<=':
+                    attrs['lenLTE'] = attr_value
+                elif attr_length_op == '>':
+                    attrs['lenGT'] = attr_value
+                elif attr_length_op == '>=':
+                    attrs['lenGTE'] = attr_value
+                else:  # ==
+                    attrs['lenEq'] = attr_value
+    return attrs
+
+
+# Helper function to create a type model
+def _create_type(type_name):
+    if type_name in BUILTIN_TYPES:
+        return {'builtin': type_name}
+    return {'user': type_name}
+
+
+# Helper function to parse a typedef - returns a type-model and attributes-model tuple
+def _parse_typedef(match_typedef):
+    array_attrs_string = match_typedef.group('array')
+    dict_attrs_string = match_typedef.group('dict')
+
+    # Array type?
+    if array_attrs_string is not None:
+        value_type_name = match_typedef.group('type')
+        value_attr = _parse_attr(match_typedef.group('attrs'))
+        array_type = {
+            'type': _create_type(value_type_name)
+        }
+        if value_attr is not None:
+            array_type['attr'] = value_attr
+        return {'array': array_type}, _parse_attr(array_attrs_string)
+
+    # Dictionary type?
+    if dict_attrs_string is not None:
+        value_type_name = match_typedef.group('dictValueType')
+        if value_type_name is not None:
+            value_attr = _parse_attr(match_typedef.group('dictValueAttrs'))
+            key_type_name = match_typedef.group('type')
+            key_attr = _parse_attr(match_typedef.group('attrs'))
+            dict_type = {
+                'type': _create_type(value_type_name)
+            }
+            dict_type['keyType'] = _create_type(key_type_name)
+            if value_attr is not None:
+                dict_type['attr'] = value_attr
+            if key_attr is not None:
+                dict_type['keyAttr'] = key_attr
+        else:
+            value_type_name = match_typedef.group('type')
+            value_attr = _parse_attr(match_typedef.group('attrs'))
+            dict_type = {
+                'type': _create_type(value_type_name)
+            }
+            if value_attr is not None:
+                dict_type['attr'] = value_attr
+        return {'dict': dict_type}, _parse_attr(dict_attrs_string)
+
+    # Non-container type...
+    member_type_name = match_typedef.group('type')
+    return _create_type(member_type_name), _parse_attr(match_typedef.group('attrs'))
 
 
 class SchemaMarkdownParserError(Exception):
@@ -78,20 +176,33 @@ class SchemaMarkdownParser:
 
     __slots__ = ('types', '_errors', '_filepos')
 
-    #: Built-in types
-    BUILTIN_TYPES = {'bool', 'date', 'datetime', 'float', 'int', 'object', 'string', 'uuid'}
-
     def __init__(self, text=None, types=None):
 
         #: The dictionary of user type name to user type model
         self.types = {} if types is None else types
 
+        # Array of filename, linenum, and error-message tuples
         self._errors = set()
+
+        # Map of definition-name or type/key-tuples to filename/linenum-tuples
         self._filepos = {}
 
         # Parse the Schema Markdown string, if any
         if text is not None:
             self.parse_string(text)
+
+    def _error(self, msg, filename, linenum):
+        self._errors.add((filename, linenum, f'{filename}:{linenum}: error: {msg}'))
+
+    def _get_filepos(self, type_name, type_key=None):
+        filepos = None
+        if type_key is not None:
+            filepos = self._filepos.get((type_name, type_key))
+        if filepos is None:
+            filepos = self._filepos.get(type_name)
+        if filepos is None:
+            filepos = ('', 1)
+        return filepos
 
     @property
     def errors(self):
@@ -214,7 +325,11 @@ class SchemaMarkdownParser:
             if match is None and action is not None:
                 match_name, match = 'section_plain', RE_SECTION_PLAIN.search(line)
             if match is None and user_type is not None and 'enum' in user_type:
-                match_name, match = 'value', RE_VALUE.search(line)
+                match_value = RE_VALUE.search(line)
+                if match_value is not None:
+                    match_name, match = 'value', match_value
+                else:
+                    match_name, match = 'value', RE_VALUE_QUOTED.search(line)
             if match is None and user_type is not None and 'struct' in user_type:
                 match_name, match = 'member', RE_MEMBER.search(line)
             if match is None and urls is not None:
@@ -268,7 +383,7 @@ class SchemaMarkdownParser:
                 definition_base_ids = match.group('base_ids')
 
                 # Type already defined?
-                if definition_id in self.BUILTIN_TYPES or definition_id in self.types:
+                if definition_id in BUILTIN_TYPES or definition_id in self.types:
                     self._error(f"Redefinition of type '{definition_id}'", filename, linenum)
 
                 # Clear parser state
@@ -382,7 +497,7 @@ class SchemaMarkdownParser:
                 struct = user_type['struct']
                 if 'members' not in struct:
                     struct['members'] = []
-                member_type, member_attr = self._parse_typedef(match)
+                member_type, member_attr = _parse_typedef(match)
                 member_doc = get_doc()
                 member = {
                     'name': member_name,
@@ -425,7 +540,7 @@ class SchemaMarkdownParser:
                 definition_id = match.group('id')
 
                 # Type already defined?
-                if definition_id in self.BUILTIN_TYPES or definition_id in self.types:
+                if definition_id in BUILTIN_TYPES or definition_id in self.types:
                     self._error(f"Redefinition of type '{definition_id}'", filename, linenum)
 
                 # Clear parser state
@@ -435,7 +550,7 @@ class SchemaMarkdownParser:
                 typedef_doc = get_doc()
 
                 # Create the typedef
-                typedef_type, typedef_attr = self._parse_typedef(match)
+                typedef_type, typedef_attr = _parse_typedef(match)
                 typedef = {
                     'name': definition_id,
                     'type': typedef_type
@@ -458,105 +573,3 @@ class SchemaMarkdownParser:
         # Finalize, if requested
         if finalize:
             self.finalize()
-
-    def _error(self, msg, filename, linenum):
-        self._errors.add((filename, linenum, f'{filename}:{linenum}: error: {msg}'))
-
-    def _parse_typedef(self, match_typedef):
-        array_attrs_string = match_typedef.group('array')
-        dict_attrs_string = match_typedef.group('dict')
-
-        # Array type?
-        if array_attrs_string is not None:
-            value_type_name = match_typedef.group('type')
-            value_attr = self._parse_attr(match_typedef.group('attrs'))
-            array_type = {
-                'type': self._create_type(value_type_name)
-            }
-            if value_attr is not None:
-                array_type['attr'] = value_attr
-            return {'array': array_type}, self._parse_attr(array_attrs_string)
-
-        # Dictionary type?
-        if dict_attrs_string is not None:
-            value_type_name = match_typedef.group('dictValueType')
-            if value_type_name is not None:
-                value_attr = self._parse_attr(match_typedef.group('dictValueAttrs'))
-                key_type_name = match_typedef.group('type')
-                key_attr = self._parse_attr(match_typedef.group('attrs'))
-                dict_type = {
-                    'type': self._create_type(value_type_name)
-                }
-                dict_type['keyType'] = self._create_type(key_type_name)
-                if value_attr is not None:
-                    dict_type['attr'] = value_attr
-                if key_attr is not None:
-                    dict_type['keyAttr'] = key_attr
-            else:
-                value_type_name = match_typedef.group('type')
-                value_attr = self._parse_attr(match_typedef.group('attrs'))
-                dict_type = {
-                    'type': self._create_type(value_type_name)
-                }
-                if value_attr is not None:
-                    dict_type['attr'] = value_attr
-            return {'dict': dict_type}, self._parse_attr(dict_attrs_string)
-
-        # Non-container type...
-        member_type_name = match_typedef.group('type')
-        return self._create_type(member_type_name), self._parse_attr(match_typedef.group('attrs'))
-
-    @classmethod
-    def _create_type(cls, type_name):
-        if type_name in cls.BUILTIN_TYPES:
-            return {'builtin': type_name}
-        return {'user': type_name}
-
-    @classmethod
-    def _parse_attr(cls, attrs_string):
-        attrs = None
-        if attrs_string is not None:
-            for attr_string in RE_FIND_ATTRS.findall(attrs_string):
-                if attrs is None:
-                    attrs = {}
-                match_attr = RE_ATTR_GROUP.match(attr_string)
-                attr_op = match_attr.group('op')
-                attr_length_op = match_attr.group('lop') if attr_op is None else None
-
-                if match_attr.group('nullable') is not None:
-                    attrs['nullable'] = True
-                elif attr_op is not None:
-                    attr_value = float(match_attr.group('opnum'))
-                    if attr_op == '<':
-                        attrs['lt'] = attr_value
-                    elif attr_op == '<=':
-                        attrs['lte'] = attr_value
-                    elif attr_op == '>':
-                        attrs['gt'] = attr_value
-                    elif attr_op == '>=':
-                        attrs['gte'] = attr_value
-                    else:  # ==
-                        attrs['eq'] = attr_value
-                else:  # attr_length_op is not None:
-                    attr_value = int(match_attr.group('lopnum'))
-                    if attr_length_op == '<':
-                        attrs['lenLT'] = attr_value
-                    elif attr_length_op == '<=':
-                        attrs['lenLTE'] = attr_value
-                    elif attr_length_op == '>':
-                        attrs['lenGT'] = attr_value
-                    elif attr_length_op == '>=':
-                        attrs['lenGTE'] = attr_value
-                    else:  # ==
-                        attrs['lenEq'] = attr_value
-        return attrs
-
-    def _get_filepos(self, type_name, type_key=None):
-        filepos = None
-        if type_key is not None:
-            filepos = self._filepos.get((type_name, type_key))
-        if filepos is None:
-            filepos = self._filepos.get(type_name)
-        if filepos is None:
-            filepos = ('', 1)
-        return filepos
