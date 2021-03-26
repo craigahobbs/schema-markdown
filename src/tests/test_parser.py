@@ -294,6 +294,26 @@ action MyAction4 \\
         })
         self.assertListEqual(parser.errors, [])
 
+    def test_parse_defaults(self):
+        parser = SchemaMarkdownParser()
+        parser.parse([
+            'struct MyStruct',
+            '    int a',
+            '    int b'
+        ])
+        self.assertDictEqual(parser.types, {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}},
+                        {'name': 'b', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            }
+        })
+        self.assertListEqual(parser.errors, [])
+
     def test_action_urls(self):
         parser = SchemaMarkdownParser('''\
 action MyAction
@@ -526,7 +546,6 @@ struct MyStruct3 (MyStruct)
         self.assertListEqual(cm_exc.exception.errors, expected_errors)
         self.assertListEqual(parser.errors, expected_errors)
 
-    # Enum with base types
     def test_enum_base_types(self):
         parser = SchemaMarkdownParser('''\
 enum MyEnum (MyEnum2)
@@ -605,7 +624,6 @@ enum MyEnum3 (MyEnum)
         self.assertListEqual(cm_exc.exception.errors, expected_errors)
         self.assertListEqual(parser.errors, expected_errors)
 
-    # Test multiple parse calls per parser instance
     def test_multiple(self):
         parser = SchemaMarkdownParser()
         parser.parse_string('''\
@@ -728,7 +746,6 @@ enum MyEnum2
         })
         self.assertListEqual(parser.errors, [])
 
-    # Test multiple finalize
     def test_multiple_finalize(self):
         parser = SchemaMarkdownParser('''\
 struct MyStruct
@@ -878,13 +895,14 @@ typedef string(nullable) MyTypedef
                              }
                          }
                         }
-                    ],
+                    ]
                 }
             },
             'MyTypedef': {
                 'typedef': {'name': 'MyTypedef', 'type': {'builtin': 'string'}, 'attr': {'nullable': True}}
             }
         })
+        self.assertListEqual(parser.errors, [])
 
     def test_nullable_with_attr(self):
         parser = SchemaMarkdownParser('''\
@@ -896,11 +914,12 @@ struct MyStruct
                 'struct': {
                     'name': 'MyStruct',
                     'members': [
-                        {'name': 'a', 'type': {'builtin': 'int'}, 'attr': {'gt': 0.0, 'nullable': True}},
+                        {'name': 'a', 'type': {'builtin': 'int'}, 'attr': {'gt': 0.0, 'nullable': True}}
                     ]
                 }
             }
         })
+        self.assertListEqual(parser.errors, [])
 
     def test_invalid_attr(self):
         parser = SchemaMarkdownParser()
@@ -1008,7 +1027,6 @@ action MyAction
         self.assertListEqual(cm_exc.exception.errors, expected_errors)
         self.assertListEqual(parser.errors, expected_errors)
 
-    # Error - redefinition of struct
     def test_error_struct_redefinition(self):
         parser = SchemaMarkdownParser()
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
@@ -1028,7 +1046,6 @@ enum Foo
             ":4: error: Redefinition of type 'Foo'"
         ])
 
-    # Error - redefinition of enum
     def test_error_enum_redefinition(self):
         parser = SchemaMarkdownParser()
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
@@ -1053,7 +1070,6 @@ struct Foo
             ":5: error: Redefinition of type 'Foo'"
         ])
 
-    # Error - redefinition of typedef
     def test_error_typedef_redefinition(self):
         parser = SchemaMarkdownParser()
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
@@ -1148,7 +1164,6 @@ errors
             ':12: error: Syntax error'
         ])
 
-    # Error - member definition outside struct scope
     def test_error_member(self):
         parser = SchemaMarkdownParser()
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
@@ -1179,7 +1194,6 @@ int cde
             ':10: error: Syntax error'
         ])
 
-    # Error - enum value definition outside enum scope
     def test_error_enum(self):
         parser = SchemaMarkdownParser()
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
@@ -1232,7 +1246,6 @@ action MyAction
             ':12: error: Syntax error'
         ])
 
-    # Test valid attribute usage
     def test_attributes(self):
         parser = SchemaMarkdownParser()
         parser.parse_string('''\
@@ -2347,8 +2360,7 @@ action BonkAction
         self.assertListEqual(cm_exc.exception.errors, expected_errors)
         self.assertListEqual(parser.errors, expected_errors)
 
-    @staticmethod
-    def test_finalize_no_parse():
+    def test_finalize_no_parse(self):
         types = {
             'MyAction': {
                 'action': {
@@ -2366,7 +2378,9 @@ action BonkAction
             },
             'OtherType': {}
         }
-        SchemaMarkdownParser(types=types).finalize()
+        parser = SchemaMarkdownParser(types=types)
+        parser.finalize()
+        self.assertIs(parser.types, types)
 
     def test_finalize_no_parse_error(self):
         types = {

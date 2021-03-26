@@ -111,9 +111,7 @@ def _parse_typedef(match_typedef):
     if array_attrs_string is not None:
         value_type_name = match_typedef.group('type')
         value_attr = _parse_attr(match_typedef.group('attrs'))
-        array_type = {
-            'type': _create_type(value_type_name)
-        }
+        array_type = {'type': _create_type(value_type_name)}
         if value_attr is not None:
             array_type['attr'] = value_attr
         return {'array': array_type}, _parse_attr(array_attrs_string)
@@ -126,9 +124,9 @@ def _parse_typedef(match_typedef):
             key_type_name = match_typedef.group('type')
             key_attr = _parse_attr(match_typedef.group('attrs'))
             dict_type = {
-                'type': _create_type(value_type_name)
+                'type': _create_type(value_type_name),
+                'keyType': _create_type(key_type_name)
             }
-            dict_type['keyType'] = _create_type(key_type_name)
             if value_attr is not None:
                 dict_type['attr'] = value_attr
             if key_attr is not None:
@@ -136,9 +134,7 @@ def _parse_typedef(match_typedef):
         else:
             value_type_name = match_typedef.group('type')
             value_attr = _parse_attr(match_typedef.group('attrs'))
-            dict_type = {
-                'type': _create_type(value_type_name)
-            }
+            dict_type = {'type': _create_type(value_type_name)}
             if value_attr is not None:
                 dict_type['attr'] = value_attr
         return {'dict': dict_type}, _parse_attr(dict_attrs_string)
@@ -181,10 +177,10 @@ class SchemaMarkdownParser:
         #: The dictionary of user type name to user type model
         self.types = {} if types is None else types
 
-        # Array of filename, linenum, and error-message tuples
-        self._errors = set()
+        # Map of filename, linenum, and error-message tuples
+        self._errors = {}
 
-        # Map of definition-name or type/key-tuples to filename/linenum-tuples
+        # Map of definition-name to filename/linenum-tuples
         self._filepos = {}
 
         # Parse the Schema Markdown string, if any
@@ -192,12 +188,13 @@ class SchemaMarkdownParser:
             self.parse_string(text)
 
     def _error(self, msg, filename, linenum):
-        self._errors.add((filename, linenum, f'{filename}:{linenum}: error: {msg}'))
+        error_msg = f'{filename}:{linenum}: error: {msg}'
+        self._errors[error_msg] = (filename, linenum, error_msg)
 
-    def _get_filepos(self, type_name, type_key=None):
+    def _get_filepos(self, type_name, type_key):
         filepos = None
         if type_key is not None:
-            filepos = self._filepos.get((type_name, type_key))
+            filepos = self._filepos.get(f'{type_name}.{type_key}')
         if filepos is None:
             filepos = self._filepos.get(type_name)
         if filepos is None:
@@ -210,7 +207,7 @@ class SchemaMarkdownParser:
         The list of parser errors
         """
 
-        return [error for _, _, error in sorted(self._errors)]
+        return [error for _, _, error in sorted(self._errors.values())]
 
     def finalize(self):
         """
@@ -367,9 +364,7 @@ class SchemaMarkdownParser:
                 action_doc = get_doc()
 
                 # Create the new action
-                action = {
-                    'name': action_id
-                }
+                action = {'name': action_id}
                 self.types[action_id] = {'action': action}
                 if action_doc is not None:
                     action['doc'] = action_doc
@@ -395,9 +390,7 @@ class SchemaMarkdownParser:
                 if definition_string in ('struct', 'union'):
 
                     # Create the new struct type
-                    struct = {
-                        'name': definition_id
-                    }
+                    struct = {'name': definition_id}
                     user_type = self.types[definition_id] = {'struct': struct}
                     if definition_doc is not None:
                         struct['doc'] = definition_doc
@@ -412,9 +405,7 @@ class SchemaMarkdownParser:
                 else:  # definition_string == 'enum':
 
                     # Create the new enum type
-                    enum = {
-                        'name': definition_id
-                    }
+                    enum = {'name': definition_id}
                     user_type = self.types[definition_id] = {'enum': enum}
                     if definition_doc is not None:
                         enum['doc'] = definition_doc
@@ -477,16 +468,14 @@ class SchemaMarkdownParser:
                 enum = user_type['enum']
                 if 'values' not in enum:
                     enum['values'] = []
-                enum_value = {
-                    'name': value_string,
-                }
+                enum_value = {'name': value_string}
                 enum['values'].append(enum_value)
                 enum_value_doc = get_doc()
                 if enum_value_doc is not None:
                     enum_value['doc'] = enum_value_doc
 
                 # Record finalization information
-                self._filepos[(enum['name'], value_string)] = (filename, linenum)
+                self._filepos[f'{enum["name"]}.{value_string}'] = (filename, linenum)
 
             # Struct member?
             elif match_name == 'member':
@@ -512,7 +501,7 @@ class SchemaMarkdownParser:
                     member['optional'] = True
 
                 # Record finalization information
-                self._filepos[(struct['name'], member_name)] = (filename, linenum)
+                self._filepos[f'{struct["name"]}.{member_name}'] = (filename, linenum)
 
             # URL?
             elif match_name == 'urls':

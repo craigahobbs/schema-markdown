@@ -669,6 +669,19 @@ class TestValidateType(TestCase):
             validate_type(types, 'enum', obj)
         self.assertEqual(str(cm_exc.exception), "Invalid value 'c' (type 'str'), expected type 'enum'")
 
+    def test_enum_empty(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum'
+                }
+            }
+        }
+        obj = 'a'
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyEnum', obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 'a' (type 'str'), expected type 'MyEnum'")
+
     def test_enum_base(self):
         types = {
             'MyEnum': {

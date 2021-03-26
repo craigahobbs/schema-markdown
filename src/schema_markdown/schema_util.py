@@ -54,7 +54,7 @@ def validate_type_model_types_errors(types):
                     # Check member type and attributes
                     _validate_type_model_type(errors, types, member['type'], member.get('attr'), struct['name'], member['name'])
 
-            except RecursionError:
+            except ValueError:
                 errors.append((type_name, None, f'Circular base type detected for type {type_name!r}'))
 
         # Enum?
@@ -84,7 +84,7 @@ def validate_type_model_types_errors(types):
                     else:
                         errors.append((type_name, value_name, f'Redefinition of {type_name!r} value {value_name!r}'))
 
-            except RecursionError:
+            except ValueError:
                 errors.append((type_name, None, f'Circular base type detected for type {type_name!r}'))
 
         # Typedef?
@@ -131,7 +131,7 @@ def validate_type_model_types_errors(types):
                                     if member_name not in member_sections:
                                         member_sections[member_name] = []
                                     member_sections[member_name].append(section_struct['name'])
-                            except RecursionError:
+                            except ValueError:
                                 pass
 
             # Check for duplicate input members
@@ -179,7 +179,7 @@ def _get_type_items(types, type_, visited, def_name, member_name):
                     visited.add(user_type_name)
                     yield from _get_type_items(types, user_type[def_name], visited, def_name, member_name)
                 else:
-                    raise RecursionError()
+                    raise ValueError()
     if member_name in type_:
         yield from type_[member_name]
 
