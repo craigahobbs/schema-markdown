@@ -2,11 +2,9 @@ Type Model
 ==========
 
 At the heart of Schema Markdown is the **type model**. The type model is a dictionary object that
-maps schema type names to schema type definitions. The :ref:`schema-markdown:Schema Markdown`
-definition of type model is shown below:
+maps schema type names to schema type definitions. The type model's documentation is available here:
 
-.. include:: ../build/doc/type_model.smd
-   :code: text
+`The Type Model <https://craigahobbs.github.io/schema-markdown/doc/>`__
 
 If needed, the compiled type model can be imported as follows:
 
