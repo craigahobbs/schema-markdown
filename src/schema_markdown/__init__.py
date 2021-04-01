@@ -5,7 +5,7 @@
 Schema Markdown package imports
 """
 
-__version__ = '0.9.7'
+__version__ = '0.9.8'
 
 from .parser import \
     SchemaMarkdownParser, \
