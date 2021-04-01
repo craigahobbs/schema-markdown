@@ -1,0 +1,56 @@
+# -*- makefile-gmake -*-
+# Licensed under the MIT License
+# https://github.com/craigahobbs/chisel/blob/master/LICENSE
+
+.DEFAULT_GOAL := help
+
+# Node
+NODE_IMAGE ?= node:14-slim
+NODE_DOCKER := $(if $(NO_DOCKER),,docker run --rm -u `id -u`:`id -g` -v `pwd`:`pwd` -w `pwd` -e HOME=`pwd`/build $(NODE_IMAGE))
+
+# Ava
+AVA_ARGS ?= -v
+
+build/npm.build:
+ifeq '$(NO_DOCKER)' ''
+	docker pull -q $(NODE_IMAGE)
+endif
+	$(NODE_DOCKER) npm install
+	mkdir -p $(dir $@)
+	touch $@
+
+.PHONY: _help help
+help: _help
+_help:
+	@echo 'usage: make [clean|commit|doc|lint|superclean|test]'
+
+.PHONY: commit
+commit: test lint doc
+
+.PHONY: _test test
+test: _test
+_test: build/npm.build
+	$(NODE_DOCKER) npx nyc $(NYC_ARGS) --check-coverage --reporter html --reporter text --report-dir build/coverage --temp-dir build/tmp \
+		ava $(if $(TEST),--match '$(TEST)') $(AVA_ARGS) $$(find tests -name '*.js')
+
+.PHONY: _lint lint
+lint: _lint
+_lint: build/npm.build
+	$(NODE_DOCKER) npx eslint $(ESLINT_ARGS) -c .eslintrc.js -f unix .eslintrc.js src tests
+
+.PHONY: _doc doc
+doc: _doc
+_doc: build/npm.build
+	$(NODE_DOCKER) npx jsdoc --recurse --pedantic $(JSDOC_ARGS) -d build/doc src
+
+.PHONY: _clean clean
+clean: _clean
+_clean:
+	rm -rf build node_modules package-lock.json
+
+.PHONY: _superclean superclean
+superclean: _superclean
+_superclean: clean
+ifeq '$(NO_DOCKER)' ''
+	-docker rmi -f $(NODE_IMAGE)
+endif

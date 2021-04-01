@@ -1,15 +1,11 @@
-# Licensed under the MIT License
-# https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
+// Licensed under the MIT License
+// https://github.com/craigahobbs/chisel/blob/master/LICENSE
 
-"""
-The schema-markdown type model definition
-"""
-
-from .parser import SchemaMarkdownParser
+import {SchemaMarkdownParser} from './parser.js';
 
 
-#: The Schema Markdown type model defined as Schema Markdown.
-TYPE_MODEL_SMD = '''\
+// The Schema Markdown type model defined as Schema Markdown
+const typeModelSmd = `\
 # A type model with a title
 struct TypeModel
 
@@ -252,11 +248,11 @@ struct ActionURL
 
     # The URL path. If not provided, uses the default URL path of "/<actionName>".
     optional string path
-'''
+`;
 
 
-#: The Schema Markdown type model.
-TYPE_MODEL = {
+// The Schema Markdown type model
+export const typeModel = {
     'title': 'The Schema Markdown Type Model',
-    'types': SchemaMarkdownParser(TYPE_MODEL_SMD).types
-}
+    'types': (new SchemaMarkdownParser(typeModelSmd)).types
+};

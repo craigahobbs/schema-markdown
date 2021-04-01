@@ -51,10 +51,9 @@ def main():
 
         # Create the type model with title
         type_model = {
+            'title': args.title if args.title else 'Index',
             'types': parser.types
         }
-        if args.title:
-            type_model['title'] = args.title
 
         # Write the JSON
         json_encoder = json.JSONEncoder(indent=None if args.compact else 4, sort_keys=True)

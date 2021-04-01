@@ -20,11 +20,21 @@ $(eval $(call WGET, https://raw.githubusercontent.com/craigahobbs/python-build/m
 # Include Python Build
 include Makefile.base
 
+# Build statics
 clean:
 	rm -rf Makefile.base pylintrc
+	$(MAKE) -C static clean
 
-$(BUILD)/doc/type_model.smd: $(DOC_PYTHON_3_9_VENV_BUILD)
-	mkdir -p $(dir $@)
-	$(DOC_PYTHON_3_9_VENV_CMD)/python3 -c 'import schema_markdown.type_model as tm; print(tm.TYPE_MODEL_SMD)' > $@
+superclean:
+	$(MAKE) -C static superclean
 
-doc-python-3-9: $(BUILD)/doc/type_model.smd
+.PHONY: commit-static
+commit-static:
+	$(MAKE) -C static commit
+
+commit: commit-static
+
+# Copy the Schema Markdown documentation application into the documentation directory
+doc:
+	rsync -rv --delete static/src/ build/doc/html/doc/
+	mv build/doc/html/doc/doc.html build/doc/html/doc/index.html

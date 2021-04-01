@@ -24,6 +24,7 @@ struct MyStruct
 
 TEST_MODEL = '''\
 {
+    "title": "Index",
     "types": {
         "MyStruct": {
             "struct": {
@@ -94,7 +95,7 @@ class TestMain(TestCase):
             self.assertEqual(stdout.getvalue(), '')
             self.assertEqual(stderr.getvalue(), '')
             with open(output_path, 'r', encoding='utf-8') as output_file:
-                self.assertEqual(output_file.read(), '{\n    "title": "My Type Model",' + TEST_MODEL[1:])
+                self.assertEqual(output_file.read(), TEST_MODEL.replace('"title": "Index"', '"title": "My Type Model"'))
 
     def test_compile_multiple(self):
         test_files = [
@@ -116,6 +117,7 @@ class TestMain(TestCase):
             with open(output_path, 'r', encoding='utf-8') as output_file:
                 self.assertEqual(output_file.read(), '''\
 {
+    "title": "Index",
     "types": {
         "MyStruct": {
             "struct": {
