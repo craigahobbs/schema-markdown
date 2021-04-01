@@ -11,7 +11,6 @@ import sys
 
 from .parser import SchemaMarkdownParser
 from .schema import validate_type
-from .type_model import TYPE_MODEL
 
 
 def main():
@@ -31,9 +30,6 @@ def main():
     parser_validate.add_argument('schema', help='Schema Markdown file path')
     parser_validate.add_argument('type', help='Name of type to validate')
     parser_validate.add_argument('paths', nargs='*', help='JSON file paths to validate. If none, defaults is stdin.')
-    parser_model = subparsers.add_parser('model', help='Dump the type model')
-    parser_model.add_argument('-o', metavar='PATH', dest='output', help='Optional JSON type model output file path. Default is stdout.')
-    parser_model.add_argument('--compact', action='store_true', help='Generate compact JSON')
     args = arg_parser.parse_args()
 
     # Compile command?
@@ -64,7 +60,7 @@ def main():
             sys.stdout.write(json_encoder.encode(type_model))
 
     # Validate command?
-    elif args.command == 'validate':
+    else: # args.command == 'validate':
 
         # Parse the Schema Markdown (or use the type model)
         parser = SchemaMarkdownParser()
@@ -77,13 +73,3 @@ def main():
             for path in args.paths:
                 with open(path, 'r') as input_file:
                     validate_type(parser.types, args.type, json.load(input_file))
-
-    # Model command?
-    else: # args.command == 'model'
-        # Write the JSON
-        json_encoder = json.JSONEncoder(indent=None if args.compact else 4, sort_keys=True)
-        if args.output is not None:
-            with open(args.output, 'w') as json_file:
-                json_file.write(json_encoder.encode(TYPE_MODEL))
-        else:
-            sys.stdout.write(json_encoder.encode(TYPE_MODEL))

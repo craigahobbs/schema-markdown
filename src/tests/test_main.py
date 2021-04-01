@@ -10,7 +10,6 @@ import unittest.mock as unittest_mock
 
 from schema_markdown import SchemaMarkdownParserError, ValidationError
 from schema_markdown.main import main
-from schema_markdown.type_model import TYPE_MODEL
 import schema_markdown.__main__
 
 from . import TestCase
@@ -329,49 +328,6 @@ class TestMain(TestCase):
 schema_markdown validate: error: the following arguments are required: schema, type, paths
 '''))
 
-    def test_model(self):
-        argv = ['python3 -m schema_markdown', 'model']
-        with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
-             unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
-             unittest_mock.patch('sys.argv', argv):
-            main()
-
-        self.assertEqual(
-            stdout.getvalue(),
-            json.dumps(TYPE_MODEL, indent=4, sort_keys=True)
-        )
-        self.assertEqual(stderr.getvalue(), '')
-
-    def test_model_compact(self):
-        argv = ['python3 -m schema_markdown', 'model', '--compact']
-        with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
-             unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
-             unittest_mock.patch('sys.argv', argv):
-            main()
-
-        self.assertEqual(
-            stdout.getvalue(),
-            json.dumps(TYPE_MODEL, sort_keys=True)
-        )
-        self.assertEqual(stderr.getvalue(), '')
-
-    def test_model_output(self):
-        with self.create_test_files([]) as output_dir:
-            output_path = os.path.join(output_dir, 'model.json')
-            argv = ['python3 -m schema_markdown', 'model', '--compact', '-o', output_path]
-            with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
-                 unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
-                 unittest_mock.patch('sys.argv', argv):
-                main()
-
-            self.assertEqual(stdout.getvalue(), '')
-            self.assertEqual(stderr.getvalue(), '')
-            with open(output_path, 'r', encoding='utf-8') as output_file:
-                self.assertEqual(
-                    output_file.read(),
-                    json.dumps(TYPE_MODEL, sort_keys=True)
-                )
-
     def test_no_command(self):
         argv = ['python3 -m schema_markdown']
         with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
@@ -382,6 +338,6 @@ schema_markdown validate: error: the following arguments are required: schema, t
 
         self.assertEqual(stdout.getvalue(), '')
         self.assertEqual(stderr.getvalue(), '''\
-usage: schema_markdown [-h] {compile,validate,model} ...
+usage: schema_markdown [-h] {compile,validate} ...
 schema_markdown: error: the following arguments are required: command
 ''')
