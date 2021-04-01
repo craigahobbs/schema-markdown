@@ -16,7 +16,7 @@ const docPageTypes = (new SchemaMarkdownParser(`\
 # The Schema Markdown documentation application hash parameters struct
 struct DocParams
 
-    # Request name to render documentation. If not provided, the request index is displayed.
+    # The type name. If not provided, the index is displayed.
     optional string(len > 0) name
 
     # The JSON type model resource URL
@@ -63,17 +63,13 @@ export class DocPage {
         return docPage;
     }
 
-    /**
-     * Initialize the global application state
-     */
+    // Initialize the global application state
     init() {
         this.windowHashChangeArgs = ['hashchange', () => this.render(), false];
         window.addEventListener(...this.windowHashChangeArgs);
     }
 
-    /**
-     * Uninitialize the global application state
-     */
+    // Uninitialize the global application state
     uninit() {
         if (this.windowHashChangeArgs !== null) {
             window.removeEventListener(...this.windowHashChangeArgs);
@@ -81,11 +77,7 @@ export class DocPage {
         }
     }
 
-    /**
-     * Helper function to parse and validate the hash parameters
-     *
-     * @param {?string} params - The (hash) params string
-     */
+    // Helper function to parse and validate the hash parameters
     updateParams(params = null) {
         // Clear, then validate the hash parameters (may throw)
         this.params = null;
@@ -134,11 +126,7 @@ export class DocPage {
         }
     }
 
-    /**
-     * Helper function to render a type model experience
-     *
-     * @param {Object} typeModel - A type model
-     */
+    // Helper function to render a type model experience
     renderTypeModelPage(typeModel) {
         // Type page?
         if ('name' in this.params) {
@@ -155,40 +143,25 @@ export class DocPage {
         this.renderIndexPage(typeModel);
     }
 
-    /**
-     * Helper function to render an index page
-     *
-     * @param {Object} typeModel - A type model
-     */
+    // Helper function to render an index page
     renderIndexPage(typeModel) {
         document.title = typeModel.title;
         renderElements(document.body, this.indexPage(typeModel));
     }
 
-    /**
-     * Helper function to render a type page
-     *
-     * @param {Object} typeModel - A type model
-     */
+    // Helper function to render a type page
     renderTypePage(typeModel, typeName) {
         document.title = typeName;
         renderElements(document.body, this.typePage(typeModel, typeName));
     }
 
-    /**
-     * Helper function to render an error page
-     */
+    // Helper function to render an error page
     static renderErrorPage(message) {
         document.title = 'Error';
         renderElements(document.body, DocPage.errorPage(message));
     }
 
-    /**
-     * Helper function to generate the error page's element hierarchy model
-     *
-     * @param {string} message - The error message
-     * @return {Object}
-     */
+    // Helper function to generate the error page's element hierarchy model
     static errorPage(message) {
         return {
             'html': 'p',
@@ -197,7 +170,7 @@ export class DocPage {
     }
 
     /**
-     * Helper function to generate the index page's element hierarchy model
+     * Generate the index page's element hierarchy model
      *
      * @param {Object} typeModel - A type model
      * @returns {Array}
@@ -245,9 +218,10 @@ export class DocPage {
     }
 
     /**
-     * Helper function to generate the request page's element hierarchy model
+     * Generate the type page's element hierarchy model
      *
      * @param {Object} typeModel - A type model
+     * @param {string} typeName - The type name
      * @returns {Array}
      */
     typePage(typeModel, typeName) {

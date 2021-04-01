@@ -326,11 +326,3 @@ test('DocPage.render, type model URL index error', (t) => {
         ['types.json', undefined]
     ]);
 });
-
-
-test('DocPage.errorPage', (t) => {
-    t.deepEqual(
-        DocPage.errorPage('Ouch!'),
-        {'html': 'p', 'elem': {'text': 'Error: Ouch!'}}
-    );
-});
