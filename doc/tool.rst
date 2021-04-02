@@ -46,14 +46,3 @@ schema-validates one or more JSON files:
 
    options:
      -h, --help  show this help message and exit
-
-The **model** command dumps the :ref:`type-model:Type Model`'s type model:
-
-.. code-block:: text
-
-   usage: schema_markdown model [-h] [-o PATH] [--compact]
-
-   options:
-     -h, --help  show this help message and exit
-     -o PATH     Optional JSON type model output file path. Default is stdout.
-     --compact   Generate compact JSON

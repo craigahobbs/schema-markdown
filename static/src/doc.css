@@ -97,23 +97,6 @@ td:last-child {
     padding-right: 0;
 }
 
-/* Index page */
-ul.smd-index-list {
-    list-style: none;
-    font-size: 1.1rem;
-    margin-top: 0;
-    margin-left: 0;
-}
-ul.smd-index-list li ul {
-    list-style: none;
-    margin-top: 0;
-    margin-left: 0;
-}
-ul.smd-index-list li ul li {
-    margin-top: 0.4em;
-    margin-left: 0.2em;
-}
-
 /* Request page */
 p.smd-note {
     margin-top: 1em;
@@ -135,3 +118,20 @@ ul.smd-attr-list li {
 ul.smd-attr-list li:first-child {
     margin-top: 0em;
 }:
+
+/* Index page */
+ul.smd-index-list {
+    list-style: none;
+    font-size: 1.1rem;
+    margin-top: 0;
+    margin-left: 0;
+}
+ul.smd-index-list li ul {
+    list-style: none;
+    margin-top: 0;
+    margin-left: 0;
+}
+ul.smd-index-list li ul li {
+    margin-top: 0.4em;
+    margin-left: 0.2em;
+}
