@@ -1,5 +1,5 @@
 // Licensed under the MIT License
-// https://github.com/craigahobbs/chisel/blob/master/LICENSE
+// https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
 import {encodeParams, nbsp} from './util.js';
 import {getEnumValues, getReferencedTypes, getStructMembers} from './schema.js';
@@ -64,7 +64,7 @@ export class UserTypeElements {
      * @returns {Object}
      */
     static getUrlNoteElements(urls) {
-        return urls === null || !urls.length ? null : {'html': 'p', 'attr': {'class': 'chisel-note'}, 'elem': [
+        return urls === null || !urls.length ? null : {'html': 'p', 'attr': {'class': 'smd-note'}, 'elem': [
             {'html': 'b', 'elem': {'text': 'Note: '}},
             {'text': `The request is exposed at the following ${urls.length > 1 ? 'URLs:' : 'URL:'}`},
             {'html': 'ul', 'elem': urls.map((url) => ({'html': 'li', 'elem': [
@@ -130,7 +130,7 @@ export class UserTypeElements {
         }
 
         // Return the attributes element model
-        return !parts.length ? null : {'html': 'ul', 'attr': {'class': 'chisel-attr-list'}, 'elem': parts.map(
+        return !parts.length ? null : {'html': 'ul', 'attr': {'class': 'smd-attr-list'}, 'elem': parts.map(
             (part) => ({
                 'html': 'li',
                 'elem': {'text': part.op ? `${part.lhs}${nbsp}${part.op}${nbsp}${part.rhs}` : part.lhs}

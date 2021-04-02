@@ -1,5 +1,5 @@
 // Licensed under the MIT License
-// https://github.com/craigahobbs/chisel/blob/master/LICENSE
+// https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
 /* eslint-disable id-length */
 /* eslint-disable max-len */
@@ -85,7 +85,7 @@ test('UserTypeElements, getElements struct', (t) => {
                                     {'html': 'td', 'elem': {'text': 'float'}},
                                     {'html': 'td', 'elem': {
                                         'html': 'ul',
-                                        'attr': {'class': 'chisel-attr-list'},
+                                        'attr': {'class': 'smd-attr-list'},
                                         'elem': [
                                             {'html': 'li', 'elem': {'text': 'optional'}}
                                         ]
@@ -345,7 +345,7 @@ test('UserTypeElements, getElements struct collections', (t) => {
                                     ]},
                                     {'html': 'td', 'elem': {
                                         'html': 'ul',
-                                        'attr': {'class': 'chisel-attr-list'},
+                                        'attr': {'class': 'smd-attr-list'},
                                         'elem': [
                                             {'html': 'li', 'elem': {'text': `value${nbsp}>${nbsp}0`}}
                                         ]
@@ -364,7 +364,7 @@ test('UserTypeElements, getElements struct collections', (t) => {
                                     ]},
                                     {'html': 'td', 'elem': {
                                         'html': 'ul',
-                                        'attr': {'class': 'chisel-attr-list'},
+                                        'attr': {'class': 'smd-attr-list'},
                                         'elem': [
                                             {'html': 'li', 'elem': {'text': `len(key)${nbsp}>${nbsp}0`}},
                                             {'html': 'li', 'elem': {'text': `value${nbsp}>${nbsp}0`}}
@@ -387,7 +387,7 @@ test('UserTypeElements, getElements struct collections', (t) => {
                                     ]},
                                     {'html': 'td', 'elem': {
                                         'html': 'ul',
-                                        'attr': {'class': 'chisel-attr-list'},
+                                        'attr': {'class': 'smd-attr-list'},
                                         'elem': [
                                             {'html': 'li', 'elem': {'text': `value${nbsp}>${nbsp}0`}}
                                         ]
@@ -406,7 +406,7 @@ test('UserTypeElements, getElements struct collections', (t) => {
                                     ]},
                                     {'html': 'td', 'elem': {
                                         'html': 'ul',
-                                        'attr': {'class': 'chisel-attr-list'},
+                                        'attr': {'class': 'smd-attr-list'},
                                         'elem': [
                                             {'html': 'li', 'elem': {'text': `len(key)${nbsp}>${nbsp}0`}},
                                             {'html': 'li', 'elem': {'text': `value${nbsp}>${nbsp}0`}}
@@ -494,7 +494,7 @@ test('UserTypeElements, getElements struct attrs', (t) => {
                                         'html': 'td',
                                         'elem': {
                                             'html': 'ul',
-                                            'attr': {'class': 'chisel-attr-list'},
+                                            'attr': {'class': 'smd-attr-list'},
                                             'elem': [
                                                 {'html': 'li', 'elem': {'text': `value${nbsp}>${nbsp}0`}},
                                                 {'html': 'li', 'elem': {'text': `value${nbsp}<${nbsp}10`}}
@@ -513,7 +513,7 @@ test('UserTypeElements, getElements struct attrs', (t) => {
                                         'html': 'td',
                                         'elem': {
                                             'html': 'ul',
-                                            'attr': {'class': 'chisel-attr-list'},
+                                            'attr': {'class': 'smd-attr-list'},
                                             'elem': [
                                                 {'html': 'li', 'elem': {'text': `value${nbsp}>=${nbsp}0`}},
                                                 {'html': 'li', 'elem': {'text': `value${nbsp}<=${nbsp}10`}}
@@ -532,7 +532,7 @@ test('UserTypeElements, getElements struct attrs', (t) => {
                                         'html': 'td',
                                         'elem': {
                                             'html': 'ul',
-                                            'attr': {'class': 'chisel-attr-list'},
+                                            'attr': {'class': 'smd-attr-list'},
                                             'elem': [
                                                 {'html': 'li', 'elem': {'text': `value${nbsp}==${nbsp}10`}}
                                             ]
@@ -550,7 +550,7 @@ test('UserTypeElements, getElements struct attrs', (t) => {
                                         'html': 'td',
                                         'elem': {
                                             'html': 'ul',
-                                            'attr': {'class': 'chisel-attr-list'},
+                                            'attr': {'class': 'smd-attr-list'},
                                             'elem': [
                                                 {'html': 'li', 'elem': {'text': `len(value)${nbsp}>${nbsp}0`}},
                                                 {'html': 'li', 'elem': {'text': `len(value)${nbsp}<${nbsp}10`}}
@@ -569,7 +569,7 @@ test('UserTypeElements, getElements struct attrs', (t) => {
                                         'html': 'td',
                                         'elem': {
                                             'html': 'ul',
-                                            'attr': {'class': 'chisel-attr-list'},
+                                            'attr': {'class': 'smd-attr-list'},
                                             'elem': [
                                                 {'html': 'li', 'elem': {'text': `len(value)${nbsp}>=${nbsp}0`}},
                                                 {'html': 'li', 'elem': {'text': `len(value)${nbsp}<=${nbsp}10`}}
@@ -588,7 +588,7 @@ test('UserTypeElements, getElements struct attrs', (t) => {
                                         'html': 'td',
                                         'elem': {
                                             'html': 'ul',
-                                            'attr': {'class': 'chisel-attr-list'},
+                                            'attr': {'class': 'smd-attr-list'},
                                             'elem': [
                                                 {'html': 'li', 'elem': {'text': `len(value)${nbsp}==${nbsp}10`}}
                                             ]
@@ -606,7 +606,7 @@ test('UserTypeElements, getElements struct attrs', (t) => {
                                         'html': 'td',
                                         'elem': {
                                             'html': 'ul',
-                                            'attr': {'class': 'chisel-attr-list'},
+                                            'attr': {'class': 'smd-attr-list'},
                                             'elem': [
                                                 {'html': 'li', 'elem': {'text': 'nullable'}}
                                             ]
@@ -823,7 +823,7 @@ test('UserTypeElements, getElements typedef', (t) => {
                                     'html': 'td',
                                     'elem': {
                                         'html': 'ul',
-                                        'attr': {'class': 'chisel-attr-list'},
+                                        'attr': {'class': 'smd-attr-list'},
                                         'elem': [
                                             {'html': 'li', 'elem': {'text': `value${nbsp}>${nbsp}0`}}
                                         ]
@@ -929,7 +929,7 @@ test('UserTypeElements, getElements typedef attr gt lt', (t) => {
                                     'html': 'td',
                                     'elem': {
                                         'html': 'ul',
-                                        'attr': {'class': 'chisel-attr-list'},
+                                        'attr': {'class': 'smd-attr-list'},
                                         'elem': [
                                             {'html': 'li', 'elem': {'text': `value${nbsp}>${nbsp}0`}},
                                             {'html': 'li', 'elem': {'text': `value${nbsp}<${nbsp}10`}}
@@ -1021,7 +1021,7 @@ test('UserTypeElements, getElements action', (t) => {
                 null,
                 {
                     'html': 'p',
-                    'attr': {'class': 'chisel-note'},
+                    'attr': {'class': 'smd-note'},
                     'elem': [
                         {'html': 'b', 'elem': {'text': 'Note: '}},
                         {'text': 'The request is exposed at the following URLs:'},
@@ -1364,7 +1364,7 @@ test('UserTypeElements, getElements action URL override', (t) => {
                 null,
                 {
                     'html': 'p',
-                    'attr': {'class': 'chisel-note'},
+                    'attr': {'class': 'smd-note'},
                     'elem': [
                         {'html': 'b', 'elem': {'text': 'Note: '}},
                         {'text': 'The request is exposed at the following URL:'},

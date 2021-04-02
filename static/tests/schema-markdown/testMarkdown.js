@@ -1,5 +1,5 @@
 // Licensed under the MIT License
-// https://github.com/craigahobbs/chisel/blob/master/LICENSE
+// https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
 /* eslint-disable id-length */
 
@@ -35,10 +35,10 @@ test('markdownElements', (t) => {
                     'spans': [
                         {'text': 'This is a link to the '},
                         {'link': {
-                            'href': 'https://craigahobbs.github.io/chisel/doc/',
-                            'title': 'The Chisel Type Model',
+                            'href': 'https://craigahobbs.github.io/schema-markdown/doc/',
+                            'title': 'The Schema Markdown Type Model',
                             'spans': [
-                                {'style': {'style': 'bold', 'spans': [{'text': 'Chisel'}]}},
+                                {'style': {'style': 'bold', 'spans': [{'text': 'Schema Markdown'}]}},
                                 {'text': ' Type Model'}
                             ]
                         }}
@@ -50,9 +50,9 @@ test('markdownElements', (t) => {
                     'spans': [
                         {'text': 'This is an image: '},
                         {'image': {
-                            'src': 'https://craigahobbs.github.io/chisel/doc/doc.svg',
-                            'alt': 'Chisel Documentation Icon',
-                            'title': 'Chisel'
+                            'src': 'https://craigahobbs.github.io/schema-markdown/doc/doc.svg',
+                            'alt': 'Schema Markdown Documentation Icon',
+                            'title': 'Schema Markdown'
                         }}
                     ]
                 }
@@ -118,8 +118,8 @@ test('markdownElements', (t) => {
                     {'text': 'This is a link to the '},
                     {
                         'html': 'a',
-                        'attr': {'href': 'https://craigahobbs.github.io/chisel/doc/', 'title': 'The Chisel Type Model'},
-                        'elem': [{'html': 'strong', 'elem': [{'text': 'Chisel'}]}, {'text': ' Type Model'}]
+                        'attr': {'href': 'https://craigahobbs.github.io/schema-markdown/doc/', 'title': 'The Schema Markdown Type Model'},
+                        'elem': [{'html': 'strong', 'elem': [{'text': 'Schema Markdown'}]}, {'text': ' Type Model'}]
                     }
                 ]
             },
@@ -130,9 +130,9 @@ test('markdownElements', (t) => {
                     {
                         'html': 'img',
                         'attr': {
-                            'src': 'https://craigahobbs.github.io/chisel/doc/doc.svg',
-                            'title': 'Chisel',
-                            'alt': 'Chisel Documentation Icon'
+                            'src': 'https://craigahobbs.github.io/schema-markdown/doc/doc.svg',
+                            'title': 'Schema Markdown',
+                            'alt': 'Schema Markdown Documentation Icon'
                         }
                     }
                 ]
@@ -241,7 +241,7 @@ test('markdownElements, link span with no title', (t) => {
                 'paragraph': {
                     'spans': [
                         {'link': {
-                            'href': 'https://craigahobbs.github.io/chisel/doc/',
+                            'href': 'https://craigahobbs.github.io/schema-markdown/doc/',
                             'spans': [{'text': 'Type Model'}]
                         }}
                     ]
@@ -258,7 +258,7 @@ test('markdownElements, link span with no title', (t) => {
                 'elem': [
                     {
                         'html': 'a',
-                        'attr': {'href': 'https://craigahobbs.github.io/chisel/doc/'},
+                        'attr': {'href': 'https://craigahobbs.github.io/schema-markdown/doc/'},
                         'elem': [{'text': 'Type Model'}]
                     }
                 ]
@@ -275,8 +275,8 @@ test('markdownElements, image span with no title', (t) => {
                 'paragraph': {
                     'spans': [
                         {'image': {
-                            'src': 'https://craigahobbs.github.io/chisel/doc/doc.svg',
-                            'alt': 'Chisel Documentation Icon'
+                            'src': 'https://craigahobbs.github.io/schema-markdown/doc/doc.svg',
+                            'alt': 'Schema Markdown Documentation Icon'
                         }}
                     ]
                 }
@@ -293,8 +293,8 @@ test('markdownElements, image span with no title', (t) => {
                     {
                         'html': 'img',
                         'attr': {
-                            'src': 'https://craigahobbs.github.io/chisel/doc/doc.svg',
-                            'alt': 'Chisel Documentation Icon'
+                            'src': 'https://craigahobbs.github.io/schema-markdown/doc/doc.svg',
+                            'alt': 'Schema Markdown Documentation Icon'
                         }
                     }
                 ]
@@ -371,7 +371,7 @@ test('markdownElements, relative and absolute URLs', (t) => {
                 'paragraph': {
                     'spans': [
                         {'link': {
-                            'href': 'https://craigahobbs.github.io/chisel/doc/',
+                            'href': 'https://craigahobbs.github.io/schema-markdown/doc/',
                             'spans': [{'text': 'Absolute Link'}]
                         }},
                         {'link': {
@@ -393,7 +393,7 @@ test('markdownElements, relative and absolute URLs', (t) => {
             {
                 'elem': [
                     {
-                        'attr': {'href': 'https://craigahobbs.github.io/chisel/doc/'},
+                        'attr': {'href': 'https://craigahobbs.github.io/schema-markdown/doc/'},
                         'elem': [{'text': 'Absolute Link'}],
                         'html': 'a'
                     },
@@ -417,7 +417,7 @@ test('markdownElements, relative and absolute URLs', (t) => {
             {
                 'elem': [
                     {
-                        'attr': {'href': 'https://craigahobbs.github.io/chisel/doc/'},
+                        'attr': {'href': 'https://craigahobbs.github.io/schema-markdown/doc/'},
                         'elem': [{'text': 'Absolute Link'}],
                         'html': 'a'
                     },
