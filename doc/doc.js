@@ -1,5 +1,5 @@
 // Licensed under the MIT License
-// https://github.com/craigahobbs/chisel/blob/master/LICENSE
+// https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
 import {decodeParams, href} from './schema-markdown/util.js';
 import {validateType, validateTypeModel} from './schema-markdown/schema.js';
@@ -10,7 +10,7 @@ import {typeModel as smdTypeModel} from './schema-markdown/typeModel.js';
 
 
 /**
- * The Chisel documentation application hash parameters type model specification
+ * The Schema Markdown documentation application hash parameters type model specification
  */
 const docPageTypes = (new SchemaMarkdownParser(`\
 # The Schema Markdown documentation application hash parameters struct
@@ -25,7 +25,7 @@ struct DocParams
 
 
 /**
- * The Chisel documentation application
+ * The Schema Markdown documentation application
  *
  * @property {?string} defaultTypeModel - The default type model object
  * @property {?string} defaultTypeModelURL - The default JSON type model resource URL
@@ -205,7 +205,7 @@ export class DocPage {
                 {'html': 'h2', 'elem': {'text': group}},
                 {
                     'html': 'ul',
-                    'attr': {'class': 'chisel-index-list'},
+                    'attr': {'class': 'smd-index-list'},
                     'elem': {'html': 'li', 'elem': {'html': 'ul', 'elem': groups[group].sort().map(
                         (name) => ({
                             'html': 'li',

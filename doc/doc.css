@@ -98,40 +98,40 @@ td:last-child {
 }
 
 /* Index page */
-ul.chisel-index-list {
+ul.smd-index-list {
     list-style: none;
     font-size: 1.1rem;
     margin-top: 0;
     margin-left: 0;
 }
-ul.chisel-index-list li ul {
+ul.smd-index-list li ul {
     list-style: none;
     margin-top: 0;
     margin-left: 0;
 }
-ul.chisel-index-list li ul li {
+ul.smd-index-list li ul li {
     margin-top: 0.4em;
     margin-left: 0.2em;
 }
 
 /* Request page */
-p.chisel-note {
+p.smd-note {
     margin-top: 1em;
 }
-p.chisel-note ul {
+p.smd-note ul {
     list-style: none;
     margin-top: 0.4em;
     margin-left: 0.8em;
 }
-ul.chisel-attr-list {
+ul.smd-attr-list {
     list-style: none;
     margin-top: 0;
     margin-left: 0;
 }
-ul.chisel-attr-list li {
+ul.smd-attr-list li {
     margin-top: 0.1em;
     margin-left: 0;
 }
-ul.chisel-attr-list li:first-child {
+ul.smd-attr-list li:first-child {
     margin-top: 0em;
 }:
