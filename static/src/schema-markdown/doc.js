@@ -1,9 +1,10 @@
 // Licensed under the MIT License
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
-import {encodeParams, nbsp} from './util.js';
 import {getEnumValues, getReferencedTypes, getStructMembers} from './schema.js';
 import {markdownElements, markdownParse} from './markdown.js';
+import {encodeQueryString} from './encode.js';
+import {nbsp} from './elements.js';
 
 
 /**
@@ -88,7 +89,7 @@ export class UserTypeElements {
 
     // Helper method to get a user type href (target)
     typeHref(typeName) {
-        return `${encodeParams(this.params)}&type_${typeName}`;
+        return `${encodeQueryString(this.params)}&type_${typeName}`;
     }
 
     // Helper method to generate a member/typedef type's element model

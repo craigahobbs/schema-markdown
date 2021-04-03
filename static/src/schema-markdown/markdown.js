@@ -1,7 +1,7 @@
 // Licensed under the MIT License
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
-import {getBaseURL, isAbsoluteURL} from './util.js';
+import {getBaseURL, isAbsoluteURL} from './elements.js';
 import {SchemaMarkdownParser} from './parser.js';
 import {validateType} from './schema.js';
 

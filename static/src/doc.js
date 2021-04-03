@@ -1,7 +1,7 @@
 // Licensed under the MIT License
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
-import {decodeParams, href} from './schema-markdown/util.js';
+import {decodeQueryString, encodeHref} from './schema-markdown/encode.js';
 import {validateType, validateTypeModel} from './schema-markdown/schema.js';
 import {SchemaMarkdownParser} from './schema-markdown/parser.js';
 import {UserTypeElements} from './schema-markdown/doc.js';
@@ -81,7 +81,7 @@ export class DocPage {
     updateParams(params = null) {
         // Clear, then validate the hash parameters (may throw)
         this.params = null;
-        this.params = validateType(docPageTypes, 'DocParams', decodeParams(params));
+        this.params = validateType(docPageTypes, 'DocParams', decodeQueryString(params));
     }
 
     /**
@@ -209,7 +209,7 @@ export class DocPage {
                     'elem': {'html': 'li', 'elem': {'html': 'ul', 'elem': groups[group].sort().map(
                         (name) => ({
                             'html': 'li',
-                            'elem': {'html': 'a', 'attr': {'href': href({...this.params, 'name': name})}, 'elem': {'text': name}}
+                            'elem': {'html': 'a', 'attr': {'href': encodeHref({...this.params, 'name': name})}, 'elem': {'text': name}}
                         })
                     )}}
                 }
@@ -233,7 +233,7 @@ export class DocPage {
                 'html': 'p',
                 'elem': {
                     'html': 'a',
-                    'attr': {'href': href(indexParams)},
+                    'attr': {'href': encodeHref(indexParams)},
                     'elem': {'text': 'Back to documentation index'}
                 }
             },

@@ -3,7 +3,7 @@
 
 /* eslint-disable id-length */
 
-import {renderElements, validateElements} from '../../src/schema-markdown/elements.js';
+import {getBaseURL, isAbsoluteURL, nbsp, renderElements, validateElements} from '../../src/schema-markdown/elements.js';
 import browserEnv from 'browser-env';
 import test from 'ava';
 
@@ -11,6 +11,38 @@ import test from 'ava';
 // Add browser globals
 browserEnv(['document']);
 
+
+//
+// Constant tests
+//
+
+test('nbsp', (t) => {
+    t.is(nbsp, String.fromCharCode(160));
+});
+
+
+//
+// URL utility tests
+//
+
+test('isAbsoluteURL', (t) => {
+    t.is(isAbsoluteURL('http://foo.com'), true);
+    t.is(isAbsoluteURL('foo/bar.html'), false);
+    t.is(isAbsoluteURL(''), false);
+});
+
+
+test('getBaseURL', (t) => {
+    t.is(getBaseURL('http://foo.com'), 'http://');
+    t.is(getBaseURL('http://foo.com/'), 'http://foo.com/');
+    t.is(getBaseURL('http://foo.com/index.html'), 'http://foo.com/');
+    t.is(getBaseURL(''), '');
+});
+
+
+//
+// validateElements tests
+//
 
 test('validateElements', (t) => {
     const elements = {
@@ -124,6 +156,10 @@ test('validateElements, error text element with elem', (t) => {
     t.is(errorMessage, 'Invalid text element member "elem" "abc" (type \'string\')');
 });
 
+
+//
+// renderElements tests
+//
 
 test('renderElements', (t) => {
     document.body.innerHTML = '';
