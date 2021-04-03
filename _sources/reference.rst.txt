@@ -2,6 +2,14 @@ Reference
 =========
 
 
+JSONEncoder
+-----------
+
+.. autoclass:: schema_markdown.JSONEncoder
+   :show-inheritance:
+   :members:
+
+
 SchemaMarkdownParser
 --------------------
 
@@ -14,6 +22,18 @@ SchemaMarkdownParserError
 
 .. autoexception:: schema_markdown.SchemaMarkdownParserError
    :members:
+
+
+decode_query_string
+-------------------
+
+.. autofunction:: schema_markdown.decode_query_string
+
+
+encode_query_string
+-------------------
+
+.. autofunction:: schema_markdown.encode_query_string
 
 
 validate_type

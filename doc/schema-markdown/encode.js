@@ -2,48 +2,19 @@
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
 
-/** The non-breaking space character. */
-export const nbsp = String.fromCharCode(160);
-
-
-/**
- * Check if a URL is absolute
- *
- * @param {string} url - The URL
- * @returns {bool} true if the URL is absolute, false otherwise
- */
-export function isAbsoluteURL(url) {
-    return rAbsoluteURL.test(url);
-}
-
-const rAbsoluteURL = /^[a-z]{3,5}:/;
-
-
-/**
- * Get a URL's base URL
- *
- * @param {string} url - The URL
- * @returns {string} The base URL or the URL
- */
-export function getBaseURL(url) {
-    const ixBaseSlash = url.lastIndexOf('/');
-    return ixBaseSlash === -1 ? '' : url.slice(0, ixBaseSlash + 1);
-}
-
-
 /**
  * Create a resource location string for the local server.
  *
  * @param {Object} [hash=null] - The hash parameters
- * @param {Object} [queyr=null] - The query string parameters
+ * @param {Object} [query=null] - The query string parameters
  * @param {string} [pathname=null] - The location's path. If null, use "window.location.pathname".
  * @returns {string}
  */
-export function href(hash = null, query = null, pathname = null) {
+export function encodeHref(hash = null, query = null, pathname = null) {
     // Encode the hash parameters, if any
     let hashStr = '';
     if (hash !== null) {
-        hashStr = `#${encodeParams(hash)}`;
+        hashStr = `#${encodeQueryString(hash)}`;
     } else if (query === null) {
         hashStr = '#';
     }
@@ -51,7 +22,7 @@ export function href(hash = null, query = null, pathname = null) {
     // Encode the query parameters, if any
     let queryStr = '';
     if (query !== null) {
-        queryStr = `?${encodeParams(query)}`;
+        queryStr = `?${encodeQueryString(query)}`;
         if (queryStr === '?') {
             queryStr = '';
         }
@@ -74,20 +45,20 @@ export function href(hash = null, query = null, pathname = null) {
  * @param {Object} obj - The parameters object
  * @returns {string}
  */
-export function encodeParams(obj) {
-    return encodeParamsHelper(obj).join('&');
+export function encodeQueryString(obj) {
+    return encodeQueryStringHelper(obj).join('&');
 }
 
 
-// Helper function for encodeParams
-function encodeParamsHelper(obj, memberFqn = null, keyValues = []) {
+// Helper function for encodeQueryString
+function encodeQueryStringHelper(obj, memberFqn = null, keyValues = []) {
     const objType = typeof obj;
     if (Array.isArray(obj)) {
         if (obj.length === 0) {
             keyValues.push(memberFqn !== null ? `${memberFqn}=` : '');
         } else {
             for (let ix = 0; ix < obj.length; ix++) {
-                encodeParamsHelper(obj[ix], memberFqn !== null ? `${memberFqn}.${ix}` : `${ix}`, keyValues);
+                encodeQueryStringHelper(obj[ix], memberFqn !== null ? `${memberFqn}.${ix}` : `${ix}`, keyValues);
             }
         }
     } else if (obj instanceof Date) {
@@ -99,8 +70,8 @@ function encodeParamsHelper(obj, memberFqn = null, keyValues = []) {
             keyValues.push(memberFqn !== null ? `${memberFqn}=` : '');
         } else {
             for (const key of keys) {
-                const keyEncoded = encodeParamsHelper(key);
-                encodeParamsHelper(obj[key], memberFqn !== null ? `${memberFqn}.${keyEncoded}` : `${keyEncoded}`, keyValues);
+                const keyEncoded = encodeQueryStringHelper(key);
+                encodeQueryStringHelper(obj[key], memberFqn !== null ? `${memberFqn}.${keyEncoded}` : `${keyEncoded}`, keyValues);
             }
         }
     } else if (obj === null || objType === 'boolean' || objType === 'number') {
@@ -121,7 +92,7 @@ function encodeParamsHelper(obj, memberFqn = null, keyValues = []) {
  *     If null, "window.location.hash.substring(1)" is used.
  * @returns {Object}
  */
-export function decodeParams(paramStr = null) {
+export function decodeQueryString(paramStr = null) {
     // No parameters string provided? If so, provide a default
     let paramStr_ = paramStr;
     if (paramStr_ === null) {
