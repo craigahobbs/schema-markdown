@@ -13,7 +13,7 @@ AVA_ARGS ?= -v
 
 build/npm.build:
 ifeq '$(NO_DOCKER)' ''
-	docker pull -q $(NODE_IMAGE)
+	if [ "$$(docker images -q $(NODE_IMAGE))" = "" ]; then docker pull -q $(NODE_IMAGE); fi
 endif
 	$(NODE_DOCKER) npm install
 	mkdir -p $(dir $@)
