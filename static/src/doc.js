@@ -15,7 +15,7 @@ import {typeModel as smdTypeModel} from './schema-markdown/typeModel.js';
  */
 const docPageTypes = (new SchemaMarkdownParser(`\
 # The Schema Markdown documentation application hash parameters struct
-struct SchemaMarkdownDocumentation
+struct Documentation
 
     # The type name. If not provided, the index is displayed.
     optional string(len > 0) name
@@ -24,19 +24,19 @@ struct SchemaMarkdownDocumentation
     optional string(len > 0) url
 
     # Optional command
-    optional SchemaMarkdownCommand cmd
+    optional DocumentationCommand cmd
 
-# Schema Markdown documentation application command enumeration
-enum SchemaMarkdownCommand
+# Schema Markdown documentation application command union
+union DocumentationCommand
 
     # Render the element model's documentation
-    element
+    int(==1) element
 
     # Render the application's hash parameter model documentation
-    help
+    int(==1) help
 
     # Render the Markdown model's documentation
-    markdown
+    int(==1) markdown
 `).types);
 
 
@@ -97,7 +97,7 @@ export class DocPage {
     updateParams(params = null) {
         // Clear, then validate the hash parameters (may throw)
         this.params = null;
-        this.params = validateType(docPageTypes, 'SchemaMarkdownDocumentation', decodeQueryString(params));
+        this.params = validateType(docPageTypes, 'Documentation', decodeQueryString(params));
     }
 
     /**
@@ -124,15 +124,16 @@ export class DocPage {
         // Type model URL provided?
         const typeModelURL = 'url' in this.params ? this.params.url : this.defaultTypeModelURL;
         if ('cmd' in this.params) {
-            if (this.params.cmd === 'element') {
+            if ('element' in this.params.cmd) {
                 document.title = 'Element';
                 renderElements(document.body, (new UserTypeElements(this.params)).getElements(elementModel.types, 'Element'));
-            } else if (this.params.cmd === 'markdown') {
+            } else if ('markdown' in this.params.cmd) {
                 document.title = 'Markdown';
                 renderElements(document.body, (new UserTypeElements(this.params)).getElements(markdownModel.types, 'Markdown'));
             } else {
-                document.title = 'SchemaMarkdownDocumentation';
-                renderElements(document.body, (new UserTypeElements(this.params)).getElements(docPageTypes, 'SchemaMarkdownDocumentation'));
+                // 'help' in this.params.cmd
+                document.title = 'Documentation';
+                renderElements(document.body, (new UserTypeElements(this.params)).getElements(docPageTypes, 'Documentation'));
             }
         } else if (typeModelURL !== null) {
             // Load the type model URL
