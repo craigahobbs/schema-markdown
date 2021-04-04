@@ -1395,8 +1395,10 @@ test('UserTypeElements, getElements action', (t) => {
         }
     };
     validateTypeModelTypes(types);
+    const actionErrorValuesOrig = [...types.MyAction_errors.enum.values];
     const elements = (new UserTypeElements({'name': 'MyAction'})).getElements(types, 'MyAction');
     validateElements(elements);
+    t.deepEqual(types.MyAction_errors.enum.values, actionErrorValuesOrig);
     t.deepEqual(
         elements,
         [
@@ -1674,6 +1676,47 @@ test('UserTypeElements, getElements action empty', (t) => {
     validateTypeModelTypes(types);
     const elements = (new UserTypeElements({'name': 'MyAction'})).getElements(types, 'MyAction');
     validateElements(elements);
+    t.deepEqual(
+        elements,
+        [
+            [
+                {
+                    'html': 'h1',
+                    'attr': {'id': 'name=MyAction&type_MyAction'},
+                    'elem': {'html': 'a', 'attr': {'class': 'linktarget'}, 'elem': {'text': 'MyAction'}}
+                },
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                emptyActionErrorElements
+            ],
+            null
+        ]
+    );
+});
+
+
+test('UserTypeElements, getElements action empty error values', (t) => {
+    const types = {
+        'MyAction': {
+            'action': {
+                'name': 'MyAction',
+                'errors': 'MyAction_errors'
+            }
+        },
+        'MyAction_errors': {
+            'enum': {
+                'name': 'MyAction_errors'
+            }
+        }
+    };
+    validateTypeModelTypes(types);
+    const elements = (new UserTypeElements({'name': 'MyAction'})).getElements(types, 'MyAction');
+    validateElements(elements);
+    t.true(!('values' in types.MyAction_errors.enum));
     t.deepEqual(
         elements,
         [

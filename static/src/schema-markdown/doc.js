@@ -288,18 +288,20 @@ export class UserTypeElements {
             // Add "UnexpectedError" to the action's errors
             let actionErrorTypeName;
             let actionErrorTypes;
+            let actionErrorEnum;
             if ('errors' in action) {
                 actionErrorTypeName = action.errors;
                 actionErrorTypes = getReferencedTypes(types, actionErrorTypeName);
-                actionErrorTypes[actionErrorTypeName] = {'enum': {...types[actionErrorTypeName].enum}};
+                actionErrorEnum = {...types[actionErrorTypeName].enum};
+                if ('values' in actionErrorEnum) {
+                    actionErrorEnum.values = [...actionErrorEnum.values];
+                } else {
+                    actionErrorEnum.values = [];
+                }
             } else {
                 actionErrorTypeName = `${action.name}_errors`;
                 actionErrorTypes = {};
-                actionErrorTypes[actionErrorTypeName] = {'enum': {'name': actionErrorTypeName}};
-            }
-            const actionErrorEnum = actionErrorTypes[actionErrorTypeName].enum;
-            if (!('values' in actionErrorEnum)) {
-                actionErrorEnum.values = [];
+                actionErrorEnum = {'name': actionErrorTypeName, 'values': []};
             }
             if (!actionErrorEnum.values.some((value) => value.name === 'UnexpectedError')) {
                 actionErrorEnum.values.push({
@@ -307,6 +309,7 @@ export class UserTypeElements {
                     'doc': ['An unexpected error occurred while processing the request']
                 });
             }
+            actionErrorTypes[actionErrorTypeName] = {'enum': actionErrorEnum};
 
             // If no URLs passed use the action's URLs
             let actionUrls = urls;
