@@ -204,6 +204,10 @@ export class UserTypeElements {
             // Return the struct documentation element model
             return [
                 titleElem('union' in struct && struct.union ? `union ${typeName}` : `struct ${typeName}`),
+                !('bases' in struct) ? null : {'html': 'p', 'elem': [
+                    {'text': 'Bases: '},
+                    struct.bases.map((base) => ({'html': 'a', 'attr': {'href': `#${this.typeHref(base)}`}, 'elem': {'text': base}}))
+                ]},
                 UserTypeElements.markdownElem(struct.doc),
 
                 // Struct members
@@ -234,6 +238,10 @@ export class UserTypeElements {
             // Return the enumeration documentation element model
             return [
                 titleElem(`enum ${typeName}`),
+                !('bases' in enum_) ? null : {'html': 'p', 'elem': [
+                    {'text': 'Bases: '},
+                    enum_.bases.map((base) => ({'html': 'a', 'attr': {'href': `#${this.typeHref(base)}`}, 'elem': {'text': base}}))
+                ]},
                 UserTypeElements.markdownElem(enum_.doc),
                 introMarkdown !== null ? UserTypeElements.markdownElem(introMarkdown) : null,
 
@@ -278,21 +286,27 @@ export class UserTypeElements {
             const {action} = userType;
 
             // Add "UnexpectedError" to the action's errors
-            const actionErrorTypeName = `${action.name}_errors`;
-            const actionErrorValues = 'errors' in action && 'enum' in types[action.errors] ? types[action.errors].enum.values : [];
-            const actionErrorTypes = {};
-            actionErrorTypes[actionErrorTypeName] = {
-                'enum': {
-                    'name': actionErrorTypeName,
-                    'values': [
-                        {
-                            'name': 'UnexpectedError',
-                            'doc': ['An unexpected error occurred while processing the request']
-                        },
-                        ...actionErrorValues
-                    ]
-                }
-            };
+            let actionErrorTypeName;
+            let actionErrorTypes;
+            if ('errors' in action) {
+                actionErrorTypeName = action.errors;
+                actionErrorTypes = getReferencedTypes(types, actionErrorTypeName);
+                actionErrorTypes[actionErrorTypeName] = {'enum': {...types[actionErrorTypeName].enum}};
+            } else {
+                actionErrorTypeName = `${action.name}_errors`;
+                actionErrorTypes = {};
+                actionErrorTypes[actionErrorTypeName] = {'enum': {'name': actionErrorTypeName}};
+            }
+            const actionErrorEnum = actionErrorTypes[actionErrorTypeName].enum;
+            if (!('values' in actionErrorEnum)) {
+                actionErrorEnum.values = [];
+            }
+            if (!actionErrorEnum.values.some((value) => value.name === 'UnexpectedError')) {
+                actionErrorEnum.values.push({
+                    'name': 'UnexpectedError',
+                    'doc': ['An unexpected error occurred while processing the request']
+                });
+            }
 
             // If no URLs passed use the action's URLs
             let actionUrls = urls;
