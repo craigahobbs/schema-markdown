@@ -5,7 +5,7 @@
 Schema Markdown package imports
 """
 
-__version__ = '0.9.12'
+__version__ = '0.9.13'
 
 from .encode import \
     JSONEncoder, \
