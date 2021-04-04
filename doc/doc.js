@@ -2,10 +2,11 @@
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
 import {decodeQueryString, encodeHref} from './schema-markdown/encode.js';
+import {elementModel, renderElements} from './schema-markdown/elements.js';
 import {validateType, validateTypeModel} from './schema-markdown/schema.js';
 import {SchemaMarkdownParser} from './schema-markdown/parser.js';
 import {UserTypeElements} from './schema-markdown/doc.js';
-import {renderElements} from './schema-markdown/elements.js';
+import {markdownModel} from './schema-markdown/markdown.js';
 import {typeModel as smdTypeModel} from './schema-markdown/typeModel.js';
 
 
@@ -14,13 +15,28 @@ import {typeModel as smdTypeModel} from './schema-markdown/typeModel.js';
  */
 const docPageTypes = (new SchemaMarkdownParser(`\
 # The Schema Markdown documentation application hash parameters struct
-struct DocParams
+struct SchemaMarkdownDocumentation
 
     # The type name. If not provided, the index is displayed.
     optional string(len > 0) name
 
     # The JSON type model resource URL
     optional string(len > 0) url
+
+    # Optional command
+    optional SchemaMarkdownCommand cmd
+
+# Schema Markdown documentation application command enumeration
+enum SchemaMarkdownCommand
+
+    # Render the element model's documentation
+    element
+
+    # Render the application's hash parameter model documentation
+    help
+
+    # Render the Markdown model's documentation
+    markdown
 `).types);
 
 
@@ -81,7 +97,7 @@ export class DocPage {
     updateParams(params = null) {
         // Clear, then validate the hash parameters (may throw)
         this.params = null;
-        this.params = validateType(docPageTypes, 'DocParams', decodeQueryString(params));
+        this.params = validateType(docPageTypes, 'SchemaMarkdownDocumentation', decodeQueryString(params));
     }
 
     /**
@@ -107,7 +123,18 @@ export class DocPage {
 
         // Type model URL provided?
         const typeModelURL = 'url' in this.params ? this.params.url : this.defaultTypeModelURL;
-        if (typeModelURL !== null) {
+        if ('cmd' in this.params) {
+            if (this.params.cmd === 'element') {
+                document.title = 'Element';
+                renderElements(document.body, (new UserTypeElements(this.params)).getElements(elementModel.types, 'Element'));
+            } else if (this.params.cmd === 'markdown') {
+                document.title = 'Markdown';
+                renderElements(document.body, (new UserTypeElements(this.params)).getElements(markdownModel.types, 'Markdown'));
+            } else {
+                document.title = 'SchemaMarkdownDocumentation';
+                renderElements(document.body, (new UserTypeElements(this.params)).getElements(docPageTypes, 'SchemaMarkdownDocumentation'));
+            }
+        } else if (typeModelURL !== null) {
             // Load the type model URL
             window.fetch(typeModelURL).
                 then((response) => {

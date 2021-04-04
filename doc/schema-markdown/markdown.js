@@ -12,7 +12,7 @@ const markdownModelSmd = `\
 struct Markdown
 
     # The markdown document's parts
-    MarkdownPart[len < 1000] parts
+    MarkdownPart[] parts
 
 
 # Markdown document part struct
@@ -38,7 +38,7 @@ struct Paragraph
     optional ParagraphStyle style
 
     # The paragraph span array
-    Span[len > 0, len < 1000] spans
+    Span[len > 0] spans
 
 
 # Paragraph style enum
@@ -55,7 +55,7 @@ enum ParagraphStyle
 union Span
 
     # Text span
-    string(len > 0, len < 1000) text
+    string(len > 0) text
 
     # Line break (value is ignored)
     object(nullable) br
@@ -77,7 +77,7 @@ struct StyleSpan
     CharacterStyle style
 
     # The contained spans
-    Span[len > 0, len < 1000] spans
+    Span[len > 0] spans
 
 
 # Character style enum
@@ -90,26 +90,26 @@ enum CharacterStyle
 struct LinkSpan
 
     # The link's URL
-    string(len > 0, len < 1000) href
+    string(len > 0) href
 
     # The image's title
-    optional string(len > 0, len < 1000) title
+    optional string(len > 0) title
 
     # The contained spans
-    Span[len > 0, len < 1000] spans
+    Span[len > 0] spans
 
 
 # Image span struct
 struct ImageSpan
 
     # The image URL
-    string(len > 0, len < 1000) src
+    string(len > 0) src
 
     # The image's alternate text
-    string(len > 0, len < 1000) alt
+    string(len > 0) alt
 
     # The image's title
-    optional string(len > 0, len < 1000) title
+    optional string(len > 0) title
 
 
 # List markdown part struct
@@ -119,24 +119,24 @@ struct List
     optional int(>= 0) start
 
     # The list's items
-    ListItem[len > 0, len < 1000] items
+    ListItem[len > 0] items
 
 
 # List item struct
 struct ListItem
 
     # The markdown document's parts
-    MarkdownPart[len > 0, len < 1000] parts
+    MarkdownPart[len > 0] parts
 
 
 # Code block markdown part struct
 struct CodeBlock
 
     # The code block's language
-    optional string(len > 0, len < 100) language
+    optional string(len > 0) language
 
     # The code block's text lines
-    string[len < 1000] lines
+    string[] lines
 `;
 
 

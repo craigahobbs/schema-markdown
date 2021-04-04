@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Reference &mdash; schema-markdown 0.9.13 documentation</title>
+  <title>Reference &mdash; schema-markdown 0.9.14 documentation</title>
   
 
   
@@ -89,16 +89,16 @@
 <li class="toctree-l1"><a class="reference internal" href="type-model.html">Type Model</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tool.html">Command-Line Tool</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#decode-query-string">decode_query_string</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#encode-query-string">encode_query_string</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-referenced-types">get_referenced_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#jsonencoder">JSONEncoder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#schemamarkdownparser">SchemaMarkdownParser</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#schemamarkdownparsererror">SchemaMarkdownParserError</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#decode-query-string">decode_query_string</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#encode-query-string">encode_query_string</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validate-type">validate_type</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#validationerror">ValidationError</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-referenced-types">get_referenced_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validate-type-model">validate_type_model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validate-type-model-types">validate_type_model_types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validationerror">ValidationError</a></li>
 </ul>
 </li>
 </ul>
@@ -168,6 +168,115 @@
             
   <div class="section" id="reference">
 <h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="decode-query-string">
+<h2>decode_query_string<a class="headerlink" href="#decode-query-string" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="schema_markdown.decode_query_string">
+<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">decode_query_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.decode_query_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode an object from a query string. Each member key of the query string is expressed in fully-qualified
+form. List keys are the index into the list, must be in order. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">decode_query_string</span><span class="p">(</span><span class="s1">&#39;a=5&amp;b=3.14&amp;c.d=foo&amp;c.e.0=1&amp;c.e.1=2&amp;c.e.2=3&amp;f.0.g=true&amp;f.1.g=false&#39;</span><span class="p">)</span>
+<span class="go">{&#39;a&#39;: &#39;5&#39;, &#39;b&#39;: &#39;3.14&#39;, &#39;c&#39;: {&#39;d&#39;: &#39;foo&#39;, &#39;e&#39;: [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]}, &#39;f&#39;: [{&#39;g&#39;: &#39;true&#39;}, {&#39;g&#39;: &#39;false&#39;}]}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The query string</p></li>
+<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The query string encoding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The decoded object</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – Query string is invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="encode-query-string">
+<h2>encode_query_string<a class="headerlink" href="#encode-query-string" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="schema_markdown.encode_query_string">
+<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">encode_query_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.encode_query_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode an object as a query string. Dictionaries, lists, and tuples are recursed. Each member key is expressed in
+fully-qualified form. List keys are the index into the list, and are in order. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">encode_query_string</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">3.14</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]},</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}]})</span>
+<span class="go">&#39;a=5&amp;b=3.14&amp;c.d=foo&amp;c.e.0=1&amp;c.e.1=2&amp;c.e.2=3&amp;f.0.g=true&amp;f.1.g=false&#39;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The object to encode as a query string</p></li>
+<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The query string encoding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The encoded query string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="get-referenced-types">
+<h2>get_referenced_types<a class="headerlink" href="#get-referenced-types" title="Permalink to this headline">¶</a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">types</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span>    <span class="s1">&#39;Struct1&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">... </span>                <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct2&#39;</span><span class="p">}}</span>
+<span class="gp">... </span>            <span class="p">]</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="s1">&#39;Struct2&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct2&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="p">[</span>
+<span class="gp">... </span>                <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;builtin&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">}}</span>
+<span class="gp">... </span>            <span class="p">]</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">},</span>
+<span class="gp">... </span>    <span class="s1">&#39;MyTypedef&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>        <span class="s1">&#39;typedef&#39;</span><span class="p">:</span> <span class="p">{</span>
+<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;MyTypedef&#39;</span><span class="p">,</span>
+<span class="gp">... </span>            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;builtin&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">},</span>
+<span class="gp">... </span>            <span class="s1">&#39;attr&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;lt&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="gp">... </span>        <span class="p">}</span>
+<span class="gp">... </span>    <span class="p">}</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model_types</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">get_referenced_types</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">))</span>
+<span class="go">{&#39;Struct1&#39;: {&#39;struct&#39;: {&#39;members&#39;: [{&#39;name&#39;: &#39;a&#39;, &#39;type&#39;: {&#39;user&#39;: &#39;Struct2&#39;}}],</span>
+<span class="go">                        &#39;name&#39;: &#39;Struct1&#39;}},</span>
+<span class="go"> &#39;Struct2&#39;: {&#39;struct&#39;: {&#39;members&#39;: [{&#39;name&#39;: &#39;b&#39;, &#39;type&#39;: {&#39;builtin&#39;: &#39;int&#39;}}],</span>
+<span class="go">                        &#39;name&#39;: &#39;Struct2&#39;}}}</span>
+</pre></div>
+</div>
+<dl class="py function">
+<dt id="schema_markdown.get_referenced_types">
+<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">get_referenced_types</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">referenced_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_referenced_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a type’s referenced type model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – The map of user type name to user type model</p></li>
+<li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The type name</p></li>
+<li><p><strong>referenced_types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – An optional map of referenced user type name to user type</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The map of referenced user type name to user type model</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="jsonencoder">
 <h2>JSONEncoder<a class="headerlink" href="#jsonencoder" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
@@ -308,59 +417,6 @@ Schema Markdown files. Be sure to call <a class="reference internal" href="#sche
 </dd></dl>
 
 </div>
-<div class="section" id="decode-query-string">
-<h2>decode_query_string<a class="headerlink" href="#decode-query-string" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="schema_markdown.decode_query_string">
-<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">decode_query_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.decode_query_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decode an object from a query string. Each member key of the query string is expressed in fully-qualified
-form. List keys are the index into the list, must be in order. For example:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">decode_query_string</span><span class="p">(</span><span class="s1">&#39;a=5&amp;b=3.14&amp;c.d=foo&amp;c.e.0=1&amp;c.e.1=2&amp;c.e.2=3&amp;f.0.g=true&amp;f.1.g=false&#39;</span><span class="p">)</span>
-<span class="go">{&#39;a&#39;: &#39;5&#39;, &#39;b&#39;: &#39;3.14&#39;, &#39;c&#39;: {&#39;d&#39;: &#39;foo&#39;, &#39;e&#39;: [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]}, &#39;f&#39;: [{&#39;g&#39;: &#39;true&#39;}, {&#39;g&#39;: &#39;false&#39;}]}</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>query_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The query string</p></li>
-<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The query string encoding</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The decoded object</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – Query string is invalid</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="encode-query-string">
-<h2>encode_query_string<a class="headerlink" href="#encode-query-string" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="schema_markdown.encode_query_string">
-<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">encode_query_string</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.encode_query_string" title="Permalink to this definition">¶</a></dt>
-<dd><p>Encode an object as a query string. Dictionaries, lists, and tuples are recursed. Each member key is expressed in
-fully-qualified form. List keys are the index into the list, and are in order. For example:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">encode_query_string</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">3.14</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]},</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}]})</span>
-<span class="go">&#39;a=5&amp;b=3.14&amp;c.d=foo&amp;c.e.0=1&amp;c.e.1=2&amp;c.e.2=3&amp;f.0.g=true&amp;f.1.g=false&#39;</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.9)"><em>object</em></a>) – The object to encode as a query string</p></li>
-<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The query string encoding</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The encoded query string</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
 <div class="section" id="validate-type">
 <h2>validate_type<a class="headerlink" href="#validate-type" title="Permalink to this headline">¶</a></h2>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
@@ -399,85 +455,6 @@ since some member types are transformed during validation.</p>
 </dd>
 <dt class="field-odd">Raises</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
-</dd>
-</dl>
-</dd></dl>
-
-</div>
-<div class="section" id="validationerror">
-<h2>ValidationError<a class="headerlink" href="#validationerror" title="Permalink to this headline">¶</a></h2>
-<dl class="py exception">
-<dt id="schema_markdown.ValidationError">
-<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">ValidationError</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_fqn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.ValidationError" title="Permalink to this definition">¶</a></dt>
-<dd><p>schema-markdown type model validation error</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The error message</p></li>
-<li><p><strong>member_fqn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – The fully qualified member name or None</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt id="schema_markdown.ValidationError.member">
-<code class="sig-name descname"><span class="pre">member</span></code><a class="headerlink" href="#schema_markdown.ValidationError.member" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fully qualified member name or None</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="get-referenced-types">
-<h2>get_referenced_types<a class="headerlink" href="#get-referenced-types" title="Permalink to this headline">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">types</span> <span class="o">=</span> <span class="p">{</span>
-<span class="gp">... </span>    <span class="s1">&#39;Struct1&#39;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>        <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">,</span>
-<span class="gp">... </span>            <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="p">[</span>
-<span class="gp">... </span>                <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct2&#39;</span><span class="p">}}</span>
-<span class="gp">... </span>            <span class="p">]</span>
-<span class="gp">... </span>        <span class="p">}</span>
-<span class="gp">... </span>    <span class="p">},</span>
-<span class="gp">... </span>    <span class="s1">&#39;Struct2&#39;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>        <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct2&#39;</span><span class="p">,</span>
-<span class="gp">... </span>            <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="p">[</span>
-<span class="gp">... </span>                <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;builtin&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">}}</span>
-<span class="gp">... </span>            <span class="p">]</span>
-<span class="gp">... </span>        <span class="p">}</span>
-<span class="gp">... </span>    <span class="p">},</span>
-<span class="gp">... </span>    <span class="s1">&#39;MyTypedef&#39;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>        <span class="s1">&#39;typedef&#39;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;MyTypedef&#39;</span><span class="p">,</span>
-<span class="gp">... </span>            <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;builtin&#39;</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">},</span>
-<span class="gp">... </span>            <span class="s1">&#39;attr&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;lt&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
-<span class="gp">... </span>        <span class="p">}</span>
-<span class="gp">... </span>    <span class="p">}</span>
-<span class="gp">... </span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model_types</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">get_referenced_types</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">))</span>
-<span class="go">{&#39;Struct1&#39;: {&#39;struct&#39;: {&#39;members&#39;: [{&#39;name&#39;: &#39;a&#39;, &#39;type&#39;: {&#39;user&#39;: &#39;Struct2&#39;}}],</span>
-<span class="go">                        &#39;name&#39;: &#39;Struct1&#39;}},</span>
-<span class="go"> &#39;Struct2&#39;: {&#39;struct&#39;: {&#39;members&#39;: [{&#39;name&#39;: &#39;b&#39;, &#39;type&#39;: {&#39;builtin&#39;: &#39;int&#39;}}],</span>
-<span class="go">                        &#39;name&#39;: &#39;Struct2&#39;}}}</span>
-</pre></div>
-</div>
-<dl class="py function">
-<dt id="schema_markdown.get_referenced_types">
-<code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">get_referenced_types</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">referenced_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_referenced_types" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a type’s referenced type model</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – The map of user type name to user type model</p></li>
-<li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The type name</p></li>
-<li><p><strong>referenced_types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – An optional map of referenced user type name to user type</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The map of referenced user type name to user type model</p>
 </dd>
 </dl>
 </dd></dl>
@@ -542,6 +519,29 @@ since some member types are transformed during validation.</p>
 <dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+<div class="section" id="validationerror">
+<h2>ValidationError<a class="headerlink" href="#validationerror" title="Permalink to this headline">¶</a></h2>
+<dl class="py exception">
+<dt id="schema_markdown.ValidationError">
+<em class="property"><span class="pre">exception</span> </em><code class="sig-prename descclassname"><span class="pre">schema_markdown.</span></code><code class="sig-name descname"><span class="pre">ValidationError</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_fqn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.ValidationError" title="Permalink to this definition">¶</a></dt>
+<dd><p>schema-markdown type model validation error</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The error message</p></li>
+<li><p><strong>member_fqn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.9)"><em>None</em></a>) – The fully qualified member name or None</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="schema_markdown.ValidationError.member">
+<code class="sig-name descname"><span class="pre">member</span></code><a class="headerlink" href="#schema_markdown.ValidationError.member" title="Permalink to this definition">¶</a></dt>
+<dd><p>The fully qualified member name or None</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
