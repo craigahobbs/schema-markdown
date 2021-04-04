@@ -194,6 +194,7 @@ test('DocPage.render, validation error', (t) => {
 test('DocPage.render, request avoid re-render', (t) => {
     window.location.hash = '#name=TypeModel';
     document.body.innerHTML = '';
+    WindowFetchMock.reset([]);
 
     // Do the render
     const docPage = new DocPage();
@@ -325,4 +326,46 @@ test('DocPage.render, type model URL index error', (t) => {
     t.deepEqual(WindowFetchMock.calls, [
         ['types.json', undefined]
     ]);
+});
+
+
+test('DocPage.render, command help', (t) => {
+    window.location.hash = '#cmd=help';
+    document.body.innerHTML = '';
+    WindowFetchMock.reset([]);
+
+    // Do the render
+    const docPage = new DocPage();
+    docPage.render();
+    t.is(document.title, 'SchemaMarkdownDocumentation');
+    t.true(document.body.innerHTML.startsWith('<h1 id="cmd=help&amp;type_SchemaMarkdownDocumentation"><a class="linktarget">SchemaMarkdownDocumentation</a></h1>'));
+    t.deepEqual(WindowFetchMock.calls, []);
+});
+
+
+test('DocPage.render, command element', (t) => {
+    window.location.hash = '#cmd=element';
+    document.body.innerHTML = '';
+    WindowFetchMock.reset([]);
+
+    // Do the render
+    const docPage = new DocPage();
+    docPage.render();
+    t.is(document.title, 'Element');
+    t.true(document.body.innerHTML.startsWith('<h1 id="cmd=element&amp;type_Element"><a class="linktarget">Element</a></h1>'));
+    t.deepEqual(WindowFetchMock.calls, []);
+});
+
+
+test('DocPage.render, command markdown', (t) => {
+    window.location.hash = '#cmd=markdown';
+    document.body.innerHTML = '';
+    WindowFetchMock.reset([]);
+
+    // Do the render
+    const docPage = new DocPage();
+    docPage.render();
+    t.is(document.title, 'Markdown');
+    t.true(document.body.innerHTML.startsWith('<h1 id="cmd=markdown&amp;type_Markdown"><a class="linktarget">Markdown</a></h1>'));
+    t.deepEqual(WindowFetchMock.calls, []);
 });

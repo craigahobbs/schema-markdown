@@ -2,28 +2,6 @@ Reference
 =========
 
 
-JSONEncoder
------------
-
-.. autoclass:: schema_markdown.JSONEncoder
-   :show-inheritance:
-   :members:
-
-
-SchemaMarkdownParser
---------------------
-
-.. autoclass:: schema_markdown.SchemaMarkdownParser
-   :members:
-
-
-SchemaMarkdownParserError
--------------------------
-
-.. autoexception:: schema_markdown.SchemaMarkdownParserError
-   :members:
-
-
 decode_query_string
 -------------------
 
@@ -34,34 +12,6 @@ encode_query_string
 -------------------
 
 .. autofunction:: schema_markdown.encode_query_string
-
-
-validate_type
--------------
-
->>> import uuid
->>> parser = schema_markdown.SchemaMarkdownParser('''
-... struct MyStruct
-...     int a
-...     uuid b
-... ''')
->>> schema_markdown.validate_type(parser.types, 'MyStruct', {'a': 5, 'b': uuid.UUID('8252121c-7f4f-4b6d-a7e5-f42ca6fdb64c')})
-{'a': 5, 'b': UUID('8252121c-7f4f-4b6d-a7e5-f42ca6fdb64c')}
-
->>> try:
-...     schema_markdown.validate_type(parser.types, 'MyStruct', {'a': 5, 'b': 7})
-... except schema_markdown.ValidationError as exc:
-...     str(exc)
-"Invalid value 7 (type 'int') for member 'b', expected type 'uuid'"
-
-.. autofunction:: schema_markdown.validate_type
-
-
-ValidationError
----------------
-
-.. autoexception:: schema_markdown.ValidationError
-   :members:
 
 
 get_referenced_types
@@ -104,6 +54,49 @@ get_referenced_types
 .. autofunction:: schema_markdown.get_referenced_types
 
 
+JSONEncoder
+-----------
+
+.. autoclass:: schema_markdown.JSONEncoder
+   :show-inheritance:
+   :members:
+
+
+SchemaMarkdownParser
+--------------------
+
+.. autoclass:: schema_markdown.SchemaMarkdownParser
+   :members:
+
+
+SchemaMarkdownParserError
+-------------------------
+
+.. autoexception:: schema_markdown.SchemaMarkdownParserError
+   :members:
+
+
+validate_type
+-------------
+
+>>> import uuid
+>>> parser = schema_markdown.SchemaMarkdownParser('''
+... struct MyStruct
+...     int a
+...     uuid b
+... ''')
+>>> schema_markdown.validate_type(parser.types, 'MyStruct', {'a': 5, 'b': uuid.UUID('8252121c-7f4f-4b6d-a7e5-f42ca6fdb64c')})
+{'a': 5, 'b': UUID('8252121c-7f4f-4b6d-a7e5-f42ca6fdb64c')}
+
+>>> try:
+...     schema_markdown.validate_type(parser.types, 'MyStruct', {'a': 5, 'b': 7})
+... except schema_markdown.ValidationError as exc:
+...     str(exc)
+"Invalid value 7 (type 'int') for member 'b', expected type 'uuid'"
+
+.. autofunction:: schema_markdown.validate_type
+
+
 validate_type_model
 -------------------
 
@@ -135,3 +128,10 @@ validate_type_model_types
     "Required member 'MyStruct.struct.name' missing"
 
 .. autofunction:: schema_markdown.validate_type_model_types
+
+
+ValidationError
+---------------
+
+.. autoexception:: schema_markdown.ValidationError
+   :members:

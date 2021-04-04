@@ -217,15 +217,15 @@ Actions can contain any the following sections:
   - ``GET /path/{name}`` - A URL path with a **path parameter** called "name". Path parameters
     should have a corresponding member in the "path" section.
 
-- "path" - The path parameters structure type - see `Structure Types`_ below
+- "path" - The path parameters structure type - see `Structure Types`_ above
 
-- "query" - The query string parameters structure type - see `Structure Types`_ below
+- "query" - The query string parameters structure type - see `Structure Types`_ above
 
-- "input" - The request JSON content parameters structure type - see `Structure Types`_ below
+- "input" - The request JSON content parameters structure type - see `Structure Types`_ above
 
-- "output" - The response JSON content parameters structure type - see `Structure Types`_ below
+- "output" - The response JSON content parameters structure type - see `Structure Types`_ above
 
-- "errors" - The action's custom error code enumeration type - see `Enumeration Types`_ below
+- "errors" - The action's custom error code enumeration type - see `Enumeration Types`_ above
 
 
 Inheritance
