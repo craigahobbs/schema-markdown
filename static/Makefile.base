@@ -19,6 +19,9 @@ NYC_VERSION ?= ~15.1.0
 # jsdoc
 JSDOC_ARGS ?= src
 
+# gh-pages source paths
+GHPAGES_SRC ?= src
+
 build/npm.build:
 ifeq '$(NO_DOCKER)' ''
 	if [ "$$(docker images -q $(NODE_IMAGE))" = "" ]; then docker pull -q $(NODE_IMAGE); fi
@@ -36,7 +39,7 @@ endif
 .PHONY: _help help
 help: _help
 _help:
-	@echo 'usage: make [clean|commit|cover|doc|lint|superclean|test]'
+	@echo 'usage: make [clean|commit|cover|doc|gh-pages|lint|superclean|test]'
 
 .PHONY: commit
 commit: test lint doc cover
@@ -47,9 +50,9 @@ _test: build/npm.build
 	$(NODE_DOCKER) npm test -- $(if $(TEST),--match '$(TEST)')
 
 .PHONY: _cover cover
-cover: _cover
-_cover: build/npm.build _test
-	# Note: Remove the following line and the dependency on "_test" when "esm" (for Ava) module is removed
+cover: _cover _test
+_cover: build/npm.build
+    # Note: Remove the following line and the dependency on "_test" when "esm" (for Ava) module is removed
 	rm -rf node_modules/.cache/esm
 	$(NODE_DOCKER) npx nyc $(NYC_ARGS) --cache true --cache-dir build/nyc-cache --check-coverage --reporter html --reporter text --report-dir build/coverage --temp-dir build/tmp \
 		npm test -- $(if $(TEST),--match '$(TEST)')
@@ -74,4 +77,14 @@ superclean: _superclean
 _superclean: clean
 ifeq '$(NO_DOCKER)' ''
 	-docker rmi -f $(NODE_IMAGE)
+endif
+
+.PHONY: _gh-pages gh-pages
+gh-pages: _gh-pages
+_gh-pages: commit
+ifneq '$(GHPAGES_SRC)' ''
+	if [ ! -d ../$(notdir $(CURDIR)).gh-pages ]; then git clone -b gh-pages `git config --get remote.origin.url` ../$(notdir $(CURDIR)).gh-pages; fi
+	cd ../$(notdir $(CURDIR)).gh-pages && git pull
+	rsync -rv --delete --exclude=.git/ $(GHPAGES_SRC) ../$(notdir $(CURDIR)).gh-pages
+	touch ../$(notdir $(CURDIR)).gh-pages/.nojekyll
 endif
