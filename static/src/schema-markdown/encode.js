@@ -1,6 +1,8 @@
 // Licensed under the MIT License
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
+/** @module encode */
+
 
 /**
  * Create a resource location string for the local server.

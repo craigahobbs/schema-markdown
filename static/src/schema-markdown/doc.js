@@ -1,6 +1,8 @@
 // Licensed under the MIT License
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
+/** @module doc */
+
 import {getEnumValues, getReferencedTypes, getStructMembers} from './schema.js';
 import {markdownElements, markdownParse} from './markdown.js';
 import {encodeQueryString} from './encode.js';

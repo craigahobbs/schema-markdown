@@ -8,8 +8,8 @@
 NODE_IMAGE ?= node:14-slim
 NODE_DOCKER := $(if $(NO_DOCKER),,docker run --rm -u `id -u`:`id -g` -v `pwd`:`pwd` -w `pwd` -e HOME=`pwd`/build $(NODE_IMAGE))
 
-# Ava
-AVA_ARGS ?= -v
+# jsdoc
+JSDOC_ARGS ?= src
 
 build/npm.build:
 ifeq '$(NO_DOCKER)' ''
@@ -31,7 +31,7 @@ commit: test lint doc
 test: _test
 _test: build/npm.build
 	$(NODE_DOCKER) npx nyc $(NYC_ARGS) --check-coverage --reporter html --reporter text --report-dir build/coverage --temp-dir build/tmp \
-		ava $(if $(TEST),--match '$(TEST)') $(AVA_ARGS) $$(find tests -name '*.js')
+		ava $(if $(TEST),--match '$(TEST)') $(AVA_ARGS)
 
 .PHONY: _lint lint
 lint: _lint
@@ -41,7 +41,7 @@ _lint: build/npm.build
 .PHONY: _doc doc
 doc: _doc
 _doc: build/npm.build
-	$(NODE_DOCKER) npx jsdoc --recurse --pedantic $(JSDOC_ARGS) -d build/doc src
+	$(NODE_DOCKER) npx jsdoc --pedantic $(if $(ALL),-a all) $(JSDOC_ARGS) -d build/doc
 
 .PHONY: _clean clean
 clean: _clean

@@ -1,6 +1,8 @@
 // Licensed under the MIT License
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
+/** @module parser */
+
 import {validateTypeModelTypesErrors} from './schemaUtil.js';
 
 /* eslint-disable prefer-template */

@@ -1,4 +1,7 @@
 {
+    "scripts": {
+        "test": "ava"
+    },
     "devDependencies": {
         "ava": "~3.15.0",
         "browser-env": "~3.3.0",
@@ -8,7 +11,10 @@
         "nyc": "~15.1.0"
     },
     "ava": {
-        "timeout": "5m",
+        "files": [
+            "tests/*.js",
+            "tests/*/*.js"
+        ],
         "require": [
             "esm"
         ]
@@ -16,11 +22,11 @@
     "nyc": {
         "all": true,
         "branches": 100,
-        "lines": 100,
+        "exclude": [],
         "include": [
             "src",
             "tests"
         ],
-        "exclude": []
+        "lines": 100
     }
 }

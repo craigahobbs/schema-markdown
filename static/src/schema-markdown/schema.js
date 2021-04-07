@@ -1,6 +1,8 @@
 // Licensed under the MIT License
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
+/** @module schema */
+
 import {typeModel} from './typeModel.js';
 import {validateTypeModelTypesErrors} from './schemaUtil.js';
 

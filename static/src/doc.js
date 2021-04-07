@@ -10,9 +10,7 @@ import {markdownModel} from './schema-markdown/markdown.js';
 import {typeModel as smdTypeModel} from './schema-markdown/typeModel.js';
 
 
-/**
- * The Schema Markdown documentation application hash parameters type model specification
- */
+// The application's hash parameter type model
 const docPageTypes = (new SchemaMarkdownParser(`\
 # The Schema Markdown documentation application hash parameters struct
 struct Documentation
@@ -47,6 +45,7 @@ union DocumentationCommand
  * @property {?string} defaultTypeModelURL - The default JSON type model resource URL
  * @property {Array} windowHashChangeArgs - The arguments for the window.addEventListener for "hashchange"
  * @property {Object} params - The validated hash parameters object
+ * @private
  */
 export class DocPage {
     /**

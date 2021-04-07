@@ -1,11 +1,13 @@
 // Licensed under the MIT License
 // https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
+/** @module elements */
+
 import {SchemaMarkdownParser} from './parser.js';
 import {validateType} from './schema.js';
 
 
-/** The non-breaking space character. */
+/** The non-breaking space character */
 export const nbsp = String.fromCharCode(160);
 
 
