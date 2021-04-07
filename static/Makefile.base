@@ -50,8 +50,8 @@ _test: build/npm.build
 	$(NODE_DOCKER) npm test -- $(if $(TEST),--match '$(TEST)')
 
 .PHONY: _cover cover
-cover: _cover _test
-_cover: build/npm.build
+cover: _cover
+_cover: _test build/npm.build
     # Note: Remove the following line and the dependency on "_test" when "esm" (for Ava) module is removed
 	rm -rf node_modules/.cache/esm
 	$(NODE_DOCKER) npx nyc $(NYC_ARGS) --cache true --cache-dir build/nyc-cache --check-coverage --reporter html --reporter text --report-dir build/coverage --temp-dir build/tmp \
