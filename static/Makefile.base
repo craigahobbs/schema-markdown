@@ -20,7 +20,7 @@ NYC_VERSION ?= ~15.1.0
 JSDOC_ARGS ?= src
 
 # gh-pages source paths
-GHPAGES_SRC ?= src
+GHPAGES_SRC ?= src/
 
 build/npm.build:
 ifeq '$(NO_DOCKER)' ''
