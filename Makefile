@@ -20,21 +20,5 @@ $(eval $(call WGET, https://raw.githubusercontent.com/craigahobbs/python-build/m
 # Include Python Build
 include Makefile.base
 
-# Build statics
 clean:
 	rm -rf Makefile.base pylintrc
-	$(MAKE) -C static clean
-
-superclean:
-	$(MAKE) -C static superclean
-
-.PHONY: commit-static
-commit-static:
-	$(MAKE) -C static commit
-
-commit: commit-static
-
-# Copy the Schema Markdown documentation application into the documentation directory
-doc:
-	rsync -rv --delete static/src/ build/doc/html/doc/
-	mv build/doc/html/doc/doc.html build/doc/html/doc/index.html
