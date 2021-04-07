@@ -1,7 +1,7 @@
 # Licensed under the MIT License
 # https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
 
-# Download Javascript Build base makefile, etc.
+# Download JavaScript Build
 define WGET
 ifeq '$$(wildcard $(notdir $(1)))' ''
 $$(info Downloading $(notdir $(1)))
@@ -15,7 +15,7 @@ $(eval $(call WGET, https://raw.githubusercontent.com/craigahobbs/javascript-bui
 # Disable gh-pages
 GHPAGES_SRC :=
 
-# Include Javascript Build
+# Include JavaScript Build
 include Makefile.base
 
 # Add additional jsdoc paths
