@@ -2,14 +2,6 @@
     "scripts": {
         "test": "ava"
     },
-    "devDependencies": {
-        "ava": "~3.15.0",
-        "browser-env": "~3.3.0",
-        "eslint": "~7.23.0",
-        "esm": "~3.2.0",
-        "jsdoc": "~3.6.0",
-        "nyc": "~15.1.0"
-    },
     "ava": {
         "files": [
             "tests/*.js",
@@ -24,8 +16,8 @@
         "branches": 100,
         "exclude": [],
         "include": [
-            "src",
-            "tests"
+            "src/**/*.js",
+            "tests/**/*.js"
         ],
         "lines": 100
     }
