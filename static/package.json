@@ -4,8 +4,7 @@
     },
     "ava": {
         "files": [
-            "tests/*.js",
-            "tests/*/*.js"
+            "tests/**/*.js"
         ],
         "require": [
             "esm"
