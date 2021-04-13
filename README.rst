@@ -11,7 +11,7 @@ schema-markdown
 
 .. |badge-license| image:: https://img.shields.io/github/license/craigahobbs/schema-markdown
    :alt: GitHub
-   :target: https://github.com/craigahobbs/schema-markdown/blob/master/LICENSE
+   :target: https://github.com/craigahobbs/schema-markdown/blob/main/LICENSE
 
 .. |badge-python| image:: https://img.shields.io/pypi/pyversions/schema-markdown
    :alt: PyPI - Python Version

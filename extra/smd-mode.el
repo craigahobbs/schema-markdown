@@ -10,7 +10,7 @@
 ;;
 ;; (unless (package-installed-p 'smd-mode)
 ;;   (let ((smd-mode-file (make-temp-file "smd-mode")))
-;;     (url-copy-file "https://raw.githubusercontent.com/craigahobbs/schema-markdown/master/extra/smd-mode.el" smd-mode-file t)
+;;     (url-copy-file "https://raw.githubusercontent.com/craigahobbs/schema-markdown/main/extra/smd-mode.el" smd-mode-file t)
 ;;     (package-install-file smd-mode-file)
 ;;     (delete-file smd-mode-file)))
 ;; (add-to-list 'auto-mode-alist '("\\.smd?\\'" . smd-mode))
