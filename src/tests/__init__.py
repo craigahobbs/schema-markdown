@@ -12,7 +12,7 @@ class TestCase(unittest.TestCase):
 
     @staticmethod
     def create_test_files(file_defs):
-        tempdir = TemporaryDirectory()
+        tempdir = TemporaryDirectory() # pylint: disable=consider-using-with
         for path_parts, content in file_defs:
             if isinstance(path_parts, str): # pragma: no branch
                 path_parts = [path_parts]
