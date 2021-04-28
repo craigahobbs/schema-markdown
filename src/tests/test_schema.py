@@ -5,15 +5,14 @@
 
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
+import unittest
 from uuid import UUID
 
 from schema_markdown import ValidationError, get_referenced_types, validate_type, validate_type_model, validate_type_model_types
 from schema_markdown.type_model import TYPE_MODEL
 
-from . import TestCase
 
-
-class TestReferencedTypes(TestCase):
+class TestReferencedTypes(unittest.TestCase):
 
     def test_simple(self):
         types = {
@@ -240,7 +239,7 @@ class TestReferencedTypes(TestCase):
         self.assertDictEqual(referenced_types, expected_types)
 
 
-class TestValidateType(TestCase):
+class TestValidateType(unittest.TestCase):
 
     @staticmethod
     def _validate_type(type_, obj):
@@ -1456,7 +1455,7 @@ class TestValidateType(TestCase):
         self.assertEqual(validate_type(types, 'MyBadUser', 'abc'), 'abc')
 
 
-class TestValidateTypeModelTypes(TestCase):
+class TestValidateTypeModelTypes(unittest.TestCase):
 
     def test_simple(self):
         types = TYPE_MODEL['types']
@@ -2301,7 +2300,7 @@ Circular base type detected for type 'MyBase'\
 ''')
 
 
-class TestValidateTypeModel(TestCase):
+class TestValidateTypeModel(unittest.TestCase):
 
     def test_simple(self):
         type_model = {

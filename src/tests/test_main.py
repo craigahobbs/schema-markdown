@@ -3,16 +3,17 @@
 
 # pylint: disable=missing-docstring
 
+from contextlib import contextmanager
 from io import StringIO
 import json
 import os
+from tempfile import TemporaryDirectory
+import unittest
 import unittest.mock as unittest_mock
 
 from schema_markdown import SchemaMarkdownParserError, ValidationError
 from schema_markdown.main import main
 import schema_markdown.__main__
-
-from . import TestCase
 
 
 TEST_SCHEMA_MARKDOWN = '''\
@@ -55,7 +56,24 @@ TEST_VALUE = '''\
 }'''
 
 
-class TestMain(TestCase):
+# Helper context manager to create a list of files in a temporary directory
+@contextmanager
+def create_test_files(file_defs):
+    tempdir = TemporaryDirectory() # pylint: disable=consider-using-with
+    try:
+        for path_parts, content in file_defs:
+            if isinstance(path_parts, str):
+                path_parts = [path_parts]
+            path = os.path.join(tempdir.name, *path_parts)
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, 'w', encoding='utf-8') as file_:
+                file_.write(content)
+        yield tempdir.name
+    finally:
+        tempdir.cleanup()
+
+
+class TestMain(unittest.TestCase):
 
     def test_package_main(self):
         self.assertTrue(schema_markdown.__main__)
@@ -64,7 +82,7 @@ class TestMain(TestCase):
         test_files = [
             ('test.smd', TEST_SCHEMA_MARKDOWN)
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             input_path = os.path.join(input_dir, 'test.smd')
             output_path = os.path.join(input_dir, 'test.json')
             argv = ['python3 -m schema_markdown', 'compile', input_path, '-o', output_path]
@@ -82,7 +100,7 @@ class TestMain(TestCase):
         test_files = [
             ('test.smd', TEST_SCHEMA_MARKDOWN)
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             input_path = os.path.join(input_dir, 'test.smd')
             output_path = os.path.join(input_dir, 'test.json')
             argv = ['python3 -m schema_markdown', 'compile', input_path, '-o', output_path, '--title', 'My Type Model']
@@ -101,7 +119,7 @@ class TestMain(TestCase):
             ('test.smd', TEST_SCHEMA_MARKDOWN),
             ('test2.smd', 'struct MyStruct2 (MyStruct)')
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             input_path = os.path.join(input_dir, 'test.smd')
             input_path2 = os.path.join(input_dir, 'test2.smd')
             output_path = os.path.join(input_dir, 'test.json')
@@ -153,7 +171,7 @@ class TestMain(TestCase):
         test_files = [
             ('test.smd', TEST_SCHEMA_MARKDOWN)
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             input_path = os.path.join(input_dir, 'test.smd')
             output_path = os.path.join(input_dir, 'test.json')
             argv = ['python3 -m schema_markdown', 'compile', input_path, '-o', output_path, '--compact']
@@ -179,7 +197,7 @@ class TestMain(TestCase):
         self.assertEqual(stdout.getvalue(), TEST_MODEL)
 
     def test_compile_stdin(self):
-        with self.create_test_files([]) as input_dir:
+        with create_test_files([]) as input_dir:
             output_path = os.path.join(input_dir, 'test.json')
             argv = ['python3 -m schema_markdown', 'compile', '-o', output_path]
             with unittest_mock.patch('sys.stdin', new=StringIO(TEST_SCHEMA_MARKDOWN)), \
@@ -207,7 +225,7 @@ class TestMain(TestCase):
             ('test.smd', TEST_SCHEMA_MARKDOWN),
             ('value.json', TEST_VALUE)
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             input_path = os.path.join(input_dir, 'value.json')
             schema_path = os.path.join(input_dir, 'test.smd')
             argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct', input_path]
@@ -225,7 +243,7 @@ class TestMain(TestCase):
             ('value.json', TEST_VALUE),
             ('value2.json', TEST_VALUE)
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             schema_path = os.path.join(input_dir, 'test.smd')
             input_path = os.path.join(input_dir, 'value.json')
             input_path2 = os.path.join(input_dir, 'value2.json')
@@ -244,7 +262,7 @@ class TestMain(TestCase):
             ('value.json', TEST_VALUE),
             ('value2.json', '{}')
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             input_path = os.path.join(input_dir, 'value.json')
             input_path2 = os.path.join(input_dir, 'value2.json')
             schema_path = os.path.join(input_dir, 'test.smd')
@@ -260,7 +278,7 @@ class TestMain(TestCase):
             ('test.smd', 'asdf'),
             ('value.json', TEST_VALUE)
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             schema_path = os.path.join(input_dir, 'test.smd')
             input_path = os.path.join(input_dir, 'value.json')
             argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct', input_path]
@@ -275,7 +293,7 @@ class TestMain(TestCase):
             ('test.smd', TEST_SCHEMA_MARKDOWN),
             ('value.json', '{}')
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             schema_path = os.path.join(input_dir, 'test.smd')
             input_path = os.path.join(input_dir, 'value.json')
             argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct', input_path]
@@ -289,7 +307,7 @@ class TestMain(TestCase):
         test_files = [
             ('test.smd', TEST_SCHEMA_MARKDOWN)
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             schema_path = os.path.join(input_dir, 'test.smd')
             argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct']
             with unittest_mock.patch('sys.stdin', new=StringIO(TEST_VALUE)), \
@@ -305,7 +323,7 @@ class TestMain(TestCase):
         test_files = [
             ('test.smd', TEST_SCHEMA_MARKDOWN)
         ]
-        with self.create_test_files(test_files) as input_dir:
+        with create_test_files(test_files) as input_dir:
             schema_path = os.path.join(input_dir, 'test.smd')
             argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct']
             with unittest_mock.patch('sys.stdin', new=StringIO('{}')), \

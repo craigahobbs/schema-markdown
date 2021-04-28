@@ -5,13 +5,13 @@
 
 from datetime import date, datetime, timezone
 from decimal import Decimal
-from unittest import TestCase
+import unittest
 from uuid import UUID
 
 from schema_markdown import JSONEncoder, decode_query_string, encode_query_string
 
 
-class TestJSONEncoder(TestCase):
+class TestJSONEncoder(unittest.TestCase):
 
     def test_types(self):
         encoder = JSONEncoder(indent=2, sort_keys=True, separators=(',', ': '))
@@ -53,7 +53,7 @@ class TestJSONEncoder(TestCase):
             encoder.encode({'my_type': MyType()})
 
 
-class TestDecodeQueryString(TestCase):
+class TestDecodeQueryString(unittest.TestCase):
 
     def test_decode_query_string(self):
         self.assertEqual(
@@ -241,7 +241,7 @@ class TestDecodeQueryString(TestCase):
         self.assertEqual(str(cm_exc.exception), f"Invalid array index 'b' in key '{'a' * 99}")
 
 
-class TestEncodeQueryString(TestCase):
+class TestEncodeQueryString(unittest.TestCase):
 
     def test_complex_dict(self):
         self.assertEqual(

@@ -4,23 +4,22 @@
 # pylint: disable=missing-docstring
 
 import os
+import unittest
 
 from schema_markdown import SchemaMarkdownParser, SchemaMarkdownParserError, validate_type_model_types
 
-from . import TestCase
+from .test_main import create_test_files
 
 
-class TestSchemaMarkdownParser(TestCase):
-
-    def _test_load_schema_markdown(self):
-        return self.create_test_files((
-            (
-                'README.txt',
-                ''
-            ),
-            (
-                'module.scm',
-                '''\
+def test_load_schema_markdown():
+    return create_test_files((
+        (
+            'README.txt',
+            ''
+        ),
+        (
+            'module.scm',
+            '''\
 action my_action
 
 action my_action2
@@ -29,21 +28,24 @@ action my_action2
     output
         int result
 '''
-            ),
-            (
-                ('sub', 'subsub', 'submodule.scm'),
-                '''\
+        ),
+        (
+            ('sub', 'subsub', 'submodule.scm'),
+            '''\
 action my_action3
     input
         int myArg
     output
         string myArg
 '''
-            )
-        ))
+        )
+    ))
+
+
+class TestSchemaMarkdownParser(unittest.TestCase):
 
     def test_load(self):
-        with self._test_load_schema_markdown() as parser_dir:
+        with test_load_schema_markdown() as parser_dir:
             parser = SchemaMarkdownParser()
             parser.load(parser_dir)
             self.assertIn('my_action', parser.types)
@@ -51,7 +53,7 @@ action my_action3
             self.assertIn('my_action3', parser.types)
 
     def test_load_file(self):
-        with self._test_load_schema_markdown() as parser_dir:
+        with test_load_schema_markdown() as parser_dir:
             parser = SchemaMarkdownParser()
             parser.load(os.path.join(parser_dir, 'module.scm'))
             self.assertIn('my_action', parser.types)
@@ -59,7 +61,7 @@ action my_action3
             self.assertNotIn('my_action3', parser.types)
 
     def test_load_finalize(self):
-        with self._test_load_schema_markdown() as parser_dir:
+        with test_load_schema_markdown() as parser_dir:
             parser = SchemaMarkdownParser()
             parser.load(parser_dir, finalize=False)
             parser.finalize()
