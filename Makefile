@@ -1,8 +1,9 @@
-PYTHON_VERSIONS := \
-    3.9 \
-    3.10-rc \
-    3.8 \
-    3.7
+# Python docker images
+PYTHON_IMAGES := \
+    python:3.9 \
+    python:3.10-rc \
+    python:3.8 \
+    python:3.7
 
 # Sphinx documentation directory
 SPHINX_DOC := doc
