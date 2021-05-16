@@ -1,9 +1,5 @@
-# Python docker images
-PYTHON_IMAGES := \
-    python:3.9 \
-    python:3.10-rc \
-    python:3.8 \
-    python:3.7
+# Exclude incompatible Python versions
+PYTHON_IMAGES_EXCLUDE := python:3.6
 
 # Sphinx documentation directory
 SPHINX_DOC := doc
