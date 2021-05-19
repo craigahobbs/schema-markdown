@@ -97,5 +97,3 @@ Development
 -----------
 
 This project is developed using `Python Build <https://github.com/craigahobbs/python-build#readme>`__.
-Refer to the Python Build `documentation <https://github.com/craigahobbs/python-build#make-targets>`__
-for development instructions.
