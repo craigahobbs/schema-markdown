@@ -44,7 +44,12 @@ def main():
             'Programming Language :: Python :: 3.10'
         ],
         package_dir={'': 'src'},
-        packages=[MODULE_NAME]
+        packages=[MODULE_NAME],
+        entry_points={
+            'console_scripts': [
+                PACKAGE_NAME + ' = ' + MODULE_NAME + '.main:main'
+            ]
+        }
     )
 
 if __name__ == '__main__':

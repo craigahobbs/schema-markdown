@@ -19,31 +19,31 @@ def main():
     """
 
     # Command line arguments
-    arg_parser = argparse.ArgumentParser(prog='schema_markdown')
+    arg_parser = argparse.ArgumentParser(prog='schema-markdown')
     subparsers = arg_parser.add_subparsers(required=True, dest='command')
     parser_compile = subparsers.add_parser('compile', help='Parse Schema Markdown files')
-    parser_compile.add_argument('paths', nargs='*', help='Schema Markdown file paths. If none, default is stdin.')
+    parser_compile.add_argument('schema', nargs='*', help='Schema Markdown file paths. If none, default is stdin.')
     parser_compile.add_argument('-o', metavar='PATH', dest='output', help='Optional JSON type model output file path. Default is stdout.')
     parser_compile.add_argument('--title', help='The type model title')
     parser_compile.add_argument('--compact', action='store_true', help='Generate compact JSON')
     parser_validate = subparsers.add_parser('validate', help='Schema-validate JSON files')
-    parser_validate.add_argument('schema', help='Schema Markdown file path')
-    parser_validate.add_argument('type', help='Name of type to validate')
+    parser_validate.add_argument('-s', '--schema', required=True, action='append', help='Schema Markdown file path')
+    parser_validate.add_argument('-t', '--type', required=True, help='Name of type to validate')
     parser_validate.add_argument('paths', nargs='*', help='JSON file paths to validate. If none, defaults is stdin.')
     args = arg_parser.parse_args()
 
+    # Parse the Schema Markdown
+    parser = SchemaMarkdownParser()
+    if not args.schema:
+        parser.parse(sys.stdin)
+    else:
+        for path in args.schema:
+            with open(path, 'r') as schema_markdown_file:
+                parser.parse(schema_markdown_file, finalize=False)
+        parser.finalize()
+
     # Compile command?
     if args.command == 'compile':
-
-        # Parse the Schema Markdown
-        parser = SchemaMarkdownParser()
-        if not args.paths:
-            parser.parse(sys.stdin)
-        else:
-            for path in args.paths:
-                with open(path, 'r') as schema_markdown_file:
-                    parser.parse(schema_markdown_file, finalize=False)
-            parser.finalize()
 
         # Create the type model with title
         type_model = {
@@ -60,11 +60,7 @@ def main():
             sys.stdout.write(json_encoder.encode(type_model))
 
     # Validate command?
-    else: # args.command == 'validate':
-
-        # Parse the Schema Markdown (or use the type model)
-        parser = SchemaMarkdownParser()
-        parser.load(args.schema)
+    else: # args.command == 'validate'
 
         # Validate the input JSON
         if not args.paths:

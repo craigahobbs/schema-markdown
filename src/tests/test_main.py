@@ -228,7 +228,7 @@ class TestMain(unittest.TestCase):
         with create_test_files(test_files) as input_dir:
             input_path = os.path.join(input_dir, 'value.json')
             schema_path = os.path.join(input_dir, 'test.smd')
-            argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct', input_path]
+            argv = ['python3 -m schema_markdown', 'validate', '-s', schema_path, '-t', 'MyStruct', input_path]
             with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
                  unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
                  unittest_mock.patch('sys.argv', argv):
@@ -247,7 +247,7 @@ class TestMain(unittest.TestCase):
             schema_path = os.path.join(input_dir, 'test.smd')
             input_path = os.path.join(input_dir, 'value.json')
             input_path2 = os.path.join(input_dir, 'value2.json')
-            argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct', input_path, input_path2]
+            argv = ['python3 -m schema_markdown', 'validate', '-s', schema_path, '-t', 'MyStruct', input_path, input_path2]
             with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
                  unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
                  unittest_mock.patch('sys.argv', argv):
@@ -266,7 +266,7 @@ class TestMain(unittest.TestCase):
             input_path = os.path.join(input_dir, 'value.json')
             input_path2 = os.path.join(input_dir, 'value2.json')
             schema_path = os.path.join(input_dir, 'test.smd')
-            argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct', input_path, input_path2]
+            argv = ['python3 -m schema_markdown', 'validate', '-s', schema_path, '-t', 'MyStruct', input_path, input_path2]
             with unittest_mock.patch('sys.stdout', new=StringIO()), \
                  unittest_mock.patch('sys.stderr', new=StringIO()), \
                  unittest_mock.patch('sys.argv', argv):
@@ -281,7 +281,7 @@ class TestMain(unittest.TestCase):
         with create_test_files(test_files) as input_dir:
             schema_path = os.path.join(input_dir, 'test.smd')
             input_path = os.path.join(input_dir, 'value.json')
-            argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct', input_path]
+            argv = ['python3 -m schema_markdown', 'validate', '-s', schema_path, '-t', 'MyStruct', input_path]
             with unittest_mock.patch('sys.stdout', new=StringIO()), \
                  unittest_mock.patch('sys.stderr', new=StringIO()), \
                  unittest_mock.patch('sys.argv', argv):
@@ -296,7 +296,7 @@ class TestMain(unittest.TestCase):
         with create_test_files(test_files) as input_dir:
             schema_path = os.path.join(input_dir, 'test.smd')
             input_path = os.path.join(input_dir, 'value.json')
-            argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct', input_path]
+            argv = ['python3 -m schema_markdown', 'validate', '-s', schema_path, '-t', 'MyStruct', input_path]
             with unittest_mock.patch('sys.stdout', new=StringIO()), \
                  unittest_mock.patch('sys.stderr', new=StringIO()), \
                  unittest_mock.patch('sys.argv', argv):
@@ -309,7 +309,7 @@ class TestMain(unittest.TestCase):
         ]
         with create_test_files(test_files) as input_dir:
             schema_path = os.path.join(input_dir, 'test.smd')
-            argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct']
+            argv = ['python3 -m schema_markdown', 'validate', '-s', schema_path, '-t', 'MyStruct']
             with unittest_mock.patch('sys.stdin', new=StringIO(TEST_VALUE)), \
                  unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
                  unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
@@ -325,7 +325,7 @@ class TestMain(unittest.TestCase):
         ]
         with create_test_files(test_files) as input_dir:
             schema_path = os.path.join(input_dir, 'test.smd')
-            argv = ['python3 -m schema_markdown', 'validate', schema_path, 'MyStruct']
+            argv = ['python3 -m schema_markdown', 'validate', '-s', schema_path, '-t', 'MyStruct']
             with unittest_mock.patch('sys.stdin', new=StringIO('{}')), \
                  unittest_mock.patch('sys.stdout', new=StringIO()), \
                  unittest_mock.patch('sys.stderr', new=StringIO()), \
@@ -342,9 +342,10 @@ class TestMain(unittest.TestCase):
                 main()
 
         self.assertEqual(stdout.getvalue(), '')
-        self.assertTrue(stderr.getvalue().endswith('''\
-schema_markdown validate: error: the following arguments are required: schema, type, paths
-'''))
+        self.assertEqual(
+            stderr.getvalue().splitlines()[-1],
+            'schema-markdown validate: error: the following arguments are required: -s/--schema, -t/--type'
+        )
 
     def test_no_command(self):
         argv = ['python3 -m schema_markdown']
@@ -356,6 +357,6 @@ schema_markdown validate: error: the following arguments are required: schema, t
 
         self.assertEqual(stdout.getvalue(), '')
         self.assertEqual(stderr.getvalue(), '''\
-usage: schema_markdown [-h] {compile,validate} ...
-schema_markdown: error: the following arguments are required: command
+usage: schema-markdown [-h] {compile,validate} ...
+schema-markdown: error: the following arguments are required: command
 ''')
