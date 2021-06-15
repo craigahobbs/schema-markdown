@@ -51,7 +51,7 @@ RE_VALUE_QUOTED = re.compile(r'^\s+"(?P<id>' + RE_PART_ID + r'.*?)"\s*$')
 RE_URL = re.compile(r'^\s+(?P<method>[A-Za-z]+|\*)(?:\s+(?P<path>/[^\s]*))?')
 
 
-#: Built-in types
+# Built-in types
 BUILTIN_TYPES = {'bool', 'date', 'datetime', 'float', 'int', 'object', 'string', 'uuid'}
 
 

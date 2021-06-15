@@ -52,6 +52,7 @@ def encode_query_string(obj, encoding='utf-8'):
 
     return '&'.join(f'{v}' if k is None else f'{k}={v}' for k, v in _encode_query_string_items(obj, None, encoding))
 
+
 def _encode_query_string_items(obj, parent, encoding):
     if isinstance(obj, dict):
         if obj:
