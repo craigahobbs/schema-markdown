@@ -33,6 +33,7 @@ its features at a glance:
 Links
 -----
 
+- `Schema Markdown Language Reference <https://craigahobbs.github.io/schema-markdown/schema-markdown.html>`__
 - `Documentation on GitHub Pages <https://craigahobbs.github.io/schema-markdown/>`__
 - `Package on pypi <https://pypi.org/project/schema-markdown/>`__
 - `Source code on GitHub <https://github.com/craigahobbs/schema-markdown>`__
