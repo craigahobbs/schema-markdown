@@ -1,3 +1,7 @@
+## 1.0.1 (2021-06-15)
+
+- [3f6da86](https://github.com/craigahobbs/schema-markdown/commit/3f6da86) - update links
+
 ## 1.0.0 (2021-06-15)
 
 - [2164b18](https://github.com/craigahobbs/schema-markdown/commit/2164b18) - cleanup command-line tool args
