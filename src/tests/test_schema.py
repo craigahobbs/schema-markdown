@@ -8,8 +8,8 @@ from decimal import Decimal
 import unittest
 from uuid import UUID
 
-from schema_markdown import ValidationError, get_referenced_types, validate_type, validate_type_model, validate_type_model_types
-from schema_markdown.type_model import TYPE_MODEL
+from schema_markdown import TYPE_MODEL, ValidationError, get_referenced_types, \
+    validate_type, validate_type_model, validate_type_model_types
 
 
 class TestReferencedTypes(unittest.TestCase):

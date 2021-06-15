@@ -17,10 +17,13 @@ from .parser import \
     SchemaMarkdownParserError
 
 from .schema import \
-    get_enum_values, \
     ValidationError, \
+    get_enum_values, \
     get_referenced_types, \
     get_struct_members, \
     validate_type, \
     validate_type_model, \
     validate_type_model_types
+
+from .type_model import \
+    TYPE_MODEL

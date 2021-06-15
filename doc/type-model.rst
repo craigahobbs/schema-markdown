@@ -10,4 +10,4 @@ If needed, the compiled type model can be imported as follows:
 
 .. code-block:: python
 
-  from schema_markdown.type_model import TYPE_MODEL
+  from schema_markdown import TYPE_MODEL
