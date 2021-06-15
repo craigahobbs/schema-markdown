@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Command-Line Tool &mdash; schema-markdown 0.9.15 documentation</title>
+  <title>Command-Line Tool &mdash; schema-markdown 0.9.16 documentation</title>
   
 
   
@@ -161,43 +161,46 @@
   <div class="section" id="command-line-tool">
 <h1>Command-Line Tool<a class="headerlink" href="#command-line-tool" title="Permalink to this headline">¶</a></h1>
 <p>The <code class="docutils literal notranslate"><span class="pre">schema_markdown</span></code> package can be used as a command like tool like so:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ python3 -m schema_markdown --help
-usage: schema_markdown <span class="o">[</span>-h<span class="o">]</span> <span class="o">{</span>compile,validate,model<span class="o">}</span> ...
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>$ schema-markdown --help
+usage: schema-markdown <span class="o">[</span>-h<span class="o">]</span> <span class="o">{</span>compile,validate<span class="o">}</span> ...
 
 positional arguments:
-  <span class="o">{</span>compile,validate,model<span class="o">}</span>
-    compile             Parse Schema Markdown files
-    validate            Schema-validate JSON files
-    model               Dump the <span class="nb">type</span> model
+  <span class="o">{</span>compile,validate<span class="o">}</span>
+    compile           Parse Schema Markdown files
+    validate          Schema-validate JSON files
 
 options:
-  -h, --help            show this <span class="nb">help</span> message and <span class="nb">exit</span>
+  -h, --help          show this <span class="nb">help</span> message and <span class="nb">exit</span>
 </pre></div>
 </div>
 <p>The <strong>compile</strong> command compiles one or more <a class="reference internal" href="schema-markdown.html#schema-markdown"><span class="std std-ref">Schema Markdown</span></a> files and
 outputs a <a class="reference internal" href="type-model.html#type-model"><span class="std std-ref">Type Model</span></a> object:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema_markdown compile [-h] [-o PATH] [--compact] [paths ...]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema-markdown compile [-h] [-o PATH] [--title TITLE] [--compact]
+                               [schema ...]
 
 positional arguments:
-  paths       Schema Markdown file paths. If none, default is stdin.
+  schema         Schema Markdown file paths. If none, default is stdin.
 
 options:
-  -h, --help  show this help message and exit
-  -o PATH     Optional JSON type model output file path. Default is stdout.
-  --compact   Generate compact JSON
+  -h, --help     show this help message and exit
+  -o PATH        Optional JSON type model output file path. Default is stdout.
+  --title TITLE  The type model title
+  --compact      Generate compact JSON
 </pre></div>
 </div>
 <p>The <strong>validate</strong> command parses a <a class="reference internal" href="schema-markdown.html#schema-markdown"><span class="std std-ref">Schema Markdown</span></a> file and a type and
 schema-validates one or more JSON files:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema_markdown validate [-h] schema type [paths ...]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema-markdown validate [-h] -s SCHEMA -t TYPE [paths ...]
 
 positional arguments:
-  schema      Schema Markdown file path
-  type        Name of type to validate
-  paths       JSON file paths to validate. If none, defaults is stdin.
+  paths                 JSON file paths to validate. If none, defaults is
+                        stdin.
 
 options:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  -s SCHEMA, --schema SCHEMA
+                        Schema Markdown file path
+  -t TYPE, --type TYPE  Name of type to validate
 </pre></div>
 </div>
 </div>
