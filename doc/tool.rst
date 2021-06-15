@@ -21,17 +21,17 @@ outputs a :ref:`type-model:Type Model` object:
 
 .. code-block:: text
 
-   usage: schema-markdown compile [-h] [-o PATH] [--title TITLE] [--compact]
+   usage: schema-markdown compile [-h] [-o PATH] [-t TITLE] [--compact]
                                   [schema ...]
 
    positional arguments:
-     schema         Schema Markdown file paths. If none, default is stdin.
+     schema      Schema Markdown file paths. If none, default is stdin.
 
    options:
-     -h, --help     show this help message and exit
-     -o PATH        Optional JSON type model output file path. Default is stdout.
-     --title TITLE  The type model title
-     --compact      Generate compact JSON
+     -h, --help  show this help message and exit
+     -o PATH     Optional JSON type model output file path. Default is stdout.
+     -t TITLE    The type model title
+     --compact   Generate compact JSON
 
 The **validate** command parses a :ref:`schema-markdown:Schema Markdown` file and a type and
 schema-validates one or more JSON files:
@@ -41,11 +41,9 @@ schema-validates one or more JSON files:
    usage: schema-markdown validate [-h] -s SCHEMA -t TYPE [paths ...]
 
    positional arguments:
-     paths                 JSON file paths to validate. If none, defaults is
-                           stdin.
+     paths       JSON file paths to validate. If none, defaults is stdin.
 
    options:
-     -h, --help            show this help message and exit
-     -s SCHEMA, --schema SCHEMA
-                           Schema Markdown file path
-     -t TYPE, --type TYPE  Name of type to validate
+     -h, --help  show this help message and exit
+     -s SCHEMA   Schema Markdown file path
+     -t TYPE     Name of type to validate

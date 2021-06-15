@@ -103,7 +103,7 @@ class TestMain(unittest.TestCase):
         with create_test_files(test_files) as input_dir:
             input_path = os.path.join(input_dir, 'test.smd')
             output_path = os.path.join(input_dir, 'test.json')
-            argv = ['python3 -m schema_markdown', 'compile', input_path, '-o', output_path, '--title', 'My Type Model']
+            argv = ['python3 -m schema_markdown', 'compile', input_path, '-o', output_path, '-t', 'My Type Model']
             with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
                  unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
                  unittest_mock.patch('sys.argv', argv):
@@ -344,7 +344,7 @@ class TestMain(unittest.TestCase):
         self.assertEqual(stdout.getvalue(), '')
         self.assertEqual(
             stderr.getvalue().splitlines()[-1],
-            'schema-markdown validate: error: the following arguments are required: -s/--schema, -t/--type'
+            'schema-markdown validate: error: the following arguments are required: -s, -t'
         )
 
     def test_no_command(self):
