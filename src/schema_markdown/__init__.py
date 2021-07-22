@@ -27,4 +27,4 @@ from .type_model import \
     TYPE_MODEL
 
 
-VERSION = '1.0.1'
+VERSION = '1.1.0'
