@@ -5,8 +5,6 @@
 Schema Markdown package imports
 """
 
-__version__ = '1.0.1'
-
 from .encode import \
     JSONEncoder, \
     decode_query_string, \
@@ -27,3 +25,6 @@ from .schema import \
 
 from .type_model import \
     TYPE_MODEL
+
+
+VERSION = '1.0.1'

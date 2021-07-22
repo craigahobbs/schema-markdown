@@ -23,7 +23,7 @@ author = 'Craig Hobbs'
 
 # The full version, including alpha/beta/rc tags
 import schema_markdown
-release = schema_markdown.__version__
+release = schema_markdown.VERSION
 
 
 # -- General configuration ---------------------------------------------------
