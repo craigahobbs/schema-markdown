@@ -1,6 +1,6 @@
 ## 1.1.0 (2021-07-22)
 
-- [1badbd4](https://github.com/craigahobbs/schema-markdown/commit/1badbd4) - rename __version__ to VERSION
+- [1badbd4](https://github.com/craigahobbs/schema-markdown/commit/1badbd4) - rename \__version__ to VERSION
 
 ## 1.0.1 (2021-06-15)
 
