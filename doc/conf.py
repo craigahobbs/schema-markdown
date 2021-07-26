@@ -22,8 +22,10 @@ copyright = '2012, Craig Hobbs'
 author = 'Craig Hobbs'
 
 # The full version, including alpha/beta/rc tags
-import schema_markdown
-release = schema_markdown.VERSION
+import os
+import re
+with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'setup.py'), encoding='utf-8') as init_file:
+    release = re.search(r"version='(.+?)'", init_file.read()).group(1)
 
 
 # -- General configuration ---------------------------------------------------

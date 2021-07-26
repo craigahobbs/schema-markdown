@@ -25,6 +25,3 @@ from .schema import \
 
 from .type_model import \
     TYPE_MODEL
-
-
-VERSION = '1.1.0'

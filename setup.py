@@ -3,7 +3,6 @@
 
 # pylint: disable=missing-docstring
 
-import re
 import os
 
 from setuptools import setup
@@ -12,10 +11,6 @@ MODULE_NAME = 'schema_markdown'
 PACKAGE_NAME = 'schema-markdown'
 
 def main():
-    # Read the package version
-    with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'src', MODULE_NAME, '__init__.py'), encoding='utf-8') as init_file:
-        version = re.search(r"VERSION = '(.+?)'", init_file.read()).group(1)
-
     # Read the readme for use as the long description
     with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'README.rst'), encoding='utf-8') as readme_file:
         long_description = readme_file.read()
@@ -26,7 +21,7 @@ def main():
         description='Human-friendly schema definition language and schema validator',
         long_description=long_description,
         long_description_content_type='text/x-rst',
-        version=version,
+        version='1.1.0',
         author='Craig Hobbs',
         author_email='craigahobbs@gmail.com',
         keywords='schema validation json',
