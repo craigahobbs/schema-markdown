@@ -1,3 +1,7 @@
+## 1.1.1 (2021-07-26)
+
+- [cf2c8d7](https://github.com/craigahobbs/schema-markdown/commit/cf2c8d7) - simplify setup.py
+
 ## 1.1.0 (2021-07-22)
 
 - [1badbd4](https://github.com/craigahobbs/schema-markdown/commit/1badbd4) - rename \_\_version\_\_ to VERSION
