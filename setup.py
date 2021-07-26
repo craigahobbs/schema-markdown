@@ -21,7 +21,7 @@ def main():
         description='Human-friendly schema definition language and schema validator',
         long_description=long_description,
         long_description_content_type='text/x-rst',
-        version='1.1.0',
+        version='1.1.1',
         author='Craig Hobbs',
         author_email='craigahobbs@gmail.com',
         keywords='schema validation json',
