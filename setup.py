@@ -7,8 +7,6 @@ import os
 
 from setuptools import setup
 
-MODULE_NAME = 'schema_markdown'
-PACKAGE_NAME = 'schema-markdown'
 
 def main():
     # Read the readme for use as the long description
@@ -17,35 +15,36 @@ def main():
 
     # Do the setup
     setup(
-        name=PACKAGE_NAME,
+        name='schema-markdown',
         description='Human-friendly schema definition language and schema validator',
         long_description=long_description,
         long_description_content_type='text/x-rst',
         version='1.1.1',
-        author='Craig Hobbs',
+        author='Craig A. Hobbs',
         author_email='craigahobbs@gmail.com',
         keywords='schema validation json',
-        url='https://github.com/craigahobbs/' + PACKAGE_NAME,
+        url='https://github.com/craigahobbs/schema-markdown',
         license='MIT',
         classifiers=[
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Developers',
             'License :: OSI Approved :: MIT License',
             'Operating System :: OS Independent',
-            'Programming Language :: Python :: 3.6',
             'Programming Language :: Python :: 3.7',
             'Programming Language :: Python :: 3.8',
             'Programming Language :: Python :: 3.9',
-            'Programming Language :: Python :: 3.10'
+            'Programming Language :: Python :: 3.10',
+            'Topic :: Utilities'
         ],
         package_dir={'': 'src'},
-        packages=[MODULE_NAME],
+        packages=['schema_markdown'],
         entry_points={
             'console_scripts': [
-                PACKAGE_NAME + ' = ' + MODULE_NAME + '.main:main'
+                'schema-markdown = schema_markdown.main:main'
             ]
         }
     )
+
 
 if __name__ == '__main__':
     main()

@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'schema-markdown'
-copyright = '2012, Craig Hobbs'
-author = 'Craig Hobbs'
+copyright = '2012, Craig A. Hobbs'
+author = 'Craig A. Hobbs'
 
 # The full version, including alpha/beta/rc tags
 import os
@@ -73,4 +73,6 @@ autosectionlabel_maxdepth = 2
 
 doctest_global_setup = 'import schema_markdown'
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None)
+}

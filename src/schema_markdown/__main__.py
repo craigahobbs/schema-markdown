@@ -7,5 +7,6 @@ The Schema Markdown compiler and schema validation tool main entry point
 
 from .main import main
 
-if __name__ == '__main__':
-    main() # pragma: no cover
+
+if __name__ == '__main__': # pragma: no cover
+    main()
