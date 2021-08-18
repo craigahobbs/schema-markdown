@@ -1,3 +1,7 @@
+## 1.1.3 (2021-08-18)
+
+- [9ae3972](https://github.com/craigahobbs/schema-markdown/commit/9ae3972) - updates from python-package-template
+
 ## 1.1.2 (2021-08-12)
 
 - [5f7f3ea](https://github.com/craigahobbs/schema-markdown/commit/5f7f3ea) - updates from python-package-template
