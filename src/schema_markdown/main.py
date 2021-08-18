@@ -2,7 +2,7 @@
 # https://github.com/craigahobbs/schema-markdown/blob/main/LICENSE
 
 """
-Schema Markdown compiler and schema validator tool
+schema-markdown command-line script main module
 """
 
 import argparse
@@ -15,7 +15,7 @@ from .schema import validate_type
 
 def main():
     """
-    Schema Markdown compiler and schema validator tool main entry point
+    schema-markdown command-line script main entry point
     """
 
     # Command line arguments

@@ -2,7 +2,7 @@
 # https://github.com/craigahobbs/schema-markdown/blob/main/LICENSE
 
 """
-Schema Markdown package imports
+Schema Markdown is a human-friendly schema definition language and schema validator
 """
 
 from .encode import \

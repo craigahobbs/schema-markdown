@@ -1,7 +1,7 @@
 # Licensed under the MIT License
 # https://github.com/craigahobbs/schema-markdown/blob/main/LICENSE
 
-# pylint: disable=missing-docstring
+# pylint: disable=missing-function-docstring, missing-module-docstring
 
 import os
 

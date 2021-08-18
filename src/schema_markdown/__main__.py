@@ -2,7 +2,7 @@
 # https://github.com/craigahobbs/schema-markdown/blob/main/LICENSE
 
 """
-The Schema Markdown compiler and schema validation tool main entry point
+schema-markdown top-level script environment
 """
 
 from .main import main
