@@ -1,7 +1,7 @@
 # Licensed under the MIT License
 # https://github.com/craigahobbs/schema-markdown/blob/main/LICENSE
 
-# pylint: disable=missing-docstring
+# pylint: disable=missing-class-docstring, missing-function-docstring, missing-module-docstring
 
 from datetime import date, datetime, timezone
 from decimal import Decimal

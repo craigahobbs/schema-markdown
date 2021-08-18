@@ -100,8 +100,4 @@ Development
 This project is developed using `Python Build <https://github.com/craigahobbs/python-build#readme>`__. It was started
 using `python-package-template <https://github.com/craigahobbs/python-package-template#readme>`__ as follows::
 
-    template-specialize python-package-template/template/ schema-markdown/ \
-        -k package schema-markdown \
-        -k name "Craig A. Hobbs" \
-        -k email "craigahobbs@gmail.com" \
-        -k github "craigahobbs"
+    template-specialize python-package-template/template/ schema-markdown/ -k package schema-markdown -k name 'Craig A. Hobbs' -k email 'craigahobbs@gmail.com' -k github 'craigahobbs'
