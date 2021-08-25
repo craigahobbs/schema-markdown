@@ -1,3 +1,7 @@
+## 1.1.5 (2021-08-24)
+
+- [a3de343](https://github.com/craigahobbs/schema-markdown/commit/a3de343) - update readme
+
 ## 1.1.4 (2021-08-18)
 
 - [16a0722](https://github.com/craigahobbs/schema-markdown/commit/16a0722) - updates from python-package-template
