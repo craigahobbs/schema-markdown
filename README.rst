@@ -97,7 +97,7 @@ Validation also fails if a member contraint is violated:
 Development
 -----------
 
-This project is developed using `Python Build <https://github.com/craigahobbs/python-build#readme>`__. It was started
+This project is developed using `python-build <https://github.com/craigahobbs/python-build#readme>`__. It was started
 using `python-template <https://github.com/craigahobbs/python-template#readme>`__ as follows::
 
     template-specialize python-template/template/ schema-markdown/ -k package schema-markdown -k name 'Craig A. Hobbs' -k email 'craigahobbs@gmail.com' -k github 'craigahobbs'
