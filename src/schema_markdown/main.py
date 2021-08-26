@@ -38,7 +38,7 @@ def main():
         parser.parse(sys.stdin)
     else:
         for path in args.schema:
-            with open(path, 'r') as schema_markdown_file:
+            with open(path, 'r', encoding='utf-8') as schema_markdown_file:
                 parser.parse(schema_markdown_file, finalize=False)
         parser.finalize()
 
@@ -54,7 +54,7 @@ def main():
         # Write the JSON
         json_encoder = json.JSONEncoder(indent=None if args.compact else 4, sort_keys=True)
         if args.output is not None:
-            with open(args.output, 'w') as json_file:
+            with open(args.output, 'w', encoding='utf-8') as json_file:
                 json_file.write(json_encoder.encode(type_model))
         else:
             sys.stdout.write(json_encoder.encode(type_model))
@@ -67,5 +67,5 @@ def main():
             validate_type(parser.types, args.type, json.load(sys.stdin))
         else:
             for path in args.paths:
-                with open(path, 'r') as input_file:
+                with open(path, 'r', encoding='utf-8') as input_file:
                     validate_type(parser.types, args.type, json.load(input_file))
