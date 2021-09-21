@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Command-Line Tool &mdash; schema-markdown 1.1.5 documentation</title>
+  <title>Command-Line Tool &mdash; schema-markdown 1.1.6 documentation</title>
   
 
   
@@ -175,17 +175,20 @@ options:
 </div>
 <p>The <strong>compile</strong> command compiles one or more <a class="reference internal" href="schema-markdown.html#schema-markdown"><span class="std std-ref">Schema Markdown</span></a> files and
 outputs a <a class="reference internal" href="type-model.html#type-model"><span class="std std-ref">Type Model</span></a> object:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema-markdown compile [-h] [-o PATH] [-t TITLE] [--compact]
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>usage: schema-markdown compile [-h] [-o PATH] [-t TITLE] [--referenced TYPE]
+                               [--compact]
                                [schema ...]
 
 positional arguments:
-  schema      Schema Markdown file paths. If none, default is stdin.
+  schema             Schema Markdown file paths. If none, default is stdin.
 
 options:
-  -h, --help  show this help message and exit
-  -o PATH     Optional JSON type model output file path. Default is stdout.
-  -t TITLE    The type model title
-  --compact   Generate compact JSON
+  -h, --help         show this help message and exit
+  -o PATH            Optional JSON type model output file path. Default is
+                     stdout.
+  -t TITLE           The type model title
+  --referenced TYPE  Output only referenced types
+  --compact          Generate compact JSON
 </pre></div>
 </div>
 <p>The <strong>validate</strong> command parses a <a class="reference internal" href="schema-markdown.html#schema-markdown"><span class="std std-ref">Schema Markdown</span></a> file and a type and
