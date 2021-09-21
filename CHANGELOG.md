@@ -1,3 +1,9 @@
+## 1.1.6 (2021-09-21)
+
+- [57323d9](https://github.com/craigahobbs/schema-markdown/commit/57323d9) - add compile tool referenced types argument
+
+- [4d32558](https://github.com/craigahobbs/schema-markdown/commit/4d32558) - fixes for pylint 2.10
+
 ## 1.1.5 (2021-08-24)
 
 - [a3de343](https://github.com/craigahobbs/schema-markdown/commit/a3de343) - update readme
