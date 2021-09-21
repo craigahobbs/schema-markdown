@@ -10,7 +10,7 @@ import json
 import sys
 
 from .parser import SchemaMarkdownParser
-from .schema import validate_type
+from .schema import get_referenced_types, validate_type
 
 
 def main():
@@ -25,6 +25,7 @@ def main():
     parser_compile.add_argument('schema', nargs='*', help='Schema Markdown file paths. If none, default is stdin.')
     parser_compile.add_argument('-o', metavar='PATH', dest='output', help='Optional JSON type model output file path. Default is stdout.')
     parser_compile.add_argument('-t', dest='title', help='The type model title')
+    parser_compile.add_argument('--referenced', metavar='TYPE', action='append', help='Output only referenced types')
     parser_compile.add_argument('--compact', action='store_true', help='Generate compact JSON')
     parser_validate = subparsers.add_parser('validate', help='Schema-validate JSON files')
     parser_validate.add_argument('-s', dest='schema', required=True, action='append', help='Schema Markdown file path')
@@ -41,14 +42,22 @@ def main():
             with open(path, 'r', encoding='utf-8') as schema_markdown_file:
                 parser.parse(schema_markdown_file, finalize=False)
         parser.finalize()
+    types = parser.types
 
     # Compile command?
     if args.command == 'compile':
 
+        # Get the referenced types
+        if args.referenced is not None:
+            referenced_types = {}
+            for referenced_type in args.referenced:
+                referenced_types.update(get_referenced_types(types, referenced_type))
+            types = referenced_types
+
         # Create the type model with title
         type_model = {
             'title': args.title if args.title else 'Index',
-            'types': parser.types
+            'types': types
         }
 
         # Write the JSON
@@ -64,8 +73,8 @@ def main():
 
         # Validate the input JSON
         if not args.paths:
-            validate_type(parser.types, args.type, json.load(sys.stdin))
+            validate_type(types, args.type, json.load(sys.stdin))
         else:
             for path in args.paths:
                 with open(path, 'r', encoding='utf-8') as input_file:
-                    validate_type(parser.types, args.type, json.load(input_file))
+                    validate_type(types, args.type, json.load(input_file))

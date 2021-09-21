@@ -167,6 +167,62 @@ class TestMain(unittest.TestCase):
     }
 }''')
 
+    def test_compile_referenced(self):
+        test_files = [
+            ('test.smd', '''\
+struct Struct1
+    Struct2 b
+
+struct Struct2
+
+struct Struct3
+
+struct Struct4
+''')
+        ]
+        with create_test_files(test_files) as input_dir:
+            input_path = os.path.join(input_dir, 'test.smd')
+            output_path = os.path.join(input_dir, 'test.json')
+            argv = ['python3 -m schema_markdown', 'compile', input_path, '-o', output_path,
+                    '--referenced', 'Struct1', '--referenced', 'Struct3']
+            with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
+                 unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
+                 unittest_mock.patch('sys.argv', argv):
+                main()
+
+            self.assertEqual(stdout.getvalue(), '')
+            self.assertEqual(stderr.getvalue(), '')
+            with open(output_path, 'r', encoding='utf-8') as output_file:
+                self.assertEqual(output_file.read(), '''\
+{
+    "title": "Index",
+    "types": {
+        "Struct1": {
+            "struct": {
+                "members": [
+                    {
+                        "name": "b",
+                        "type": {
+                            "user": "Struct2"
+                        }
+                    }
+                ],
+                "name": "Struct1"
+            }
+        },
+        "Struct2": {
+            "struct": {
+                "name": "Struct2"
+            }
+        },
+        "Struct3": {
+            "struct": {
+                "name": "Struct3"
+            }
+        }
+    }
+}''')
+
     def test_compile_compact(self):
         test_files = [
             ('test.smd', TEST_SCHEMA_MARKDOWN)
