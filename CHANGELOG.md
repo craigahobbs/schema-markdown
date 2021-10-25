@@ -1,3 +1,7 @@
+## 1.1.7 (2021-10-25)
+
+- [752e0d1](https://github.com/craigahobbs/schema-markdown/commit/752e0d1) - improve compile tool's error output
+
 ## 1.1.6 (2021-09-21)
 
 - [57323d9](https://github.com/craigahobbs/schema-markdown/commit/57323d9) - add compile tool referenced types argument
