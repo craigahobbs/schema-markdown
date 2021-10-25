@@ -9,7 +9,7 @@ import argparse
 import json
 import sys
 
-from .parser import SchemaMarkdownParser
+from .parser import SchemaMarkdownParser, SchemaMarkdownParserError
 from .schema import get_referenced_types, validate_type
 
 
@@ -35,13 +35,16 @@ def main():
 
     # Parse the Schema Markdown
     parser = SchemaMarkdownParser()
-    if not args.schema:
-        parser.parse(sys.stdin)
-    else:
-        for path in args.schema:
-            with open(path, 'r', encoding='utf-8') as schema_markdown_file:
-                parser.parse(schema_markdown_file, finalize=False)
-        parser.finalize()
+    try:
+        if not args.schema:
+            parser.parse(sys.stdin)
+        else:
+            for path in args.schema:
+                with open(path, 'r', encoding='utf-8') as schema_markdown_file:
+                    parser.parse(schema_markdown_file, filename=path, finalize=False)
+            parser.finalize()
+    except SchemaMarkdownParserError as exc:
+        arg_parser.exit(1, '\n'.join(exc.errors))
     types = parser.types
 
     # Compile command?

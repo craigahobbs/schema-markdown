@@ -11,7 +11,7 @@ from tempfile import TemporaryDirectory
 import unittest
 import unittest.mock as unittest_mock
 
-from schema_markdown import SchemaMarkdownParserError, ValidationError
+from schema_markdown import ValidationError
 from schema_markdown.main import main
 import schema_markdown.__main__
 
@@ -268,13 +268,36 @@ struct Struct4
                 self.assertEqual(output_file.read(), TEST_MODEL)
 
     def test_compile_error(self):
+        test_files = [
+            ('test.smd', 'asdf')
+        ]
+        with create_test_files(test_files) as input_dir:
+            input_path = os.path.join(input_dir, 'test.smd')
+            argv = ['python3 -m schema_markdown', 'compile', input_path]
+            with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
+                 unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
+                 unittest_mock.patch('sys.argv', argv):
+                with self.assertRaises(SystemExit) as cm_exc:
+                    main()
+
+        self.assertEqual(cm_exc.exception.code, 1)
+        self.assertEqual(stderr.getvalue().replace(input_dir, '<input_dir>'), '''\
+<input_dir>/test.smd:1: error: Syntax error''')
+        self.assertEqual(stdout.getvalue(), '')
+
+    def test_compile_error_stdin(self):
         argv = ['python3 -m schema_markdown', 'compile']
         with unittest_mock.patch('sys.stdin', new=StringIO('asdf')), \
-             unittest_mock.patch('sys.stdout', new=StringIO()), \
-             unittest_mock.patch('sys.stderr', new=StringIO()), \
+             unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
+             unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
              unittest_mock.patch('sys.argv', argv):
-            with self.assertRaises(SchemaMarkdownParserError):
+            with self.assertRaises(SystemExit) as cm_exc:
                 main()
+
+        self.assertEqual(cm_exc.exception.code, 1)
+        self.assertEqual(stderr.getvalue(), '''\
+:1: error: Syntax error''')
+        self.assertEqual(stdout.getvalue(), '')
 
     def test_validate_schema(self):
         test_files = [
@@ -338,11 +361,16 @@ struct Struct4
             schema_path = os.path.join(input_dir, 'test.smd')
             input_path = os.path.join(input_dir, 'value.json')
             argv = ['python3 -m schema_markdown', 'validate', '-s', schema_path, '-t', 'MyStruct', input_path]
-            with unittest_mock.patch('sys.stdout', new=StringIO()), \
-                 unittest_mock.patch('sys.stderr', new=StringIO()), \
+            with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
+                 unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
                  unittest_mock.patch('sys.argv', argv):
-                with self.assertRaises(SchemaMarkdownParserError):
+                with self.assertRaises(SystemExit) as cm_exc:
                     main()
+
+        self.assertEqual(cm_exc.exception.code, 1)
+        self.assertEqual(stderr.getvalue().replace(input_dir, '<input_dir>'), '''\
+<input_dir>/test.smd:1: error: Syntax error''')
+        self.assertEqual(stdout.getvalue(), '')
 
     def test_validate_value_error(self):
         test_files = [
