@@ -1,3 +1,7 @@
+## 1.1.8 (2021-11-30)
+
+- [6370bf5](https://github.com/craigahobbs/schema-markdown/commit/6370bf5) - decode_query_string improvements
+
 ## 1.1.7 (2021-10-25)
 
 - [752e0d1](https://github.com/craigahobbs/schema-markdown/commit/752e0d1) - improve compile tool's error output
