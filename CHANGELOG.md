@@ -1,3 +1,7 @@
+## 1.1.9 (2021-11-30)
+
+- [70057af](https://github.com/craigahobbs/schema-markdown/commit/70057af) - fix decode_query_string empty string case
+
 ## 1.1.8 (2021-11-30)
 
 - [6370bf5](https://github.com/craigahobbs/schema-markdown/commit/6370bf5) - decode_query_string improvements
