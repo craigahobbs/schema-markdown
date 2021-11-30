@@ -74,9 +74,10 @@ class TestDecodeQueryString(unittest.TestCase):
         )
 
     def test_empty_string(self):
-        with self.assertRaises(ValueError) as cm_exc:
-            decode_query_string('')
-        self.assertEqual(str(cm_exc.exception), "Invalid key/value pair ''")
+        self.assertEqual(
+            decode_query_string(''),
+            {}
+        )
 
     def test_empty_string_value(self):
         self.assertEqual(
@@ -151,9 +152,10 @@ class TestDecodeQueryString(unittest.TestCase):
         )
 
     def test_empty_string_key_with_no_equal(self):
-        with self.assertRaises(ValueError) as cm_exc:
-            decode_query_string('a=7&')
-        self.assertEqual(str(cm_exc.exception), "Invalid key/value pair ''")
+        self.assertEqual(
+            decode_query_string('a=7&'),
+            {'a': '7'}
+        )
 
     def test_two_empty_key_values(self):
         with self.assertRaises(ValueError) as cm_exc:
@@ -173,12 +175,12 @@ class TestDecodeQueryString(unittest.TestCase):
 
     def test_key_with_no_equal(self):
         with self.assertRaises(ValueError) as cm_exc:
-            decode_query_string('a=7&b')
+            decode_query_string('a=7&b&c=11')
         self.assertEqual(str(cm_exc.exception), "Invalid key/value pair 'b'")
 
     def test_key_with_no_equal_long(self):
         with self.assertRaises(ValueError) as cm_exc:
-            decode_query_string('a=7&' + 'b' * 2000)
+            decode_query_string('a=7&' + ('b' * 2000) + '&c=11')
         self.assertEqual(str(cm_exc.exception), f"Invalid key/value pair '{'b' * 99}")
 
     def test_two_empty_keys_with_no_equal(self):

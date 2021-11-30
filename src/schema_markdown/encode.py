@@ -104,14 +104,17 @@ def decode_query_string(query_string, encoding='utf-8'):
 
     # Build the object
     result = [None]
-    for key_value in (key_value_str.split('=') for key_value_str in query_string.split('&')):
-
+    key_values = query_string.split('&')
+    for ix_key_value, key_value in enumerate(key_values):
         # Split the key/value string
         try:
-            key_str, value_str = key_value
+            key_str, value_str = key_value.split('=', 1)
             value = unquote(value_str, encoding=encoding)
         except ValueError:
-            raise ValueError(f"Invalid key/value pair {'='.join(key_value)!r:.100s}")
+            # Ignore hash IDs
+            if ix_key_value == len(key_values) - 1:
+                continue
+            raise ValueError(f"Invalid key/value pair {key_value!r:.100s}")
 
         # Find/create the object on which to set the value
         parent = result
