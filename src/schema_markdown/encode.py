@@ -104,19 +104,19 @@ def decode_query_string(query_string, encoding='utf-8'):
 
     # Build the object
     result = [None]
-    for key_value in (key_value_str.split('=') for key_value_str in query_string.split('&') if key_value_str):
+    for key_value in (key_value_str.split('=') for key_value_str in query_string.split('&')):
 
         # Split the key/value string
         try:
             key_str, value_str = key_value
-            value = unquote(value_str, encoding=encoding) if encoding else value_str
+            value = unquote(value_str, encoding=encoding)
         except ValueError:
             raise ValueError(f"Invalid key/value pair {'='.join(key_value)!r:.100s}")
 
         # Find/create the object on which to set the value
         parent = result
         key_parent = 0
-        for key in (unquote(key, encoding=encoding) if encoding else key for key in key_str.split('.')):
+        for key in (unquote(key, encoding=encoding) for key in key_str.split('.')):
             obj = parent[key_parent]
 
             # Array key?  First "key" of an array must start with "0".

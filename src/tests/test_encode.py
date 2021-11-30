@@ -74,10 +74,9 @@ class TestDecodeQueryString(unittest.TestCase):
         )
 
     def test_empty_string(self):
-        self.assertEqual(
-            decode_query_string(''),
-            {}
-        )
+        with self.assertRaises(ValueError) as cm_exc:
+            decode_query_string('')
+        self.assertEqual(str(cm_exc.exception), "Invalid key/value pair ''")
 
     def test_empty_string_value(self):
         self.assertEqual(
@@ -152,22 +151,19 @@ class TestDecodeQueryString(unittest.TestCase):
         )
 
     def test_empty_string_key_with_no_equal(self):
-        self.assertEqual(
-            decode_query_string('a=7&'),
-            {'a': '7'}
-        )
+        with self.assertRaises(ValueError) as cm_exc:
+            decode_query_string('a=7&')
+        self.assertEqual(str(cm_exc.exception), "Invalid key/value pair ''")
 
     def test_two_empty_key_values(self):
-        self.assertEqual(
-            decode_query_string('&'),
-            {}
-        )
+        with self.assertRaises(ValueError) as cm_exc:
+            decode_query_string('&')
+        self.assertEqual(str(cm_exc.exception), "Invalid key/value pair ''")
 
     def test_multiple_empty_key_values(self):
-        self.assertEqual(
-            decode_query_string('&&'),
-            {}
-        )
+        with self.assertRaises(ValueError) as cm_exc:
+            decode_query_string('&&')
+        self.assertEqual(str(cm_exc.exception), "Invalid key/value pair ''")
 
     def test_empty_string_subkey(self):
         self.assertEqual(
