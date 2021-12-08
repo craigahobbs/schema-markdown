@@ -253,11 +253,11 @@ def _validate_type(types, type_, value, member_fqn=None):
         array_value_nullable = array_attr is not None and 'nullable' in array_attr and array_attr['nullable']
         for ix_array_value, array_value in enumerate(value_new):
             member_fqn_value = f'{ix_array_value}' if member_fqn is None else f'{member_fqn}.{ix_array_value}'
-            if array_value is None or (array_value_nullable and array_value == 'null'):
+            if array_value_nullable and (array_value is None or array_value == 'null'):
                 array_value = None
             else:
                 array_value = _validate_type(types, array_type, array_value, member_fqn_value)
-            _validate_attr(array_type, array_attr, array_value, member_fqn_value)
+                _validate_attr(array_type, array_attr, array_value, member_fqn_value)
             value_copy.append(array_value)
 
         # Return the validated, transformed copy
@@ -285,18 +285,18 @@ def _validate_type(types, type_, value, member_fqn=None):
             member_fqn_key = dict_key if member_fqn is None else f'{member_fqn}.{dict_key}'
 
             # Validate the key
-            if dict_key is None or (dict_key_nullable and dict_key == 'null'):
+            if dict_key_nullable and (dict_key is None or dict_key == 'null'):
                 dict_key = None
             else:
                 dict_key = _validate_type(types, dict_key_type, dict_key, member_fqn)
-            _validate_attr(dict_key_type, dict_key_attr, dict_key, member_fqn)
+                _validate_attr(dict_key_type, dict_key_attr, dict_key, member_fqn)
 
             # Validate the value
-            if dict_value is None or (dict_value_nullable and dict_value == 'null'):
+            if dict_value_nullable and (dict_value is None or dict_value == 'null'):
                 dict_value = None
             else:
                 dict_value = _validate_type(types, dict_type, dict_value, member_fqn_key)
-            _validate_attr(dict_type, dict_attr, dict_value, member_fqn_key)
+                _validate_attr(dict_type, dict_attr, dict_value, member_fqn_key)
 
             # Copy the key/value
             value_copy[dict_key] = dict_value
@@ -319,11 +319,11 @@ def _validate_type(types, type_, value, member_fqn=None):
 
             # Validate the value
             value_nullable = typedef_attr is not None and 'nullable' in typedef_attr and typedef_attr['nullable']
-            if value is None or (value_nullable and value == 'null'):
+            if value_nullable and (value is None or value == 'null'):
                 value_new = None
             else:
                 value_new = _validate_type(types, typedef['type'], value, member_fqn)
-            _validate_attr(type_, typedef_attr, value_new, member_fqn)
+                _validate_attr(type_, typedef_attr, value_new, member_fqn)
 
         # enum?
         elif 'enum' in user_type:
@@ -355,6 +355,7 @@ def _validate_type(types, type_, value, member_fqn=None):
                 member_name = member['name']
                 member_fqn_member = member_name if member_fqn is None else f'{member_fqn}.{member_name}'
                 member_optional = member.get('optional', False)
+                member_nullable = 'attr' in member and member['attr'].get('nullable', False)
 
                 # Missing non-optional member?
                 if member_name not in value_new:
@@ -363,9 +364,11 @@ def _validate_type(types, type_, value, member_fqn=None):
                 else:
                     # Validate the member value
                     member_value = value_new[member_name]
-                    if member_value is not None:
+                    if member_nullable and (member_value is None or member_value == 'null'):
+                        member_value = None
+                    else:
                         member_value = _validate_type(types, member['type'], member_value, member_fqn_member)
-                    _validate_attr(member['type'], member.get('attr'), member_value, member_fqn_member)
+                        _validate_attr(member['type'], member.get('attr'), member_value, member_fqn_member)
 
                     # Copy the validated member
                     value_copy[member_name] = member_value
@@ -393,11 +396,7 @@ def _member_error(type_, value, member_fqn, attr=None):
 
 
 def _validate_attr(type_, attr, value, member_fqn):
-    if value is None:
-        value_nullable = attr is not None and 'nullable' in attr and attr['nullable']
-        if not value_nullable:
-            raise _member_error(type_, value, member_fqn)
-    elif attr is not None:
+    if attr is not None:
         if 'eq' in attr and not value == attr['eq']:
             raise _member_error(type_, value, member_fqn, f'== {attr["eq"]}')
         if 'lt' in attr and not value < attr['lt']:

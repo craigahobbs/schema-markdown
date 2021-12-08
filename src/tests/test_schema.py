@@ -784,7 +784,7 @@ class TestValidateType(unittest.TestCase):
         obj = None
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'typedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'typedef'")
+        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'int'")
         self.assertIsNone(cm_exc.exception.member)
 
         obj = 'null'
@@ -1244,13 +1244,10 @@ class TestValidateType(unittest.TestCase):
         self.assertDictEqual(validate_type(types, 'MyStruct', obj), obj)
 
         obj = {'a': 7, 'b': None, 'c': 'null', 'd': 7.1}
-        self.assertDictEqual(validate_type(types, 'MyStruct', obj), obj)
+        self.assertDictEqual(validate_type(types, 'MyStruct', obj), {'a': 7, 'b': None, 'c': None, 'd': 7.1})
 
         obj = {'a': 7, 'b': 'null', 'c': None, 'd': 7.1}
-        with self.assertRaises(ValidationError) as cm_exc:
-            validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'null' (type 'str') for member 'b', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, 'b')
+        self.assertDictEqual(validate_type(types, 'MyStruct', obj), {'a': 7, 'b': None, 'c': None, 'd': 7.1})
 
         obj = {'a': None, 'b': None, 'c': None, 'd': 7.1}
         with self.assertRaises(ValidationError) as cm_exc:
