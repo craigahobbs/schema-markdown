@@ -1,3 +1,7 @@
+## 1.1.10 (2021-12-08)
+
+- [26ebc99](https://github.com/craigahobbs/schema-markdown/commit/26ebc99) - fix nullable member issue
+
 ## 1.1.9 (2021-11-30)
 
 - [70057af](https://github.com/craigahobbs/schema-markdown/commit/70057af) - fix decode_query_string empty string case
