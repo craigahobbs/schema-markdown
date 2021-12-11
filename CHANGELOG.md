@@ -1,3 +1,7 @@
+## 1.1.11 (2021-12-11)
+
+- [633e57c](https://github.com/craigahobbs/schema-markdown/commit/633e57c) - allow arbitrary quoted enum values
+
 ## 1.1.10 (2021-12-08)
 
 - [26ebc99](https://github.com/craigahobbs/schema-markdown/commit/26ebc99) - fix nullable member issue
