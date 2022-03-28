@@ -59,7 +59,7 @@ TEST_VALUE = '''\
 # Helper context manager to create a list of files in a temporary directory
 @contextmanager
 def create_test_files(file_defs):
-    tempdir = TemporaryDirectory() # pylint: disable=consider-using-with
+    tempdir = TemporaryDirectory()
     try:
         for path_parts, content in file_defs:
             if isinstance(path_parts, str):
