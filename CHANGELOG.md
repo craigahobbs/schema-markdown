@@ -1,3 +1,9 @@
+## 1.1.12 (2022-05-10)
+
+- [8c702f4](https://github.com/craigahobbs/schema-markdown/commit/8c702f4) - remove TypeModel
+
+- [43be8fe](https://github.com/craigahobbs/schema-markdown/commit/43be8fe) - add python 3.11 support
+
 ## 1.1.11 (2021-12-11)
 
 - [633e57c](https://github.com/craigahobbs/schema-markdown/commit/633e57c) - allow arbitrary quoted enum values
