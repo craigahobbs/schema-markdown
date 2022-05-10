@@ -21,8 +21,7 @@ outputs a :ref:`type-model:Type Model` object:
 
 .. code-block:: text
 
-   usage: schema-markdown compile [-h] [-o PATH] [-t TITLE] [--referenced TYPE]
-                                  [--compact]
+   usage: schema-markdown compile [-h] [-o PATH] [--referenced TYPE] [--compact]
                                   [schema ...]
 
    positional arguments:
@@ -32,7 +31,6 @@ outputs a :ref:`type-model:Type Model` object:
      -h, --help         show this help message and exit
      -o PATH            Optional JSON type model output file path. Default is
                         stdout.
-     -t TITLE           The type model title
      --referenced TYPE  Output only referenced types
      --compact          Generate compact JSON
 
