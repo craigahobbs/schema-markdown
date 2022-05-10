@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Reference &mdash; schema-markdown 1.1.11 documentation</title>
+  <title>Reference &mdash; schema-markdown 1.1.12 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -50,7 +50,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#schemamarkdownparsererror">SchemaMarkdownParserError</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validate-type">validate_type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validate-type-model">validate_type_model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#validate-type-model-types">validate_type_model_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validationerror">ValidationError</a></li>
 </ul>
 </li>
@@ -162,7 +161,7 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 <span class="gp">... </span>        <span class="p">}</span>
 <span class="gp">... </span>    <span class="p">}</span>
 <span class="gp">... </span><span class="p">}</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model_types</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> 
+<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model</span><span class="p">(</span><span class="n">types</span><span class="p">)</span> 
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pprint</span> <span class="kn">import</span> <span class="n">pprint</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pprint</span><span class="p">(</span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">get_referenced_types</span><span class="p">(</span><span class="n">types</span><span class="p">,</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">))</span>
 <span class="go">{&#39;Struct1&#39;: {&#39;struct&#39;: {&#39;members&#39;: [{&#39;name&#39;: &#39;a&#39;, &#39;type&#39;: {&#39;user&#39;: &#39;Struct2&#39;}}],</span>
@@ -377,50 +376,8 @@ since some member types are transformed during validation.</p>
 <h2>validate_type_model<a class="headerlink" href="#validate-type-model" title="Permalink to this headline"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="schema_markdown.validate_type_model">
-<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">validate_type_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">validate_type_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model" title="Permalink to this definition"></a></dt>
 <dd><p>Validate a user type model</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>type_model</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The user type model</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The validated, transformed type model</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="validate-type-model-types">
-<h2>validate_type_model_types<a class="headerlink" href="#validate-type-model-types" title="Permalink to this headline"></a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model_types</span><span class="p">({</span>
-<span class="gp">... </span>    <span class="s1">&#39;Struct1&#39;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>        <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>            <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct1&#39;</span><span class="p">,</span>
-<span class="gp">... </span>            <span class="s1">&#39;members&#39;</span><span class="p">:</span> <span class="p">[</span>
-<span class="gp">... </span>                <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;Struct2&#39;</span><span class="p">}}</span>
-<span class="gp">... </span>            <span class="p">]</span>
-<span class="gp">... </span>        <span class="p">}</span>
-<span class="gp">... </span>    <span class="p">}</span>
-<span class="gp">... </span><span class="p">})</span> 
-<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type_model_types</span><span class="p">({</span>
-<span class="gp">... </span>        <span class="s1">&#39;MyStruct&#39;</span><span class="p">:</span> <span class="p">{</span>
-<span class="gp">... </span>            <span class="s1">&#39;struct&#39;</span><span class="p">:</span> <span class="p">{}</span>
-<span class="gp">... </span>        <span class="p">}</span>
-<span class="gp">... </span>    <span class="p">})</span>
-<span class="gp">... </span><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s1">&#39;</span>
-<span class="go">&quot;Required member &#39;MyStruct.struct.name&#39; missing&quot;</span>
-</pre></div>
-</div>
-<dl class="py function">
-<dt class="sig sig-object py" id="schema_markdown.validate_type_model_types">
-<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">validate_type_model_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model_types" title="Permalink to this definition"></a></dt>
-<dd><p>Validate a user type model’s types</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The map of user type name to user type model</p>
