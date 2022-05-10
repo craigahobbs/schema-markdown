@@ -24,27 +24,24 @@ struct MyStruct
 
 TEST_MODEL = '''\
 {
-    "title": "Index",
-    "types": {
-        "MyStruct": {
-            "struct": {
-                "members": [
-                    {
-                        "name": "a",
-                        "type": {
-                            "builtin": "int"
-                        }
-                    },
-                    {
-                        "name": "b",
-                        "optional": true,
-                        "type": {
-                            "builtin": "bool"
-                        }
+    "MyStruct": {
+        "struct": {
+            "members": [
+                {
+                    "name": "a",
+                    "type": {
+                        "builtin": "int"
                     }
-                ],
-                "name": "MyStruct"
-            }
+                },
+                {
+                    "name": "b",
+                    "optional": true,
+                    "type": {
+                        "builtin": "bool"
+                    }
+                }
+            ],
+            "name": "MyStruct"
         }
     }
 }'''
@@ -96,24 +93,6 @@ class TestMain(unittest.TestCase):
             with open(output_path, 'r', encoding='utf-8') as output_file:
                 self.assertEqual(output_file.read(), TEST_MODEL)
 
-    def test_compile_title(self):
-        test_files = [
-            ('test.smd', TEST_SCHEMA_MARKDOWN)
-        ]
-        with create_test_files(test_files) as input_dir:
-            input_path = os.path.join(input_dir, 'test.smd')
-            output_path = os.path.join(input_dir, 'test.json')
-            argv = ['python3 -m schema_markdown', 'compile', input_path, '-o', output_path, '-t', 'My Type Model']
-            with unittest_mock.patch('sys.stdout', new=StringIO()) as stdout, \
-                 unittest_mock.patch('sys.stderr', new=StringIO()) as stderr, \
-                 unittest_mock.patch('sys.argv', argv):
-                main()
-
-            self.assertEqual(stdout.getvalue(), '')
-            self.assertEqual(stderr.getvalue(), '')
-            with open(output_path, 'r', encoding='utf-8') as output_file:
-                self.assertEqual(output_file.read(), TEST_MODEL.replace('"title": "Index"', '"title": "My Type Model"'))
-
     def test_compile_multiple(self):
         test_files = [
             ('test.smd', TEST_SCHEMA_MARKDOWN),
@@ -134,35 +113,32 @@ class TestMain(unittest.TestCase):
             with open(output_path, 'r', encoding='utf-8') as output_file:
                 self.assertEqual(output_file.read(), '''\
 {
-    "title": "Index",
-    "types": {
-        "MyStruct": {
-            "struct": {
-                "members": [
-                    {
-                        "name": "a",
-                        "type": {
-                            "builtin": "int"
-                        }
-                    },
-                    {
-                        "name": "b",
-                        "optional": true,
-                        "type": {
-                            "builtin": "bool"
-                        }
+    "MyStruct": {
+        "struct": {
+            "members": [
+                {
+                    "name": "a",
+                    "type": {
+                        "builtin": "int"
                     }
-                ],
-                "name": "MyStruct"
-            }
-        },
-        "MyStruct2": {
-            "struct": {
-                "bases": [
-                    "MyStruct"
-                ],
-                "name": "MyStruct2"
-            }
+                },
+                {
+                    "name": "b",
+                    "optional": true,
+                    "type": {
+                        "builtin": "bool"
+                    }
+                }
+            ],
+            "name": "MyStruct"
+        }
+    },
+    "MyStruct2": {
+        "struct": {
+            "bases": [
+                "MyStruct"
+            ],
+            "name": "MyStruct2"
         }
     }
 }''')
@@ -195,30 +171,27 @@ struct Struct4
             with open(output_path, 'r', encoding='utf-8') as output_file:
                 self.assertEqual(output_file.read(), '''\
 {
-    "title": "Index",
-    "types": {
-        "Struct1": {
-            "struct": {
-                "members": [
-                    {
-                        "name": "b",
-                        "type": {
-                            "user": "Struct2"
-                        }
+    "Struct1": {
+        "struct": {
+            "members": [
+                {
+                    "name": "b",
+                    "type": {
+                        "user": "Struct2"
                     }
-                ],
-                "name": "Struct1"
-            }
-        },
-        "Struct2": {
-            "struct": {
-                "name": "Struct2"
-            }
-        },
-        "Struct3": {
-            "struct": {
-                "name": "Struct3"
-            }
+                }
+            ],
+            "name": "Struct1"
+        }
+    },
+    "Struct2": {
+        "struct": {
+            "name": "Struct2"
+        }
+    },
+    "Struct3": {
+        "struct": {
+            "name": "Struct3"
         }
     }
 }''')

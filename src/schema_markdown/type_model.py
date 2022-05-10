@@ -10,16 +10,6 @@ from .parser import SchemaMarkdownParser
 
 #: The Schema Markdown type model defined as Schema Markdown.
 TYPE_MODEL_SMD = '''\
-# A type model with a title
-struct TypeModel
-
-    # The type model's title
-    string title
-
-    # The type model
-    Types types
-
-
 # Map of user type name to user type model
 typedef UserType{len > 0} Types
 
@@ -255,8 +245,5 @@ struct ActionURL
 '''
 
 
-#: The Schema Markdown type model.
-TYPE_MODEL = {
-    'title': 'The Schema Markdown Type Model',
-    'types': SchemaMarkdownParser(TYPE_MODEL_SMD).types
-}
+#: The Schema Markdown type model
+TYPE_MODEL = SchemaMarkdownParser(TYPE_MODEL_SMD).types

@@ -43,7 +43,7 @@ get_referenced_types
     ...         }
     ...     }
     ... }
-    >>> schema_markdown.validate_type_model_types(types) # doctest: +SKIP
+    >>> schema_markdown.validate_type_model(types) # doctest: +SKIP
     >>> from pprint import pprint
     >>> pprint(schema_markdown.get_referenced_types(types, 'Struct1'))
     {'Struct1': {'struct': {'members': [{'name': 'a', 'type': {'user': 'Struct2'}}],
@@ -102,32 +102,6 @@ validate_type_model
 
 .. autofunction:: schema_markdown.validate_type_model
 
-
-validate_type_model_types
--------------------------
-
-    >>> import schema_markdown
-    >>> schema_markdown.validate_type_model_types({
-    ...     'Struct1': {
-    ...         'struct': {
-    ...             'name': 'Struct1',
-    ...             'members': [
-    ...                 {'name': 'a', 'type': {'user': 'Struct2'}}
-    ...             ]
-    ...         }
-    ...     }
-    ... }) # doctest: +SKIP
-    >>> try:
-    ...     schema_markdown.validate_type_model_types({
-    ...         'MyStruct': {
-    ...             'struct': {}
-    ...         }
-    ...     })
-    ... except Exception as exc:
-    ...     f'{exc}'
-    "Required member 'MyStruct.struct.name' missing"
-
-.. autofunction:: schema_markdown.validate_type_model_types
 
 
 ValidationError

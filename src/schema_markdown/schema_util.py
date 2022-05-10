@@ -6,7 +6,7 @@ schema-markdown schema type model utilities
 """
 
 
-def validate_type_model_types_errors(types):
+def validate_type_model_errors(types):
     """
     Validate a user type model's types
 

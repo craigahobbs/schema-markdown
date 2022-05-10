@@ -20,8 +20,7 @@ from .schema import \
     get_referenced_types, \
     get_struct_members, \
     validate_type, \
-    validate_type_model, \
-    validate_type_model_types
+    validate_type_model
 
 from .type_model import \
     TYPE_MODEL

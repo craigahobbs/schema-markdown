@@ -24,7 +24,6 @@ def main():
     parser_compile = subparsers.add_parser('compile', help='Parse Schema Markdown files')
     parser_compile.add_argument('schema', nargs='*', help='Schema Markdown file paths. If none, default is stdin.')
     parser_compile.add_argument('-o', metavar='PATH', dest='output', help='Optional JSON type model output file path. Default is stdout.')
-    parser_compile.add_argument('-t', dest='title', help='The type model title')
     parser_compile.add_argument('--referenced', metavar='TYPE', action='append', help='Output only referenced types')
     parser_compile.add_argument('--compact', action='store_true', help='Generate compact JSON')
     parser_validate = subparsers.add_parser('validate', help='Schema-validate JSON files')
@@ -57,19 +56,13 @@ def main():
                 referenced_types.update(get_referenced_types(types, referenced_type))
             types = referenced_types
 
-        # Create the type model with title
-        type_model = {
-            'title': args.title if args.title else 'Index',
-            'types': types
-        }
-
         # Write the JSON
         json_encoder = json.JSONEncoder(indent=None if args.compact else 4, sort_keys=True)
         if args.output is not None:
             with open(args.output, 'w', encoding='utf-8') as json_file:
-                json_file.write(json_encoder.encode(type_model))
+                json_file.write(json_encoder.encode(types))
         else:
-            sys.stdout.write(json_encoder.encode(type_model))
+            sys.stdout.write(json_encoder.encode(types))
 
     # Validate command?
     else: # args.command == 'validate'
