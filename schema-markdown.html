@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -80,7 +81,7 @@
            <div itemprop="articleBody">
              
   <section id="schema-markdown">
-<h1>Schema Markdown<a class="headerlink" href="#schema-markdown" title="Permalink to this headline"></a></h1>
+<h1>Schema Markdown<a class="headerlink" href="#schema-markdown" title="Permalink to this heading"></a></h1>
 <p>Schema Markdown is a human-friendly schema definition language. It is used to define structure
 types, enumeration types, typedef types, and actions (JSON APIs). Schema Markdown parsing is done by
 the <a class="reference internal" href="reference.html#schemamarkdownparser"><span class="std std-ref">SchemaMarkdownParser</span></a> class. For example:</p>
@@ -113,13 +114,13 @@ the <a class="reference internal" href="reference.html#schemamarkdownparser"><sp
 <p>The type model is used to validate objects in concunction with the
 <a class="reference internal" href="reference.html#validate-type"><span class="std std-ref">validate_type</span></a> function.</p>
 <section id="comments">
-<h2>Comments<a class="headerlink" href="#comments" title="Permalink to this headline"></a></h2>
+<h2>Comments<a class="headerlink" href="#comments" title="Permalink to this heading"></a></h2>
 <p>Schema Markdown comments are lines beginning with the “#” character preceded only by whitespace.
 Comments are interpreted as documentation markdown text lines to be applied to the next Schema
 Markdown definition. If you want a non-documentation comment use the “#-” form of commment.</p>
 </section>
 <section id="built-in-types">
-<h2>Built-in Types<a class="headerlink" href="#built-in-types" title="Permalink to this headline"></a></h2>
+<h2>Built-in Types<a class="headerlink" href="#built-in-types" title="Permalink to this heading"></a></h2>
 <p>Schema Markdown contains the following built-in types:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">bool</span></code> - a boolean</p></li>
@@ -133,7 +134,7 @@ Markdown definition. If you want a non-documentation comment use the “#-” fo
 </ul>
 </section>
 <section id="structure-types">
-<h2>Structure Types<a class="headerlink" href="#structure-types" title="Permalink to this headline"></a></h2>
+<h2>Structure Types<a class="headerlink" href="#structure-types" title="Permalink to this heading"></a></h2>
 <p>Structure definitions contain zero or more member definitions. Member definitions may take the
 following forms:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
@@ -180,7 +181,7 @@ following forms:</p>
 </div>
 </section>
 <section id="typedefs">
-<h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline"></a></h2>
+<h2>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this heading"></a></h2>
 <p>Typedefs are a type definition and its associated attributes. For example:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">typedef int(&gt; 0) PositiveInt</span>
@@ -195,7 +196,7 @@ following forms:</p>
 </div>
 </section>
 <section id="type-attributes">
-<h2>Type Attributes<a class="headerlink" href="#type-attributes" title="Permalink to this headline"></a></h2>
+<h2>Type Attributes<a class="headerlink" href="#type-attributes" title="Permalink to this heading"></a></h2>
 <p>Type attributes are used to add validation constraints to struct members and typedefs.</p>
 <p>The following type attributes are available for <code class="docutils literal notranslate"><span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">float</span></code> types:</p>
 <ul class="simple">
@@ -215,7 +216,7 @@ following forms:</p>
 </ul>
 </section>
 <section id="enumeration-types">
-<h2>Enumeration Types<a class="headerlink" href="#enumeration-types" title="Permalink to this headline"></a></h2>
+<h2>Enumeration Types<a class="headerlink" href="#enumeration-types" title="Permalink to this heading"></a></h2>
 <p>An enumeration is a set of enumeration value strings. An enumeration member will validate only
 strings in the enumeration value set. For example:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
@@ -240,7 +241,7 @@ strings in the enumeration value set. For example:</p>
 </div>
 </section>
 <section id="actions">
-<h2>Actions<a class="headerlink" href="#actions" title="Permalink to this headline"></a></h2>
+<h2>Actions<a class="headerlink" href="#actions" title="Permalink to this heading"></a></h2>
 <p>Actions are JSON APIs defined using the “action” keyword as shown above. For example:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1"># Sum a list of number pairs</span>
@@ -280,7 +281,7 @@ should have a corresponding member in the “path” section.</p></li>
 </ul>
 </section>
 <section id="inheritance">
-<h2>Inheritance<a class="headerlink" href="#inheritance" title="Permalink to this headline"></a></h2>
+<h2>Inheritance<a class="headerlink" href="#inheritance" title="Permalink to this heading"></a></h2>
 <p>Structure types can multiple-inherit members from other structure types. For example:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">struct s1</span>
@@ -324,7 +325,7 @@ structure sections.</p>
 </div>
 </section>
 <section id="documentation-groups">
-<h2>Documentation Groups<a class="headerlink" href="#documentation-groups" title="Permalink to this headline"></a></h2>
+<h2>Documentation Groups<a class="headerlink" href="#documentation-groups" title="Permalink to this heading"></a></h2>
 <p>Schema Markdown user types can be grouped for documentation purposes. To set an active documentation
 group, use the <code class="docutils literal notranslate"><span class="pre">group</span></code> keyword with a group name string. The group applies to all types defined
 afterward. To clear the active documentation group, use the <code class="docutils literal notranslate"><span class="pre">group</span></code> keyword without a string.</p>

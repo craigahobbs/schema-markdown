@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -79,9 +80,9 @@
            <div itemprop="articleBody">
              
   <section id="reference">
-<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline"></a></h1>
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this heading"></a></h1>
 <section id="decode-query-string">
-<h2>decode_query_string<a class="headerlink" href="#decode-query-string" title="Permalink to this headline"></a></h2>
+<h2>decode_query_string<a class="headerlink" href="#decode-query-string" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="schema_markdown.decode_query_string">
 <span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">decode_query_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.decode_query_string" title="Permalink to this definition"></a></dt>
@@ -109,7 +110,7 @@ form. List keys are the index into the list, must be in order. For example:</p>
 
 </section>
 <section id="encode-query-string">
-<h2>encode_query_string<a class="headerlink" href="#encode-query-string" title="Permalink to this headline"></a></h2>
+<h2>encode_query_string<a class="headerlink" href="#encode-query-string" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="schema_markdown.encode_query_string">
 <span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">encode_query_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.encode_query_string" title="Permalink to this definition"></a></dt>
@@ -134,7 +135,7 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 
 </section>
 <section id="get-referenced-types">
-<h2>get_referenced_types<a class="headerlink" href="#get-referenced-types" title="Permalink to this headline"></a></h2>
+<h2>get_referenced_types<a class="headerlink" href="#get-referenced-types" title="Permalink to this heading"></a></h2>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">types</span> <span class="o">=</span> <span class="p">{</span>
 <span class="gp">... </span>    <span class="s1">&#39;Struct1&#39;</span><span class="p">:</span> <span class="p">{</span>
@@ -190,11 +191,11 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 
 </section>
 <section id="jsonencoder">
-<h2>JSONEncoder<a class="headerlink" href="#jsonencoder" title="Permalink to this headline"></a></h2>
+<h2>JSONEncoder<a class="headerlink" href="#jsonencoder" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="schema_markdown.JSONEncoder">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">JSONEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_ascii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.JSONEncoder" title="Permalink to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">json.encoder.JSONEncoder</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JSONEncoder</span></code></p>
 <p>A <a class="reference external" href="https://docs.python.org/3/library/json.html#json.JSONEncoder" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">JSONEncoder</span></code></a> sub-class with support for <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>,
 <a class="reference external" href="https://docs.python.org/3/library/decimal.html#decimal.Decimal" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Decimal</span></code></a>, and <a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UUID</span></code></a> objects.</p>
 <dl class="py method">
@@ -208,7 +209,7 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 
 </section>
 <section id="schemamarkdownparser">
-<h2>SchemaMarkdownParser<a class="headerlink" href="#schemamarkdownparser" title="Permalink to this headline"></a></h2>
+<h2>SchemaMarkdownParser<a class="headerlink" href="#schemamarkdownparser" title="Permalink to this heading"></a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="schema_markdown.SchemaMarkdownParser">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">SchemaMarkdownParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParser" title="Permalink to this definition"></a></dt>
@@ -310,7 +311,7 @@ Schema Markdown files. Be sure to call <a class="reference internal" href="#sche
 
 </section>
 <section id="schemamarkdownparsererror">
-<h2>SchemaMarkdownParserError<a class="headerlink" href="#schemamarkdownparsererror" title="Permalink to this headline"></a></h2>
+<h2>SchemaMarkdownParserError<a class="headerlink" href="#schemamarkdownparsererror" title="Permalink to this heading"></a></h2>
 <dl class="py exception">
 <dt class="sig sig-object py" id="schema_markdown.SchemaMarkdownParserError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">SchemaMarkdownParserError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParserError" title="Permalink to this definition"></a></dt>
@@ -330,7 +331,7 @@ Schema Markdown files. Be sure to call <a class="reference internal" href="#sche
 
 </section>
 <section id="validate-type">
-<h2>validate_type<a class="headerlink" href="#validate-type" title="Permalink to this headline"></a></h2>
+<h2>validate_type<a class="headerlink" href="#validate-type" title="Permalink to this heading"></a></h2>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">uuid</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">parser</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">SchemaMarkdownParser</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span>
 <span class="gp">... </span><span class="s1">struct MyStruct</span>
@@ -373,7 +374,7 @@ since some member types are transformed during validation.</p>
 
 </section>
 <section id="validate-type-model">
-<h2>validate_type_model<a class="headerlink" href="#validate-type-model" title="Permalink to this headline"></a></h2>
+<h2>validate_type_model<a class="headerlink" href="#validate-type-model" title="Permalink to this heading"></a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="schema_markdown.validate_type_model">
 <span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">validate_type_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model" title="Permalink to this definition"></a></dt>
@@ -393,7 +394,7 @@ since some member types are transformed during validation.</p>
 
 </section>
 <section id="validationerror">
-<h2>ValidationError<a class="headerlink" href="#validationerror" title="Permalink to this headline"></a></h2>
+<h2>ValidationError<a class="headerlink" href="#validationerror" title="Permalink to this heading"></a></h2>
 <dl class="py exception">
 <dt class="sig sig-object py" id="schema_markdown.ValidationError">
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">ValidationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_fqn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.ValidationError" title="Permalink to this definition"></a></dt>
