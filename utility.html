@@ -1,0 +1,275 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>Utility &#8212; schema-markdown 1.2.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Errors" href="errors.html" />
+    <link rel="prev" title="Reference" href="reference.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+    <link rel="canonical" href="https://craigahobbs.github.io/schema-markdown/utility.html"/>
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">schema-markdown</a></h1>
+
+
+
+<p class="blurb">A schema definition and validation library</p>
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=craigahobbs&repo=schema-markdown&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Utility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#decode-query-string">decode_query_string</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#encode-query-string">encode_query_string</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-enum-values">get_enum_values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-referenced-types">get_referenced_types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#get-struct-members">get_struct_members</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#validate-type-model">validate_type_model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#jsonencoder">JSONEncoder</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="reference.html" title="previous chapter">Reference</a></li>
+      <li>Next: <a href="errors.html" title="next chapter">Errors</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="utility">
+<h1>Utility<a class="headerlink" href="#utility" title="Permalink to this heading">¶</a></h1>
+<section id="decode-query-string">
+<h2>decode_query_string<a class="headerlink" href="#decode-query-string" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="schema_markdown.decode_query_string">
+<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">decode_query_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.decode_query_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decode an object from a query string. Each member key of the query string is expressed in fully-qualified
+form. List keys are the index into the list, must be in order. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">decode_query_string</span><span class="p">(</span><span class="s1">&#39;a=5&amp;b=3.14&amp;c.d=foo&amp;c.e.0=1&amp;c.e.1=2&amp;c.e.2=3&amp;f.0.g=true&amp;f.1.g=false&#39;</span><span class="p">)</span>
+<span class="go">{&#39;a&#39;: &#39;5&#39;, &#39;b&#39;: &#39;3.14&#39;, &#39;c&#39;: {&#39;d&#39;: &#39;foo&#39;, &#39;e&#39;: [&#39;1&#39;, &#39;2&#39;, &#39;3&#39;]}, &#39;f&#39;: [{&#39;g&#39;: &#39;true&#39;}, {&#39;g&#39;: &#39;false&#39;}]}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>query_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The query string</p></li>
+<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The query string encoding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The decoded object</p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – Query string is invalid</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="encode-query-string">
+<h2>encode_query_string<a class="headerlink" href="#encode-query-string" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="schema_markdown.encode_query_string">
+<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">encode_query_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.encode_query_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encode an object as a query string. Dictionaries, lists, and tuples are recursed. Each member key is expressed in
+fully-qualified form. List keys are the index into the list, and are in order. For example:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">encode_query_string</span><span class="p">({</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mf">3.14</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;d&#39;</span><span class="p">:</span> <span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]},</span> <span class="s1">&#39;f&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span> <span class="p">{</span><span class="s1">&#39;g&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}]})</span>
+<span class="go">&#39;a=5&amp;b=3.14&amp;c.d=foo&amp;c.e.0=1&amp;c.e.1=2&amp;c.e.2=3&amp;f.0.g=true&amp;f.1.g=false&#39;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><em>object</em></a>) – The object to encode as a query string</p></li>
+<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The query string encoding</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The encoded query string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="get-enum-values">
+<h2>get_enum_values<a class="headerlink" href="#get-enum-values" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="schema_markdown.get_enum_values">
+<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">get_enum_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_enum_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate the enum’s values (inherited values first)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
+<li><p><strong>enum</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Enum'">enum model</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator of <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='EnumValue'">enum value models</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="get-referenced-types">
+<h2>get_referenced_types<a class="headerlink" href="#get-referenced-types" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="schema_markdown.get_referenced_types">
+<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">get_referenced_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">referenced_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_referenced_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a type’s referenced type model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
+<li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The type name</p></li>
+<li><p><strong>referenced_types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – An optional map of referenced user type name to user type</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The referenced <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="get-struct-members">
+<h2>get_struct_members<a class="headerlink" href="#get-struct-members" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="schema_markdown.get_struct_members">
+<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">get_struct_members</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_struct_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate the struct’s members (inherited members first)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
+<li><p><strong>struct</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Struct'">struct model</a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An iterator of <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='StructMember'">struct member models</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="validate-type-model">
+<h2>validate_type_model<a class="headerlink" href="#validate-type-model" title="Permalink to this heading">¶</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="schema_markdown.validate_type_model">
+<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">validate_type_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Validate a user type model</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The validated <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="errors.html#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="jsonencoder">
+<h2>JSONEncoder<a class="headerlink" href="#jsonencoder" title="Permalink to this heading">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="schema_markdown.JSONEncoder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">JSONEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_ascii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.JSONEncoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JSONEncoder</span></code></p>
+<p>A <a class="reference external" href="https://docs.python.org/3/library/json.html#json.JSONEncoder" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">JSONEncoder</span></code></a> sub-class with support for <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>,
+<a class="reference external" href="https://docs.python.org/3/library/decimal.html#decimal.Decimal" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Decimal</span></code></a>, and <a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UUID</span></code></a> objects.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="schema_markdown.JSONEncoder.default">
+<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.JSONEncoder.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>The override of the <a class="reference external" href="https://docs.python.org/3/library/json.html#json.JSONEncoder.default" title="(in Python v3.10)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">default()</span></code></a> method to add support for <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>,
+<a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/decimal.html#decimal.Decimal" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Decimal</span></code></a>, and <a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UUID</span></code></a> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2012, Craig A. Hobbs.
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

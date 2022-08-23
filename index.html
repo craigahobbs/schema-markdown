@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>schema-markdown &#8212; schema-markdown 1.2.0 documentation</title>
+    <title>schema-markdown &#8212; schema-markdown 1.2.1 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -51,6 +51,8 @@
 <h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="reference.html">Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utility.html">Utility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="errors.html">Errors</a></li>
 </ul>
 
 <div class="relations">
@@ -102,13 +104,13 @@
 <section id="define-a-schema">
 <h2>Define a Schema<a class="headerlink" href="#define-a-schema" title="Permalink to this heading">¶</a></h2>
 <p>Schemas are defined using the
-<a class="reference external" href="https://craigahobbs.github.io/schema-markdown-js/language/">Schema Markdown</a>
-language which is parsed by the
+<a class="reference external" href="https://craigahobbs.github.io/schema-markdown-js/language/">Schema Markdown language</a>,
+which is parsed by the
 <a class="reference external" href="https://craigahobbs.github.io/schema-markdown/reference.html#parse-schema-markdown">parse_schema_markdown</a>
 function. For example:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">schema_markdown</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">schema_markdown</span> <span class="kn">import</span> <span class="n">parse_schema_markdown</span>
 <span class="gp">...</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">model_types</span> <span class="o">=</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">parse_schema_markdown</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model_types</span> <span class="o">=</span> <span class="n">parse_schema_markdown</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
 <span class="gp">... </span><span class="s1"># An aggregate numerical operation</span>
 <span class="gp">... </span><span class="s1">struct Aggregation</span>
 <span class="gp">...</span><span class="s1"></span>
@@ -131,26 +133,30 @@ function. For example:</p>
 <p>To validate an object using the schema, use the
 <a class="reference external" href="https://craigahobbs.github.io/schema-markdown/reference.html#validate-type">validate_type</a>
 function. For example:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">&#39;Aggregation&#39;</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">schema_markdown</span> <span class="kn">import</span> <span class="n">validate_type</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">&#39;Aggregation&#39;</span><span class="p">,</span>
 <span class="gp">... </span>    <span class="p">{</span><span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
 <span class="go">{&#39;numbers&#39;: [1, 2, 3, 4]}</span>
 </pre></div>
 </div>
 <p>Notice that the numerical input ‘3’ above is <em>type-massaged</em> to the integer 3 by validation.</p>
 <p>Validation fails if the object does not match the schema:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">&#39;Aggregation&#39;</span><span class="p">,</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">schema_markdown</span> <span class="kn">import</span> <span class="n">ValidationError</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">&#39;Aggregation&#39;</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;asdf&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
-<span class="gp">... </span><span class="k">except</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
 <span class="go">&quot;Invalid value &#39;asdf&#39; (type &#39;str&#39;) for member &#39;numbers.2&#39;, expected type &#39;int&#39;&quot;</span>
 </pre></div>
 </div>
 <p>Validation also fails if a member constraint is violated:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">schema_markdown</span><span class="o">.</span><span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">&#39;Aggregation&#39;</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">&#39;Aggregation&#39;</span><span class="p">,</span>
 <span class="gp">... </span>        <span class="p">{</span><span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[]})</span>
-<span class="gp">... </span><span class="k">except</span> <span class="n">schema_markdown</span><span class="o">.</span><span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+<span class="gp">... </span><span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
 <span class="gp">... </span>    <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
 <span class="go">&quot;Invalid value [] (type &#39;list&#39;) for member &#39;numbers&#39;, expected type &#39;array&#39; [len &gt; 0]&quot;</span>
 </pre></div>
