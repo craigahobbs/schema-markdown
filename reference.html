@@ -4,7 +4,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Reference &#8212; schema-markdown 1.2.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -114,16 +114,16 @@ form. List keys are the index into the list, must be in order. For example:</p>
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query_string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The query string</p></li>
 <li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The query string encoding</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The decoded object</p>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – Query string is invalid</p>
 </dd>
 </dl>
@@ -142,13 +142,13 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 </pre></div>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>obj</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><em>object</em></a>) – The object to encode as a query string</p></li>
 <li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The query string encoding</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The encoded query string</p>
 </dd>
 </dl>
@@ -162,13 +162,13 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 <span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">get_enum_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_enum_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate the enum’s values (inherited values first)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
 <li><p><strong>enum</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Enum'">enum model</a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>An iterator of <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='EnumValue'">enum value models</a></p>
 </dd>
 </dl>
@@ -182,14 +182,14 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 <span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">get_referenced_types</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">referenced_types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_referenced_types" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a type’s referenced type model</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
 <li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The type name</p></li>
 <li><p><strong>referenced_types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – An optional map of referenced user type name to user type</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The referenced <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
 </dd>
 </dl>
@@ -203,13 +203,13 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 <span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">get_struct_members</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_struct_members" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate the struct’s members (inherited members first)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
 <li><p><strong>struct</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Struct'">struct model</a></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>An iterator of <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='StructMember'">struct member models</a></p>
 </dd>
 </dl>
@@ -223,7 +223,7 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 <span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">parse_schema_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.parse_schema_markdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parse Schema Markdown from a string or and iterator of strings</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.10)"><em>Iterable</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>)</em>) – The Schema Markdown text</p></li>
 <li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><em>object</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
@@ -231,10 +231,10 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 <li><p><strong>validate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, validate after parsing</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.SchemaMarkdownParserError" title="schema_markdown.SchemaMarkdownParserError"><strong>SchemaMarkdownParserError</strong></a> – A parsing error occurred</p>
 </dd>
 </dl>
@@ -249,7 +249,7 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 <dd><p>Type-validate a value using the schema-markdown user type model. Container values are duplicated
 since some member types are transformed during validation.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
 <li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The type name</p></li>
@@ -257,10 +257,10 @@ since some member types are transformed during validation.</p>
 <li><p><strong>member_fqn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The fully-qualified member name</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The validated, transformed value object</p>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
 </dd>
 </dl>
@@ -274,13 +274,13 @@ since some member types are transformed during validation.</p>
 <span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">validate_type_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Validate a user type model</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>The validated <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
 </dd>
-<dt class="field-odd">Raises</dt>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
 </dd>
 </dl>
@@ -312,7 +312,7 @@ since some member types are transformed during validation.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">SchemaMarkdownParserError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParserError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Schema Markdown parser exception</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>errors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>)</em>) – The list of error strings</p>
 </dd>
 </dl>
@@ -332,7 +332,7 @@ since some member types are transformed during validation.</p>
 <em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">ValidationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_fqn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.ValidationError" title="Permalink to this definition">¶</a></dt>
 <dd><p>schema-markdown type model validation error</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The error message</p></li>
 <li><p><strong>member_fqn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>None</em>) – The fully qualified member name or None</p></li>
