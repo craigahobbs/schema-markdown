@@ -19,7 +19,7 @@ def main():
         description='A schema definition and validation library',
         long_description=long_description,
         long_description_content_type='text/x-rst',
-        version='1.1.12',
+        version='1.2.0',
         author='Craig A. Hobbs',
         author_email='craigahobbs@gmail.com',
         keywords='schema validation json',
