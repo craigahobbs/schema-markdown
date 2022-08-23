@@ -68,8 +68,7 @@ function. For example:
 
 >>> from schema_markdown import validate_type
 ...
->>> validate_type(model_types, 'Aggregation',
-...     {'numbers': [1, 2, '3', 4]})
+>>> validate_type(model_types, 'Aggregation', {'numbers': [1, 2, '3', 4]})
 {'numbers': [1, 2, 3, 4]}
 
 Notice that the numerical input '3' above is *type-massaged* to the integer 3 by validation.
@@ -79,8 +78,7 @@ Validation fails if the object does not match the schema:
 >>> from schema_markdown import ValidationError
 ...
 >>> try:
-...     validate_type(model_types, 'Aggregation',
-...         {'numbers': [1, 2, 'asdf', 4]})
+...     validate_type(model_types, 'Aggregation', {'numbers': [1, 2, 'asdf', 4]})
 ... except ValidationError as exc:
 ...     str(exc)
 "Invalid value 'asdf' (type 'str') for member 'numbers.2', expected type 'int'"
@@ -88,8 +86,7 @@ Validation fails if the object does not match the schema:
 Validation also fails if a member constraint is violated:
 
 >>> try:
-...     validate_type(model_types, 'Aggregation',
-...         {'numbers': []})
+...     validate_type(model_types, 'Aggregation', {'numbers': []})
 ... except ValidationError as exc:
 ...     str(exc)
 "Invalid value [] (type 'list') for member 'numbers', expected type 'array' [len > 0]"

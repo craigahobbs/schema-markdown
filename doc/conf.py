@@ -62,6 +62,7 @@ html_theme_options = {
     'fixed_sidebar': True,
     'github_user': 'craigahobbs',
     'github_repo': 'schema-markdown',
+    'page_width': '1024px',
     'show_powered_by': False,
     'sidebar_width': '16em'
 }
