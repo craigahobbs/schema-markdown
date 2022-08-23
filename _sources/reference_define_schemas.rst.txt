@@ -1,0 +1,8 @@
+Defining Schemas
+================
+
+
+parse_schema_markdown
+---------------------
+
+.. autofunction:: schema_markdown.parse_schema_markdown

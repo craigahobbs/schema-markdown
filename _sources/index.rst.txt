@@ -1,16 +1,7 @@
 .. include:: ../README.rst
 
 .. toctree::
-   :caption: Contents:
-   :maxdepth: 1
+   :maxdepth: 2
+   :hidden:
 
-   schema-markdown
-   type-model
-   tool
    reference
-
-
-Index
------
-
-* :ref:`genindex`

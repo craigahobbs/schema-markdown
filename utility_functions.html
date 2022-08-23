@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>Reference &#8212; schema-markdown 1.2.0 documentation</title>
+    <title>Utility Functions &#8212; schema-markdown 1.1.12 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
@@ -16,12 +16,13 @@
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="schema-markdown" href="index.html" />
+    <link rel="next" title="Error Classes" href="error_classes.html" />
+    <link rel="prev" title="Validate Schemas" href="validate_schemas.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
   
-    <link rel="canonical" href="https://craigahobbs.github.io/schema-markdown/reference.html"/>
+    <link rel="canonical" href="https://craigahobbs.github.io/schema-markdown/utility_functions.html"/>
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
@@ -34,7 +35,7 @@
 
 
 
-<p class="blurb">A schema definition and validation library</p>
+<p class="blurb">A schema validation and documentation library</p>
 
 
 
@@ -50,27 +51,25 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="define_schemas.html">Define Schemas</a></li>
+<li class="toctree-l1"><a class="reference internal" href="validate_schemas.html">Validate Schemas</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Utility Functions</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#decode-query-string">decode_query_string</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#encode-query-string">encode_query_string</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-enum-values">get_enum_values</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-referenced-types">get_referenced_types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#get-struct-members">get_struct_members</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#parse-schema-markdown">parse_schema_markdown</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#validate-type">validate_type</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#validate-type-model">validate_type_model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#jsonencoder">JSONEncoder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#schemamarkdownparsererror">SchemaMarkdownParserError</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#validationerror">ValidationError</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="error_classes.html">Error Classes</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">schema-markdown</a></li>
+      <li>Previous: <a href="validate_schemas.html" title="previous chapter">Validate Schemas</a></li>
+      <li>Next: <a href="error_classes.html" title="next chapter">Error Classes</a></li>
   </ul></li>
 </ul>
 </div>
@@ -100,8 +99,8 @@
 
           <div class="body" role="main">
             
-  <section id="reference">
-<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this heading">¶</a></h1>
+  <section id="utility-functions">
+<h1>Utility Functions<a class="headerlink" href="#utility-functions" title="Permalink to this heading">¶</a></h1>
 <section id="decode-query-string">
 <h2>decode_query_string<a class="headerlink" href="#decode-query-string" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
@@ -155,26 +154,6 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 </dd></dl>
 
 </section>
-<section id="get-enum-values">
-<h2>get_enum_values<a class="headerlink" href="#get-enum-values" title="Permalink to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="schema_markdown.get_enum_values">
-<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">get_enum_values</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_enum_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate the enum’s values (inherited values first)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
-<li><p><strong>enum</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Enum'">enum model</a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An iterator of <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='EnumValue'">enum value models</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 <section id="get-referenced-types">
 <h2>get_referenced_types<a class="headerlink" href="#get-referenced-types" title="Permalink to this heading">¶</a></h2>
 <dl class="py function">
@@ -184,84 +163,13 @@ fully-qualified form. List keys are the index into the list, and are in order. F
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
+<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The map of user type name to user type model</p></li>
 <li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The type name</p></li>
 <li><p><strong>referenced_types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – An optional map of referenced user type name to user type</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The referenced <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="get-struct-members">
-<h2>get_struct_members<a class="headerlink" href="#get-struct-members" title="Permalink to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="schema_markdown.get_struct_members">
-<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">get_struct_members</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">struct</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.get_struct_members" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate the struct’s members (inherited members first)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
-<li><p><strong>struct</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Struct'">struct model</a></p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An iterator of <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='StructMember'">struct member models</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="parse-schema-markdown">
-<h2>parse_schema_markdown<a class="headerlink" href="#parse-schema-markdown" title="Permalink to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="schema_markdown.parse_schema_markdown">
-<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">parse_schema_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">types</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">validate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.parse_schema_markdown" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parse Schema Markdown from a string or and iterator of strings</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/collections.abc.html#collections.abc.Iterable" title="(in Python v3.10)"><em>Iterable</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>)</em>) – The Schema Markdown text</p></li>
-<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><em>object</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
-<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The name of file being parsed (for error messages)</p></li>
-<li><p><strong>validate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, validate after parsing</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.SchemaMarkdownParserError" title="schema_markdown.SchemaMarkdownParserError"><strong>SchemaMarkdownParserError</strong></a> – A parsing error occurred</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="validate-type">
-<h2>validate_type<a class="headerlink" href="#validate-type" title="Permalink to this heading">¶</a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="schema_markdown.validate_type">
-<span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">validate_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">types</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_fqn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.validate_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Type-validate a value using the schema-markdown user type model. Container values are duplicated
-since some member types are transformed during validation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p></li>
-<li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The type name</p></li>
-<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><em>object</em></a>) – The value object to validate</p></li>
-<li><p><strong>member_fqn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The fully-qualified member name</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The validated, transformed value object</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
+<dd class="field-even"><p>The map of referenced user type name to user type model</p>
 </dd>
 </dl>
 </dd></dl>
@@ -275,13 +183,13 @@ since some member types are transformed during validation.</p>
 <dd><p>Validate a user type model</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
+<dd class="field-odd"><p><strong>types</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – The map of user type name to user type model</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The validated <a class="reference external" href="https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'">type model</a></p>
+<dd class="field-even"><p>The validated, transformed type-model types dict</p>
 </dd>
 <dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
+<dd class="field-odd"><p><a class="reference internal" href="error_classes.html#schema_markdown.ValidationError" title="schema_markdown.ValidationError"><strong>ValidationError</strong></a> – A validation error occurred</p>
 </dd>
 </dl>
 </dd></dl>
@@ -300,49 +208,6 @@ since some member types are transformed during validation.</p>
 <span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.JSONEncoder.default" title="Permalink to this definition">¶</a></dt>
 <dd><p>The override of the <a class="reference external" href="https://docs.python.org/3/library/json.html#json.JSONEncoder.default" title="(in Python v3.10)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">default()</span></code></a> method to add support for <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.datetime" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">datetime</span></code></a>,
 <a class="reference external" href="https://docs.python.org/3/library/datetime.html#datetime.date" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">date</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/decimal.html#decimal.Decimal" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Decimal</span></code></a>, and <a class="reference external" href="https://docs.python.org/3/library/uuid.html#uuid.UUID" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">UUID</span></code></a> objects.</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="schemamarkdownparsererror">
-<h2>SchemaMarkdownParserError<a class="headerlink" href="#schemamarkdownparsererror" title="Permalink to this heading">¶</a></h2>
-<dl class="py exception">
-<dt class="sig sig-object py" id="schema_markdown.SchemaMarkdownParserError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">SchemaMarkdownParserError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParserError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Schema Markdown parser exception</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>errors</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a><em>(</em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>)</em>) – The list of error strings</p>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="schema_markdown.SchemaMarkdownParserError.errors">
-<span class="sig-name descname"><span class="pre">errors</span></span><a class="headerlink" href="#schema_markdown.SchemaMarkdownParserError.errors" title="Permalink to this definition">¶</a></dt>
-<dd><p>The list of error strings</p>
-</dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="validationerror">
-<h2>ValidationError<a class="headerlink" href="#validationerror" title="Permalink to this heading">¶</a></h2>
-<dl class="py exception">
-<dt class="sig sig-object py" id="schema_markdown.ValidationError">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">schema_markdown.</span></span><span class="sig-name descname"><span class="pre">ValidationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">member_fqn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#schema_markdown.ValidationError" title="Permalink to this definition">¶</a></dt>
-<dd><p>schema-markdown type model validation error</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – The error message</p></li>
-<li><p><strong>member_fqn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>None</em>) – The fully qualified member name or None</p></li>
-</ul>
-</dd>
-</dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="schema_markdown.ValidationError.member">
-<span class="sig-name descname"><span class="pre">member</span></span><a class="headerlink" href="#schema_markdown.ValidationError.member" title="Permalink to this definition">¶</a></dt>
-<dd><p>The fully qualified member name or None</p>
 </dd></dl>
 
 </dd></dl>

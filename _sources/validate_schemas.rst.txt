@@ -1,0 +1,20 @@
+Validate Schemas
+================
+
+
+>>> import uuid
+>>> types = schema_markdown.parse_schema_markdown('''
+... struct MyStruct
+...     int a
+...     uuid b
+... ''')
+>>> schema_markdown.validate_type(types, 'MyStruct', {'a': 5, 'b': uuid.UUID('8252121c-7f4f-4b6d-a7e5-f42ca6fdb64c')})
+{'a': 5, 'b': UUID('8252121c-7f4f-4b6d-a7e5-f42ca6fdb64c')}
+
+>>> try:
+...     schema_markdown.validate_type(types, 'MyStruct', {'a': 5, 'b': 7})
+... except schema_markdown.ValidationError as exc:
+...     str(exc)
+"Invalid value 7 (type 'int') for member 'b', expected type 'uuid'"
+
+.. autofunction:: schema_markdown.validate_type
