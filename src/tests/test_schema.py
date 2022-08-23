@@ -559,6 +559,12 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': 1, 'b': 2, 'c': 3}
         self.assertDictEqual(self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj), obj)
 
+    def test_dict_null(self):
+        obj = None
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'dict'")
+
     def test_dict_nullable(self):
         obj = {'a': 1, 'b': None, 'c': 3}
         self.assertDictEqual(self._validate_type({'dict': {'type': {'builtin': 'int'}, 'attr': {'nullable': True}}}, obj), obj)
@@ -1095,6 +1101,18 @@ class TestValidateType(unittest.TestCase):
             'k': '1' # transform
         }
         self.assertDictEqual(validate_type(types, 'MyStruct', obj), obj_transform)
+
+    def test_struct_null(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct'
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyStruct', None)
+        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'MyStruct'")
 
     def test_struct_empty_string(self):
         types = {
