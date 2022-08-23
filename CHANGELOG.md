@@ -1,3 +1,7 @@
+## 1.2.1 (2022-08-23)
+
+- [fe59a59](https://github.com/craigahobbs/schema-markdown/commit/fe59a59) - update docs
+
 ## 1.2.0 (2022-08-23)
 
 - [e5d8e65](https://github.com/craigahobbs/schema-markdown/commit/e5d8e65) - refactor SchemaMarkdownParser class as parse_schema_markdown function
