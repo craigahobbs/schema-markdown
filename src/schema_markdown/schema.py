@@ -18,10 +18,10 @@ def get_referenced_types(types, type_name, referenced_types=None):
     """
     Get a type's referenced type model
 
-    :param dict types: The map of user type name to user type model
+    :param dict types: The `type model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'>`__
     :param str type_name: The type name
     :param dict referenced_types: An optional map of referenced user type name to user type
-    :returns: The map of referenced user type name to user type model
+    :returns: The referenced `type model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'>`__
     """
 
     return _get_referenced_types(types, {'user': type_name}, referenced_types)
@@ -115,7 +115,7 @@ def validate_type(types, type_name, value, member_fqn=None):
     Type-validate a value using the schema-markdown user type model. Container values are duplicated
     since some member types are transformed during validation.
 
-    :param dict types: The map of user type name to user type model
+    :param dict types: The `type model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'>`__
     :param str type_name: The type name
     :param object value: The value object to validate
     :param str member_fqn: The fully-qualified member name
@@ -423,9 +423,9 @@ def get_struct_members(types, struct):
     """
     Iterate the struct's members (inherited members first)
 
-    :param dict types: The map of user type name to user type model
-    :param dict struct: The struct model
-    :returns: The array of struct member models
+    :param dict types: The `type model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'>`__
+    :param dict struct: The `struct model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Struct'>`__
+    :returns: An iterator of `struct member models <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='StructMember'>`__
     """
 
     if 'bases' in struct:
@@ -442,9 +442,9 @@ def get_enum_values(types, enum):
     """
     Iterate the enum's values (inherited values first)
 
-    :param dict types: The map of user type name to user type model
-    :param dict enum: The enum model
-    :returns: The array of enum value models
+    :param dict types: The `type model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'>`__
+    :param dict enum: The `enum model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Enum'>`__
+    :returns: An iterator of `enum value models <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='EnumValue'>`__
     """
 
     if 'bases' in enum:
@@ -461,8 +461,8 @@ def validate_type_model(types):
     """
     Validate a user type model
 
-    :param dict types: The map of user type name to user type model
-    :returns: The validated, transformed type-model types dict
+    :param dict types: The `type model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'>`__
+    :returns: The validated `type model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'>`__
     :raises ValidationError: A validation error occurred
     """
 

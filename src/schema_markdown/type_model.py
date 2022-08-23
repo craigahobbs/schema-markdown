@@ -5,11 +5,11 @@
 The schema-markdown type model definition
 """
 
-from .parser import SchemaMarkdownParser
+from .parser import parse_schema_markdown
 
 
-#: The Schema Markdown type model defined as Schema Markdown.
-TYPE_MODEL_SMD = '''\
+#: The Schema Markdown type model
+TYPE_MODEL = parse_schema_markdown('''\
 # Map of user type name to user type model
 typedef UserType{len > 0} Types
 
@@ -242,8 +242,4 @@ struct ActionURL
 
     # The URL path. If not provided, uses the default URL path of "/<actionName>".
     optional string path
-'''
-
-
-#: The Schema Markdown type model
-TYPE_MODEL = SchemaMarkdownParser(TYPE_MODEL_SMD).types
+''')

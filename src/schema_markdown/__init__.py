@@ -11,7 +11,7 @@ from .encode import \
     encode_query_string
 
 from .parser import \
-    SchemaMarkdownParser, \
+    parse_schema_markdown, \
     SchemaMarkdownParserError
 
 from .schema import \

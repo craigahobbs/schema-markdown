@@ -20,84 +20,104 @@ schema-markdown
 |badge-status| |badge-version| |badge-license| |badge-python|
 
 
-**Schema Markdown** is a human-friendly schema definition language and schema validator. Here are
-its features at a glance:
-
-- Schema-validate JSON objects
-- Human-friendly schema definition
-- Validates member value and length contraints
-- Validation *type-massages* string member values
-- Pure Python
+schema-markdown is a schema definition and validation library.
 
 
 Links
 -----
 
-- `Schema Markdown Language Reference <https://craigahobbs.github.io/schema-markdown/schema-markdown.html>`__
-- `Documentation on GitHub Pages <https://craigahobbs.github.io/schema-markdown/>`__
-- `Package on pypi <https://pypi.org/project/schema-markdown/>`__
-- `Source code on GitHub <https://github.com/craigahobbs/schema-markdown>`__
+- `The Schema Markdown Language <https://craigahobbs.github.io/schema-markdown-js/language/>`__
+- `API Documentation <https://craigahobbs.github.io/schema-markdown/>`__
+- `Source code <https://github.com/craigahobbs/schema-markdown>`__
 
 
-Usage
------
+Define a Schema
+---------------
 
-To schema-validate an object, first parse its *Schema Markdown* using the
-`SchemaMarkdownParser <https://craigahobbs.github.io/schema-markdown/reference.html#schemamarkdownparser>`__
-class:
+Schemas are defined using the
+`Schema Markdown <https://craigahobbs.github.io/schema-markdown-js/language/>`__
+language which is parsed by the
+`parse_schema_markdown <https://craigahobbs.github.io/schema-markdown/reference.html#parse-schema-markdown>`__
+function. For example:
 
 >>> import schema_markdown
 ...
->>> parser = schema_markdown.SchemaMarkdownParser('''\
+>>> model_types = schema_markdown.parse_schema_markdown('''\
+... # An aggregate numerical operation
+... struct Aggregation
+...
+...     # The aggregation function - default is "Sum"
+...     optional AggregationFunction aggregation
+...
+...     # The numbers to aggregate on
+...     int[len > 0] numbers
+...
 ... # An aggregation function
-... enum Aggregation
+... enum AggregationFunction
 ...     Average
 ...     Sum
-...
-... # An aggregate numerical operation
-... struct Operation
-...     # The aggregation function - default is "Sum"
-...     optional Aggregation aggregation
-...
-...     # The numbers to operate on
-...     int[len > 0] numbers
 ... ''')
 
-Then, validate a dictionary object (or other object) using the
-`validate_type <https://craigahobbs.github.io/schema-markdown/reference.html#validate-type>`__
-function:
 
->>> schema_markdown.validate_type(parser.types, 'Operation', {
-...     'numbers': [1, 2, '3', 4]
-... })
+Validate using a Schema
+-----------------------
+
+To validate an object using the schema, use the
+`validate_type <https://craigahobbs.github.io/schema-markdown/reference.html#validate-type>`__
+function. For example:
+
+>>> schema_markdown.validate_type(model_types, 'Aggregation',
+...     {'numbers': [1, 2, '3', 4]})
 {'numbers': [1, 2, 3, 4]}
 
 Notice that the numerical input '3' above is *type-massaged* to the integer 3 by validation.
+
 Validation fails if the object does not match the schema:
 
 >>> try:
-...     schema_markdown.validate_type(parser.types, 'Operation', {
-...         'numbers': [1, 2, 'asdf', 4]
-...     })
+...     schema_markdown.validate_type(model_types, 'Aggregation',
+...         {'numbers': [1, 2, 'asdf', 4]})
 ... except schema_markdown.ValidationError as exc:
 ...     str(exc)
 "Invalid value 'asdf' (type 'str') for member 'numbers.2', expected type 'int'"
 
-Validation also fails if a member contraint is violated:
+Validation also fails if a member constraint is violated:
 
 >>> try:
-...     schema_markdown.validate_type(parser.types, 'Operation', {
-...         'numbers': []
-...     })
+...     schema_markdown.validate_type(model_types, 'Aggregation',
+...         {'numbers': []})
 ... except schema_markdown.ValidationError as exc:
 ...     str(exc)
 "Invalid value [] (type 'list') for member 'numbers', expected type 'array' [len > 0]"
 
 
+Document a Schema
+-----------------
+
+To document the schema, download the
+`documentation application <https://github.com/craigahobbs/schema-markdown-doc#the-schema-markdown-documentation-viewer>`__
+stub and save the type model as JSON:
+
+.. code-block:: sh
+
+   curl -O https://craigahobbs.github.io/schema-markdown-doc/extra/index.html
+   python3 \
+       -c 'from model import model_types; import json; print(json.dumps(model_types))' \
+       > model.json
+
+To host locally, start a local static web server:
+
+.. code-block:: sh
+
+   python3 -m http.server
+
+
 Development
 -----------
 
-This project is developed using `python-build <https://github.com/craigahobbs/python-build#readme>`__. It was started
-using `python-template <https://github.com/craigahobbs/python-template#readme>`__ as follows::
+This package is developed using `python-build <https://github.com/craigahobbs/python-build#readme>`__.
+It was started using `python-template <https://github.com/craigahobbs/python-template#readme>`__ as follows:
 
-    template-specialize python-template/template/ schema-markdown/ -k package schema-markdown -k name 'Craig A. Hobbs' -k email 'craigahobbs@gmail.com' -k github 'craigahobbs'
+.. code-block:: sh
+
+   template-specialize python-template/template/ schema-markdown/ -k package schema-markdown -k name 'Craig A. Hobbs' -k email 'craigahobbs@gmail.com' -k github 'craigahobbs'

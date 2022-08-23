@@ -16,7 +16,7 @@ def main():
     # Do the setup
     setup(
         name='schema-markdown',
-        description='Human-friendly schema definition language and schema validator',
+        description='A schema definition and validation library',
         long_description=long_description,
         long_description_content_type='text/x-rst',
         version='1.1.12',
@@ -38,12 +38,7 @@ def main():
             'Topic :: Utilities'
         ],
         package_dir={'': 'src'},
-        packages=['schema_markdown'],
-        entry_points={
-            'console_scripts': [
-                'schema-markdown = schema_markdown.main:main'
-            ]
-        }
+        packages=['schema_markdown']
     )
 
 
