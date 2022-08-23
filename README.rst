@@ -35,14 +35,14 @@ Define a Schema
 ---------------
 
 Schemas are defined using the
-`Schema Markdown <https://craigahobbs.github.io/schema-markdown-js/language/>`__
-language which is parsed by the
+`Schema Markdown language <https://craigahobbs.github.io/schema-markdown-js/language/>`__,
+which is parsed by the
 `parse_schema_markdown <https://craigahobbs.github.io/schema-markdown/reference.html#parse-schema-markdown>`__
 function. For example:
 
->>> import schema_markdown
+>>> from schema_markdown import parse_schema_markdown
 ...
->>> model_types = schema_markdown.parse_schema_markdown('''\
+>>> model_types = parse_schema_markdown('''\
 ... # An aggregate numerical operation
 ... struct Aggregation
 ...
@@ -66,7 +66,9 @@ To validate an object using the schema, use the
 `validate_type <https://craigahobbs.github.io/schema-markdown/reference.html#validate-type>`__
 function. For example:
 
->>> schema_markdown.validate_type(model_types, 'Aggregation',
+>>> from schema_markdown import validate_type
+...
+>>> validate_type(model_types, 'Aggregation',
 ...     {'numbers': [1, 2, '3', 4]})
 {'numbers': [1, 2, 3, 4]}
 
@@ -74,19 +76,21 @@ Notice that the numerical input '3' above is *type-massaged* to the integer 3 by
 
 Validation fails if the object does not match the schema:
 
+>>> from schema_markdown import ValidationError
+...
 >>> try:
-...     schema_markdown.validate_type(model_types, 'Aggregation',
+...     validate_type(model_types, 'Aggregation',
 ...         {'numbers': [1, 2, 'asdf', 4]})
-... except schema_markdown.ValidationError as exc:
+... except ValidationError as exc:
 ...     str(exc)
 "Invalid value 'asdf' (type 'str') for member 'numbers.2', expected type 'int'"
 
 Validation also fails if a member constraint is violated:
 
 >>> try:
-...     schema_markdown.validate_type(model_types, 'Aggregation',
+...     validate_type(model_types, 'Aggregation',
 ...         {'numbers': []})
-... except schema_markdown.ValidationError as exc:
+... except ValidationError as exc:
 ...     str(exc)
 "Invalid value [] (type 'list') for member 'numbers', expected type 'array' [len > 0]"
 

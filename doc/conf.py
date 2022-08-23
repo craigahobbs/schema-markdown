@@ -62,7 +62,8 @@ html_theme_options = {
     'fixed_sidebar': True,
     'github_user': 'craigahobbs',
     'github_repo': 'schema-markdown',
-    'show_powered_by': False
+    'show_powered_by': False,
+    'sidebar_width': '16em'
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

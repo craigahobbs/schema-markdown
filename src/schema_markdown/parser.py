@@ -56,7 +56,7 @@ RE_URL = re.compile(r'^\s+(?P<method>[A-Za-z]+|\*)(?:\s+(?P<path>/[^\s]*))?')
 
 def parse_schema_markdown(text, types=None, filename='', validate=True):
     """
-    Parse Schema Markdown from a string or and iterator of strings
+    Parse Schema Markdown from a string or an iterator of strings
 
     :param text: The Schema Markdown text
     :type text: str or ~collections.abc.Iterable(str)

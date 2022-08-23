@@ -5,3 +5,5 @@
    :hidden:
 
    reference
+   utility
+   errors
