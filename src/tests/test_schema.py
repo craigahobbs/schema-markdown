@@ -277,8 +277,18 @@ class TestValidateType(unittest.TestCase):
         self.assertEqual(self._validate_type({'builtin': 'int'}, obj), 7)
 
     def test_int_float(self):
-        obj = 7.
-        self.assertEqual(self._validate_type({'builtin': 'int'}, obj), 7)
+        obj = 7.1
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'int'}, obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value 7.1 (type 'float'), expected type 'int'")
+        self.assertIsNone(cm_exc.exception.member)
+
+    def test_int_float_string(self):
+        obj = '7.1'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'int'}, obj)
+        self.assertEqual(str(cm_exc.exception), "Invalid value '7.1' (type 'str'), expected type 'int'")
+        self.assertIsNone(cm_exc.exception.member)
 
     def test_int_decimal(self):
         obj = Decimal('7')
