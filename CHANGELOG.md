@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.2 (2022-10-31)
+
+- [f7f0bfe](https://github.com/craigahobbs/schema-markdown/commit/f7f0bfe) - add pyproject.toml and setup.cfg, remove setup.py
+
 ## 1.2.1 (2022-08-23)
 
 - [fe59a59](https://github.com/craigahobbs/schema-markdown/commit/fe59a59) - update docs
