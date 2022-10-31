@@ -51,7 +51,7 @@ RE_TYPEDEF = re.compile(r'^typedef\s+' + RE_PART_TYPEDEF + r'\s*$')
 RE_MEMBER = re.compile(r'^\s+(?P<optional>optional\s+)?' + RE_PART_TYPEDEF + r'\s*$')
 RE_VALUE = re.compile(r'^\s+(?P<id>' + RE_PART_ID + r')\s*$')
 RE_VALUE_QUOTED = re.compile(r'^\s+"(?P<id>.*?)"\s*$')
-RE_URL = re.compile(r'^\s+(?P<method>[A-Za-z]+|\*)(?:\s+(?P<path>/[^\s]*))?')
+RE_URL = re.compile(r'^\s+(?P<method>[A-Za-z]+|\*)(?:\s+(?P<path>/\S*))?')
 
 
 def parse_schema_markdown(text, types=None, filename='', validate=True):

@@ -24,8 +24,8 @@ author = 'Craig A. Hobbs'
 # The full version, including alpha/beta/rc tags
 import os
 import re
-with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'setup.py'), encoding='utf-8') as init_file:
-    release = re.search(r"version='(.+?)'", init_file.read()).group(1)
+with open(os.path.join(os.path.abspath(os.path.dirname(__file__)), '..', 'setup.cfg'), encoding='utf-8') as init_file:
+    release = re.search(r"version\s*=\s*(\S+)", init_file.read()).group(1)
 
 
 # -- General configuration ---------------------------------------------------
