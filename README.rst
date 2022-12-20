@@ -19,7 +19,6 @@ schema-markdown
 
 |badge-status| |badge-version| |badge-license| |badge-python|
 
-
 schema-markdown is a schema definition and validation library.
 
 
