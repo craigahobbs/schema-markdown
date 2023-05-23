@@ -286,6 +286,11 @@ action MyActionUrl
         })
 
     def test_action_url_duplicate(self):
+        errors = [
+            ':4: error: Duplicate URL: GET /',
+            ':7: error: Duplicate URL: GET',
+            ':8: error: Redefinition of action urls'
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action MyAction
@@ -298,23 +303,22 @@ action MyAction
     urls
         GET
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ':4: error: Duplicate URL: GET /',
-            ':7: error: Duplicate URL: GET ',
-            ':8: error: Redefinition of action urls'
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_action_url_typed(self):
+        errors = [
+            ':2: error: Syntax error',
+            ':3: error: Syntax error'
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action MyAction
     url (BaseType)
         GET /
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ':2: error: Syntax error',
-            ':3: error: Syntax error'
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_group(self):
         types = parse_schema_markdown('''\
@@ -430,6 +434,12 @@ struct MyStruct5 (MyStruct2, MyTypedef)
         })
 
     def test_struct_base_types_error(self):
+        errors = [
+            ":1: error: Invalid struct base type 'MyEnum'",
+            ":8: error: Redefinition of 'MyStruct3' member 'a'",
+            ":15: error: Invalid struct base type 'MyDict'",
+            ":16: error: Redefinition of 'MyStruct5' member 'b'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct (MyEnum)
@@ -449,14 +459,15 @@ struct MyStruct4
 struct MyStruct5 (MyStruct4, MyDict)
     int b
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":1: error: Invalid struct base type 'MyEnum'",
-            ":8: error: Redefinition of 'MyStruct3' member 'a'",
-            ":15: error: Invalid struct base type 'MyDict'",
-            ":16: error: Redefinition of 'MyStruct5' member 'b'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_struct_base_types_circular(self):
+        errors = [
+            ":1: error: Circular base type detected for type 'MyStruct'",
+            ":4: error: Circular base type detected for type 'MyStruct2'",
+            ":7: error: Circular base type detected for type 'MyStruct3'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct (MyStruct2)
@@ -468,11 +479,8 @@ struct MyStruct2 (MyStruct3)
 struct MyStruct3 (MyStruct)
     int c
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":1: error: Circular base type detected for type 'MyStruct'",
-            ":4: error: Circular base type detected for type 'MyStruct2'",
-            ":7: error: Circular base type detected for type 'MyStruct3'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_enum_base_types(self):
         types = parse_schema_markdown('''\
@@ -503,6 +511,12 @@ enum MyEnum5 (MyEnum2, MyTypedef)
         })
 
     def test_enum_base_types_error(self):
+        errors = [
+            ":1: error: Invalid enum base type 'MyStruct'",
+            ":8: error: Redefinition of 'MyEnum3' value 'A'",
+            ":15: error: Invalid enum base type 'MyDict'",
+            ":16: error: Redefinition of 'MyEnum5' value 'B'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 enum MyEnum (MyStruct)
@@ -522,14 +536,15 @@ enum MyEnum4
 enum MyEnum5 (MyEnum4, MyDict)
     B
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":1: error: Invalid enum base type 'MyStruct'",
-            ":8: error: Redefinition of 'MyEnum3' value 'A'",
-            ":15: error: Invalid enum base type 'MyDict'",
-            ":16: error: Redefinition of 'MyEnum5' value 'B'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_enum_base_types_circular(self):
+        errors = [
+            ":1: error: Circular base type detected for type 'MyEnum'",
+            ":4: error: Circular base type detected for type 'MyEnum2'",
+            ":7: error: Circular base type detected for type 'MyEnum3'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 enum MyEnum (MyEnum2)
@@ -541,11 +556,8 @@ enum MyEnum2 (MyEnum3)
 enum MyEnum3 (MyEnum)
     c
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":1: error: Circular base type detected for type 'MyEnum'",
-            ":4: error: Circular base type detected for type 'MyEnum2'",
-            ":7: error: Circular base type detected for type 'MyEnum3'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_multiple(self):
         types = parse_schema_markdown('''\
@@ -668,6 +680,9 @@ enum MyEnum2
         })
 
     def test_error_multiple(self):
+        errors = [
+            ":1: error: Invalid struct base type 'MyStruct2'"
+        ]
         types = parse_schema_markdown('''\
 struct MyStruct (MyStruct2)
     int a
@@ -677,9 +692,8 @@ struct MyStruct (MyStruct2)
 struct MyStruct3
     int b
 ''', types=types)
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":1: error: Invalid struct base type 'MyStruct2'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_array_attr(self):
         types = parse_schema_markdown('''\
@@ -794,17 +808,24 @@ struct MyStruct
         })
 
     def test_invalid_attr(self):
+        errors = [
+            ":2: error: Invalid attribute 'len > 0' from 'MyStruct' member 'a'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     MyStruct2(len > 0) a
 struct MyStruct2
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute 'len > 0' from 'MyStruct' member 'a'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_unknown_type(self):
+        errors = [
+            "foo:2: error: Unknown type 'MyBadType' from 'Foo' member 'a'",
+            "foo:6: error: Unknown type 'MyBadType2' from 'MyAction_input' member 'a'",
+            "foo:8: error: Unknown type 'MyBadType' from 'MyAction_output' member 'b'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct Foo
@@ -816,13 +837,15 @@ action MyAction
     output
         MyBadType b
 ''', filename='foo')
-        self.assertListEqual(cm_exc.exception.errors, [
-            "foo:2: error: Unknown type 'MyBadType' from 'Foo' member 'a'",
-            "foo:6: error: Unknown type 'MyBadType2' from 'MyAction_input' member 'a'",
-            "foo:8: error: Unknown type 'MyBadType' from 'MyAction_output' member 'b'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_unknown_array_type(self):
+        errors = [
+            "foo:2: error: Unknown type 'MyBadType' from 'MyStruct' member 'a'",
+            "foo:3: error: Unknown type 'MyBadType' from 'MyStruct' member 'b'",
+            "foo:5: error: Unknown type 'MyBadType' from 'MyTypedef'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
@@ -831,13 +854,15 @@ struct MyStruct
 
 typedef MyBadType MyTypedef
 ''', filename='foo')
-        self.assertListEqual(cm_exc.exception.errors, [
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
+
+    def test_error_unknown_dict_type(self):
+        errors = [
             "foo:2: error: Unknown type 'MyBadType' from 'MyStruct' member 'a'",
             "foo:3: error: Unknown type 'MyBadType' from 'MyStruct' member 'b'",
             "foo:5: error: Unknown type 'MyBadType' from 'MyTypedef'"
-        ])
-
-    def test_error_unknown_dict_type(self):
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
@@ -846,13 +871,17 @@ struct MyStruct
 
 typedef MyBadType MyTypedef
 ''', filename='foo')
-        self.assertListEqual(cm_exc.exception.errors, [
-            "foo:2: error: Unknown type 'MyBadType' from 'MyStruct' member 'a'",
-            "foo:3: error: Unknown type 'MyBadType' from 'MyStruct' member 'b'",
-            "foo:5: error: Unknown type 'MyBadType' from 'MyTypedef'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_unknown_dict_key_type(self):
+        errors = [
+            "foo:2: error: Invalid dictionary key type from 'MyStruct' member 'a'",
+            "foo:2: error: Unknown type 'MyBadType' from 'MyStruct' member 'a'",
+            "foo:3: error: Invalid dictionary key type from 'MyStruct' member 'b'",
+            "foo:3: error: Unknown type 'MyBadType' from 'MyStruct' member 'b'",
+            "foo:5: error: Unknown type 'MyBadType' from 'MyTypedef'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
@@ -861,15 +890,13 @@ struct MyStruct
 
 typedef MyBadType MyTypedef
 ''', filename='foo')
-        self.assertListEqual(cm_exc.exception.errors, [
-            "foo:2: error: Invalid dictionary key type from 'MyStruct' member 'a'",
-            "foo:2: error: Unknown type 'MyBadType' from 'MyStruct' member 'a'",
-            "foo:3: error: Invalid dictionary key type from 'MyStruct' member 'b'",
-            "foo:3: error: Unknown type 'MyBadType' from 'MyStruct' member 'b'",
-            "foo:5: error: Unknown type 'MyBadType' from 'MyTypedef'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_action_type(self):
+        errors = [
+            "foo:2: error: Invalid reference to action 'MyAction' from 'Foo' member 'a'",
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct Foo
@@ -877,11 +904,13 @@ struct Foo
 
 action MyAction
 ''', filename='foo')
-        self.assertListEqual(cm_exc.exception.errors, [
-            "foo:2: error: Invalid reference to action 'MyAction' from 'Foo' member 'a'",
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_struct_redefinition(self):
+        errors = [
+            ":4: error: Redefinition of type 'Foo'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct Foo
@@ -892,11 +921,13 @@ enum Foo
     B
 ''')
         self.assertEqual(str(cm_exc.exception), ":4: error: Redefinition of type 'Foo'")
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":4: error: Redefinition of type 'Foo'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_enum_redefinition(self):
+        errors = [
+            ":5: error: Redefinition of type 'Foo'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 enum Foo
@@ -907,11 +938,13 @@ struct Foo
     int a
 ''')
         self.assertEqual(str(cm_exc.exception), ":5: error: Redefinition of type 'Foo'")
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":5: error: Redefinition of type 'Foo'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_typedef_redefinition(self):
+        errors = [
+            ":4: error: Redefinition of type 'Foo'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct Foo
@@ -920,11 +953,13 @@ struct Foo
 typedef int(> 5) Foo
 ''')
         self.assertEqual(str(cm_exc.exception), ":4: error: Redefinition of type 'Foo'")
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":4: error: Redefinition of type 'Foo'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_action_redefinition(self):
+        errors = [
+            ":5: error: Redefinition of action 'MyAction'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action MyAction
@@ -936,11 +971,18 @@ action MyAction
         string b
 ''')
         self.assertEqual(str(cm_exc.exception), ":5: error: Redefinition of action 'MyAction'")
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":5: error: Redefinition of action 'MyAction'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_action_section(self):
+        errors = [
+            ':6: error: Syntax error',
+            ':7: error: Syntax error',
+            ':8: error: Syntax error',
+            ':10: error: Syntax error',
+            ':11: error: Syntax error',
+            ':12: error: Syntax error'
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action MyAction
@@ -963,16 +1005,15 @@ errors
 :10: error: Syntax error
 :11: error: Syntax error
 :12: error: Syntax error''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ':6: error: Syntax error',
-            ':7: error: Syntax error',
-            ':8: error: Syntax error',
-            ':10: error: Syntax error',
-            ':11: error: Syntax error',
-            ':12: error: Syntax error'
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_member(self):
+        errors = [
+            ':2: error: Syntax error',
+            ':8: error: Syntax error',
+            ':10: error: Syntax error'
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action MyAction
@@ -990,13 +1031,17 @@ int cde
 :2: error: Syntax error
 :8: error: Syntax error
 :10: error: Syntax error''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ':2: error: Syntax error',
-            ':8: error: Syntax error',
-            ':10: error: Syntax error'
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_enum(self):
+        errors = [
+            ':2: error: Syntax error',
+            ':3: error: Syntax error',
+            ':4: error: Syntax error',
+            ':8: error: Syntax error',
+            ':12: error: Syntax error'
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 enum MyEnum
@@ -1018,13 +1063,8 @@ action MyAction
 :4: error: Syntax error
 :8: error: Syntax error
 :12: error: Syntax error''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ':2: error: Syntax error',
-            ':3: error: Syntax error',
-            ':4: error: Syntax error',
-            ':8: error: Syntax error',
-            ':12: error: Syntax error'
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_attributes(self):
         types = parse_schema_markdown('''\
@@ -1150,47 +1190,59 @@ struct MyStruct
         })
 
     def test_error_attribute_eq(self):
+        errors = [
+            ":2: error: Invalid attribute '== 7' from 'MyStruct' member 's'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     string(== 7) s
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute '== 7' from 'MyStruct' member 's'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_lt(self):
+        errors = [
+            ":2: error: Invalid attribute '< 7' from 'MyStruct' member 's'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     string(< 7) s
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute '< 7' from 'MyStruct' member 's'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_gt(self):
+        errors = [
+            ":2: error: Invalid attribute '> 7' from 'MyStruct' member 's'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     string(> 7) s
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute '> 7' from 'MyStruct' member 's'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_lt_gt(self):
+        errors = [
+            ":2: error: Invalid attribute '< 7' from 'MyStruct' member 's'",
+            ":2: error: Invalid attribute '> 7' from 'MyStruct' member 's'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     string(< 7, > 7) s
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute '< 7' from 'MyStruct' member 's'",
-            ":2: error: Invalid attribute '> 7' from 'MyStruct' member 's'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_lte_gte(self):
+        errors = [
+            ":6: error: Invalid attribute '>= 1' from 'MyStruct' member 'a'",
+            ":7: error: Invalid attribute '<= 2' from 'MyStruct' member 'b'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 enum MyEnum
@@ -1201,75 +1253,89 @@ struct MyStruct
     MyStruct(>= 1) a
     MyEnum(<= 2) b
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":6: error: Invalid attribute '>= 1' from 'MyStruct' member 'a'",
-            ":7: error: Invalid attribute '<= 2' from 'MyStruct' member 'b'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_len_eq(self):
+        errors = [
+            ":2: error: Invalid attribute 'len == 1' from 'MyStruct' member 'i'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     int(len == 1) i
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute 'len == 1' from 'MyStruct' member 'i'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_len_lt(self):
+        errors = [
+            ":2: error: Invalid attribute 'len < 10' from 'MyStruct' member 'f'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     float(len < 10) f
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute 'len < 10' from 'MyStruct' member 'f'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_len_gt(self):
+        errors = [
+            ":2: error: Invalid attribute 'len > 1' from 'MyStruct' member 'i'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     int(len > 1) i
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute 'len > 1' from 'MyStruct' member 'i'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_len_lt_gt(self):
+        errors = [
+            ":2: error: Invalid attribute 'len < 10' from 'MyStruct' member 'f'",
+            ":2: error: Invalid attribute 'len > 10' from 'MyStruct' member 'f'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     float(len < 10, len > 10) f
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute 'len < 10' from 'MyStruct' member 'f'",
-            ":2: error: Invalid attribute 'len > 10' from 'MyStruct' member 'f'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_len_lte_gte(self):
+        errors = [
+            ":2: error: Invalid attribute 'len <= 10' from 'MyStruct' member 'f'",
+            ":3: error: Invalid attribute 'len >= 10' from 'MyStruct' member 'f2'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     float(len <= 10) f
     float(len >= 10) f2
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid attribute 'len <= 10' from 'MyStruct' member 'f'",
-            ":3: error: Invalid attribute 'len >= 10' from 'MyStruct' member 'f2'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_attribute_invalid(self):
+        errors = [
+            ':2: error: Syntax error'
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
     string(regex="abc") a
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ':2: error: Syntax error'
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_member_invalid(self):
+        errors = [
+            ':1: error: Syntax error',
+            ':5: error: Syntax error'
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
     string a
@@ -1278,12 +1344,13 @@ enum MyEnum
     Foo
     int b
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ':1: error: Syntax error',
-            ':5: error: Syntax error'
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_member_redefinition(self):
+        errors = [
+            ":4: error: Redefinition of 'MyStruct' member 'b'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct MyStruct
@@ -1291,11 +1358,13 @@ struct MyStruct
     int a
     float b
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":4: error: Redefinition of 'MyStruct' member 'b'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_enum_duplicate_value(self):
+        errors = [
+            ":4: error: Redefinition of 'MyEnum' value 'bar'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 enum MyEnum
@@ -1303,9 +1372,8 @@ enum MyEnum
     foo
     bar
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":4: error: Redefinition of 'MyEnum' value 'bar'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_doc(self):
         types = parse_schema_markdown('''\
@@ -1472,16 +1540,25 @@ struct MyStruct
         })
 
     def test_error_dict_non_string_key(self):
+        errors = [
+            ":2: error: Invalid dictionary key type from 'Foo' member 'a'",
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 struct Foo
     int : int {} a
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid dictionary key type from 'Foo' member 'a'",
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_action_section_redefinition(self):
+        errors = [
+            ':13: error: Redefinition of action urls',
+            ':15: error: Redefinition of action path',
+            ':17: error: Redefinition of action query',
+            ':19: error: Redefinition of action input',
+            ':21: error: Redefinition of action output'
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action Foo
@@ -1507,15 +1584,20 @@ action Foo
     output
         int e2
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ':13: error: Redefinition of action urls',
-            ':15: error: Redefinition of action path',
-            ':17: error: Redefinition of action query',
-            ':19: error: Redefinition of action input',
-            ':21: error: Redefinition of action output'
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_error_action_input_member_redefinition(self):
+        errors = [
+            ":3: error: Redefinition of 'MyAction_path' member 'a'",
+            ":4: error: Redefinition of 'MyAction_path' member 'b'",
+            ":6: error: Redefinition of 'MyAction_query' member 'a'",
+            ":8: error: Redefinition of 'MyAction_input' member 'b'",
+            ":11: error: Redefinition of 'MyAction2_path' member 'a'",
+            ":11: error: Redefinition of 'MyAction2_path' member 'b'",
+            ":13: error: Redefinition of 'MyAction2_query' member 'a'",
+            ":15: error: Redefinition of 'MyAction2_input' member 'b'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action MyAction
@@ -1538,16 +1620,8 @@ struct Base
     int a
     int b
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":3: error: Redefinition of 'MyAction_path' member 'a'",
-            ":4: error: Redefinition of 'MyAction_path' member 'b'",
-            ":6: error: Redefinition of 'MyAction_query' member 'a'",
-            ":8: error: Redefinition of 'MyAction_input' member 'b'",
-            ":11: error: Redefinition of 'MyAction2_path' member 'a'",
-            ":11: error: Redefinition of 'MyAction2_path' member 'b'",
-            ":13: error: Redefinition of 'MyAction2_query' member 'a'",
-            ":15: error: Redefinition of 'MyAction2_input' member 'b'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_action_path_base_types(self):
         types = parse_schema_markdown('''\
@@ -1625,6 +1699,13 @@ action BarAction
         })
 
     def test_action_path_non_struct(self):
+        errors = [
+            ":2: error: Invalid struct base type 'Foo'",
+            ":14: error: Invalid struct base type 'Foo'",
+            ":19: error: Invalid struct base type 'MyUnion'",
+            ":20: error: Redefinition of 'BonkAction_path' member 'a'",
+            ":25: error: Invalid struct base type 'MyDict'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action FooAction
@@ -1654,13 +1735,8 @@ action MyDictAction
     path (MyDict)
         int a
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid struct base type 'Foo'",
-            ":14: error: Invalid struct base type 'Foo'",
-            ":19: error: Invalid struct base type 'MyUnion'",
-            ":20: error: Redefinition of 'BonkAction_path' member 'a'",
-            ":25: error: Invalid struct base type 'MyDict'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_action_query_base_types(self):
         types = parse_schema_markdown('''\
@@ -1738,6 +1814,13 @@ action BarAction
         })
 
     def test_action_query_non_struct(self):
+        errors = [
+            ":2: error: Invalid struct base type 'Foo'",
+            ":14: error: Invalid struct base type 'Foo'",
+            ":19: error: Invalid struct base type 'MyUnion'",
+            ":20: error: Redefinition of 'BonkAction_query' member 'a'",
+            ":25: error: Invalid struct base type 'MyDict'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action FooAction
@@ -1767,13 +1850,8 @@ action MyDictAction
     query (MyDict)
         int a
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid struct base type 'Foo'",
-            ":14: error: Invalid struct base type 'Foo'",
-            ":19: error: Invalid struct base type 'MyUnion'",
-            ":20: error: Redefinition of 'BonkAction_query' member 'a'",
-            ":25: error: Invalid struct base type 'MyDict'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_action_input_base_types(self):
         types = parse_schema_markdown('''\
@@ -1851,44 +1929,13 @@ action BarAction
         })
 
     def test_action_input_non_struct(self):
-        with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
-            parse_schema_markdown('''\
-action FooAction
-    input (Foo)
-        #- will not error
-        float a
-
-enum Foo
-    A
-    B
-
-struct MyStruct
-    int a
-
-action BarAction
-    input (Foo, MyStruct)
-
-union MyUnion
-
-action BonkAction
-    input (MyStruct, MyUnion)
-        float a
-
-typedef string{} MyDict
-
-action MyDictAction
-    input (MyDict)
-        int a
-''')
-        self.assertListEqual(cm_exc.exception.errors, [
+        errors = [
             ":2: error: Invalid struct base type 'Foo'",
             ":14: error: Invalid struct base type 'Foo'",
             ":19: error: Invalid struct base type 'MyUnion'",
             ":20: error: Redefinition of 'BonkAction_input' member 'a'",
             ":25: error: Invalid struct base type 'MyDict'",
-        ])
-
-    def test_action_input_member_redef(self):
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action FooAction
@@ -1918,13 +1965,48 @@ action MyDictAction
     input (MyDict)
         int a
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
+
+    def test_action_input_member_redef(self):
+        errors = [
             ":2: error: Invalid struct base type 'Foo'",
             ":14: error: Invalid struct base type 'Foo'",
             ":19: error: Invalid struct base type 'MyUnion'",
             ":20: error: Redefinition of 'BonkAction_input' member 'a'",
             ":25: error: Invalid struct base type 'MyDict'"
-        ])
+        ]
+        with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
+            parse_schema_markdown('''\
+action FooAction
+    input (Foo)
+        #- will not error
+        float a
+
+enum Foo
+    A
+    B
+
+struct MyStruct
+    int a
+
+action BarAction
+    input (Foo, MyStruct)
+
+union MyUnion
+
+action BonkAction
+    input (MyStruct, MyUnion)
+        float a
+
+typedef string{} MyDict
+
+action MyDictAction
+    input (MyDict)
+        int a
+''')
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_action_output_struct(self):
         types = parse_schema_markdown('''\
@@ -2002,6 +2084,13 @@ action BarAction
         })
 
     def test_action_output_non_struct(self):
+        errors = [
+            ":2: error: Invalid struct base type 'Foo'",
+            ":14: error: Invalid struct base type 'Foo'",
+            ":19: error: Invalid struct base type 'MyUnion'",
+            ":20: error: Redefinition of 'BonkAction_output' member 'a'",
+            ":25: error: Invalid struct base type 'MyDict'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action FooAction
@@ -2032,13 +2121,8 @@ action MyDictAction
         #- will not error
         int a
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid struct base type 'Foo'",
-            ":14: error: Invalid struct base type 'Foo'",
-            ":19: error: Invalid struct base type 'MyUnion'",
-            ":20: error: Redefinition of 'BonkAction_output' member 'a'",
-            ":25: error: Invalid struct base type 'MyDict'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
 
     def test_action_errors_enum(self):
         types = parse_schema_markdown('''\
@@ -2116,6 +2200,12 @@ action BarAction
         })
 
     def test_action_errors_non_enum(self):
+        errors = [
+            ":2: error: Invalid enum base type 'Foo'",
+            ":14: error: Invalid enum base type 'Bar'",
+            ":15: error: Redefinition of 'BarAction_errors' value 'A'",
+            ":19: error: Redefinition of 'BonkAction_errors' value 'A'"
+        ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
 action FooAction
@@ -2138,9 +2228,5 @@ action BonkAction
     errors (MyEnum)
         A
 ''')
-        self.assertListEqual(cm_exc.exception.errors, [
-            ":2: error: Invalid enum base type 'Foo'",
-            ":14: error: Invalid enum base type 'Bar'",
-            ":15: error: Redefinition of 'BarAction_errors' value 'A'",
-            ":19: error: Redefinition of 'BonkAction_errors' value 'A'"
-        ])
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)

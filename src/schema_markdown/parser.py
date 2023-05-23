@@ -325,7 +325,8 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
 
             # Duplicate URL?
             if action_url in urls:
-                add_error(f'Duplicate URL: {method} {"" if path is None else path}', filename, linenum)
+                padded_path = "" if path is None else f' {path}'
+                add_error(f'Duplicate URL: {method}{padded_path}', filename, linenum)
 
             # Add the URL
             if 'urls' not in action:
