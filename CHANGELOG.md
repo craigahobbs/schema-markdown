@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.3 (2023-05-23)
+
+- [e43aa15](https://github.com/craigahobbs/schema-markdown/commit/e43aa15) - tweak error message, improve unit tests
+
 ## 1.2.2 (2022-10-31)
 
 - [f7f0bfe](https://github.com/craigahobbs/schema-markdown/commit/f7f0bfe) - add pyproject.toml and setup.cfg, remove setup.py
