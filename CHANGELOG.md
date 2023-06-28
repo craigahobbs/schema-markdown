@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.6 (2023-06-28)
+
+- [195e65c](https://github.com/craigahobbs/schema-markdown/commit/195e65c) - schema-markdown 1.2.6
+
 ## 1.2.5 (2023-06-28)
 
 - [d51bdc6](https://github.com/craigahobbs/schema-markdown/commit/d51bdc6) - sync version with pypi
