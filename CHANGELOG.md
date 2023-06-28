@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.5 (2023-06-28)
+
+- [d51bdc6](https://github.com/craigahobbs/schema-markdown/commit/d51bdc6) - sync version with pypi
+
 ## 1.2.4 (2023-06-28)
 
 - [a71ac70](https://github.com/craigahobbs/schema-markdown/commit/a71ac70) - add python 3.12 support, remove python 3.7 support \(end-of-life\)
