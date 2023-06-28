@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.4 (2023-06-28)
+
+- [a71ac70](https://github.com/craigahobbs/schema-markdown/commit/a71ac70) - add python 3.12 support, remove python 3.7 support \(end-of-life\)
+
 ## 1.2.3 (2023-05-23)
 
 - [e43aa15](https://github.com/craigahobbs/schema-markdown/commit/e43aa15) - tweak error message, improve unit tests
