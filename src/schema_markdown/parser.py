@@ -1,5 +1,5 @@
 # Licensed under the MIT License
-# https://github.com/craigahobbs/schema_markdown/blob/main/LICENSE
+# https://github.com/craigahobbs/schema-markdown/blob/main/LICENSE
 
 """
 Schema Markdown parser
