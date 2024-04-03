@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.7 (2024-04-03)
+
+- [26d8924](https://github.com/craigahobbs/schema-markdown/commit/26d8924) - convert docs to markdown
+
 ## 1.2.6 (2023-06-28)
 
 - [195e65c](https://github.com/craigahobbs/schema-markdown/commit/195e65c) - schema-markdown 1.2.6
