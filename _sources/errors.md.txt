@@ -1,16 +1,17 @@
-Errors
-======
+# Errors
 
 
-SchemaMarkdownParserError
--------------------------
+## SchemaMarkdownParserError
 
+~~~ {eval-rst}
 .. autoexception:: schema_markdown.SchemaMarkdownParserError
    :members:
+~~~
 
 
-ValidationError
----------------
+## ValidationError
 
+~~~ {eval-rst}
 .. autoexception:: schema_markdown.ValidationError
    :members:
+~~~
