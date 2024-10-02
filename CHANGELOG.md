@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.8 (2024-10-02)
+
+- [a0e8572](https://github.com/craigahobbs/schema-markdown/commit/a0e8572) - add Python 3.13, remove Python 3.8 \(end-of-life\)
+
 ## 1.2.7 (2024-04-03)
 
 - [26d8924](https://github.com/craigahobbs/schema-markdown/commit/26d8924) - convert docs to markdown
