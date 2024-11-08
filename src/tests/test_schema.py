@@ -488,21 +488,21 @@ class TestValidateType(unittest.TestCase):
         self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'uuid'")
         self.assertIsNone(cm_exc.exception.member)
 
-    def test_object(self):
+    def test_any(self):
         obj = object()
-        self.assertIs(self._validate_type({'builtin': 'object'}, obj), obj)
+        self.assertIs(self._validate_type({'builtin': 'any'}, obj), obj)
 
-    def test_object_string(self):
+    def test_any_string(self):
         obj = 'abc'
-        self.assertIs(self._validate_type({'builtin': 'object'}, obj), obj)
+        self.assertIs(self._validate_type({'builtin': 'any'}, obj), obj)
 
-    def test_object_int(self):
+    def test_any_int(self):
         obj = 7
-        self.assertIs(self._validate_type({'builtin': 'object'}, obj), obj)
+        self.assertIs(self._validate_type({'builtin': 'any'}, obj), obj)
 
-    def test_object_bool(self):
+    def test_any_bool(self):
         obj = False
-        self.assertIs(self._validate_type({'builtin': 'object'}, obj), obj)
+        self.assertIs(self._validate_type({'builtin': 'any'}, obj), obj)
 
     def test_array(self):
         obj = [1, 2, 3]
@@ -1041,7 +1041,7 @@ class TestValidateType(unittest.TestCase):
                         {'name': 'e', 'type': {'builtin': 'date'}},
                         {'name': 'f', 'type': {'builtin': 'datetime'}},
                         {'name': 'g', 'type': {'builtin': 'uuid'}},
-                        {'name': 'h', 'type': {'builtin': 'object'}},
+                        {'name': 'h', 'type': {'builtin': 'any'}},
                         {'name': 'i', 'type': {'user': 'MyStruct2'}},
                         {'name': 'j', 'type': {'user': 'enum'}},
                         {'name': 'k', 'type': {'user': 'typedef'}}

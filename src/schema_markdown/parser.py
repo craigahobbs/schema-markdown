@@ -12,7 +12,8 @@ from .schema_util import validate_type_model_errors
 
 
 # Built-in types
-BUILTIN_TYPES = {'bool', 'date', 'datetime', 'float', 'int', 'object', 'string', 'uuid'}
+BUILTIN_TYPES = {'any', 'bool', 'date', 'datetime', 'float', 'int', 'string', 'uuid'}
+BUILTIN_DEPRECATED = {'object': 'any'}
 
 
 # Schema Markdown regex
@@ -186,7 +187,7 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
             definition_base_ids = match.group('base_ids')
 
             # Type already defined?
-            if definition_id in BUILTIN_TYPES or definition_id in types:
+            if definition_id in BUILTIN_TYPES or definition_id in BUILTIN_DEPRECATED or definition_id in types:
                 add_error(f"Redefinition of type '{definition_id}'", filename, linenum)
 
             # Clear parser state
@@ -338,7 +339,7 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
             definition_id = match.group('id')
 
             # Type already defined?
-            if definition_id in BUILTIN_TYPES or definition_id in types:
+            if definition_id in BUILTIN_TYPES or definition_id in BUILTIN_DEPRECATED or definition_id in types:
                 add_error(f"Redefinition of type '{definition_id}'", filename, linenum)
 
             # Clear parser state
@@ -434,6 +435,8 @@ def _parse_typedef(match_typedef):
 
 # Helper function to create a type model
 def _create_type(type_name):
+    if type_name in BUILTIN_DEPRECATED:
+        return {'builtin': BUILTIN_DEPRECATED[type_name]}
     if type_name in BUILTIN_TYPES:
         return {'builtin': type_name}
     return {'user': type_name}

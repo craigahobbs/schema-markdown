@@ -91,8 +91,8 @@ enum BuiltinType
     # A UUID formatted as string
     uuid
 
-    # An object of any type
-    object
+    # An value of any type
+    any
 
 
 # An array type
