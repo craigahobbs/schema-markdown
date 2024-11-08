@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.9 (2024-11-08)
+
+- [255dda3](https://github.com/craigahobbs/schema-markdown/commit/255dda3) - add `any` builtin type and deprecate `object` builtin type
+
 ## 1.2.8 (2024-10-02)
 
 - [a0e8572](https://github.com/craigahobbs/schema-markdown/commit/a0e8572) - add Python 3.13, remove Python 3.8 \(end-of-life\)
