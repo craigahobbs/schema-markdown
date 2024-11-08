@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.10 (2024-11-08)
+
+- [83a98cb](https://github.com/craigahobbs/schema-markdown/commit/83a98cb) - fix doc typo
+
 ## 1.2.9 (2024-11-08)
 
 - [255dda3](https://github.com/craigahobbs/schema-markdown/commit/255dda3) - add `any` builtin type and deprecate `object` builtin type
