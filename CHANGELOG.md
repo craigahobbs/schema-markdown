@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.11 (2025-05-09)
+
+- [71ba9b1](https://github.com/craigahobbs/schema-markdown/commit/71ba9b1) - add Python 3.14
+
+- [9e55874](https://github.com/craigahobbs/schema-markdown/commit/9e55874) - remove setup.cfg license classifier
+
 ## 1.2.10 (2024-11-08)
 
 - [83a98cb](https://github.com/craigahobbs/schema-markdown/commit/83a98cb) - fix doc typo
