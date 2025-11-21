@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.12 (2025-11-21)
+
+- [c9f6e29](https://github.com/craigahobbs/schema-markdown/commit/c9f6e29) - update schema documentation instructions
+
 ## 1.2.11 (2025-05-09)
 
 - [71ba9b1](https://github.com/craigahobbs/schema-markdown/commit/71ba9b1) - add Python 3.14
