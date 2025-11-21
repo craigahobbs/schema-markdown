@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>schema-markdown &#8212; schema-markdown 1.2.11 documentation</title>
+    <title>schema-markdown &#8212; schema-markdown 1.2.12 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=50cdfb0a" />
-    <script src="_static/documentation_options.js?v=b68a8a9d"></script>
+    <script src="_static/documentation_options.js?v=817200f7"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -163,21 +163,47 @@ function. For example:</p>
 </pre></div>
 </div>
 </section>
-<section id="document-a-schema">
-<h2>Document a Schema<a class="headerlink" href="#document-a-schema" title="Link to this heading">¶</a></h2>
-<p>To document the schema, download the
-<a class="reference external" href="https://github.com/craigahobbs/schema-markdown-doc#the-schema-markdown-documentation-viewer">documentation application</a>
-stub and save the type model as JSON:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-O<span class="w"> </span>https://craigahobbs.github.io/schema-markdown-doc/extra/index.html
-python3<span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>-c<span class="w"> </span><span class="s1">&#39;from model import model_types; import json; print(json.dumps(model_types))&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">    </span>&gt;<span class="w"> </span>model.json
+<section id="schema-documentation">
+<h2>Schema Documentation<a class="headerlink" href="#schema-documentation" title="Link to this heading">¶</a></h2>
+<p>You can document a schema with BareScript’s
+<a class="reference external" href="https://craigahobbs.github.io/bare-script-py/library/#var.vGroup='schemaDoc.bare'">schemaDoc application</a>
+running on the
+<a class="reference external" href="https://craigahobbs.github.io/markdown-up/">MarkdownUp application</a>.</p>
+<p>If your
+<a class="reference external" href="https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&amp;amp;var.vName='Types'">type model JSON file</a>
+or
+<a class="reference external" href="https://craigahobbs.github.io/schema-markdown-js/language/">Schema Markdown file</a>
+is publicly visible, you can use the BareScript model application with the <code class="docutils literal notranslate"><span class="pre">var.vURL</span></code> query argument:</p>
+<p><a class="reference external" href="https://craigahobbs.github.io/bare-script-py/model/#var.vURL='https://craigahobbs.github.io/bare-script-py/library/model.json'">https://craigahobbs.github.io/bare-script-py/model/#var.vURL=’https://craigahobbs.github.io/bare-script-py/library/model.json’</a></p>
+<p><strong>Note:</strong> Schema Markdown files use the <code class="docutils literal notranslate"><span class="pre">.smd</span></code> file extension.</p>
+<section id="self-hosting-schema-documentation">
+<h3>Self-Hosting Schema Documentation<a class="headerlink" href="#self-hosting-schema-documentation" title="Link to this heading">¶</a></h3>
+<p>You can host the schemaDoc application yourself by downloading the
+<a class="reference external" href="https://craigahobbs.github.io/markdown-up/#host-markdown-web-pages">MarkdownUp Application HTML stub</a>.</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-O<span class="w"> </span>https://craigahobbs.github.io/markdown-up/extra/index.html
 </pre></div>
 </div>
-<p>To host locally, start a local static web server:</p>
+<p>Replace the MarkdownUp application creation line:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MarkdownUp</span><span class="p">(</span><span class="nb">window</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>With the following:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MarkdownUp</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="s1">&#39;markdownText&#39;</span><span class="o">:</span><span class="w"> </span><span class="sb">`\</span>
+<span class="sb">~~~markdown-script</span>
+<span class="sb">include &lt;schemaDoc.bare&gt;</span>
+
+<span class="sb">schemaDocMain(&#39;model.json&#39;, &#39;My Model&#39;)</span>
+<span class="sb">~~~</span>
+<span class="sb">`</span>
+<span class="w">        </span><span class="p">});</span>
+</pre></div>
+</div>
+<p>To view locally, start a local static web server:</p>
 <div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>http.server
 </pre></div>
 </div>
+</section>
 </section>
 <section id="development">
 <h2>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h2>
