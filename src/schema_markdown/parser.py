@@ -61,10 +61,10 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
 
     :param text: The Schema Markdown text
     :type text: str or ~collections.abc.Iterable(str)
-    :param object types: The `type model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'>`__
+    :param object types: The `type model <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='Types'>`__
     :param str filename: The name of file being parsed (for error messages)
     :param bool validate: If True, validate after parsing
-    :returns: The `type model <https://craigahobbs.github.io/schema-markdown-doc/doc/#var.vName='Types'>`__
+    :returns: The `type model <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='Types'>`__
     :raises SchemaMarkdownParserError: A parsing error occurred
     """
 

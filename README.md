@@ -85,20 +85,54 @@ except ValidationError as exc:
 ~~~
 
 
-## Document a Schema
+## Schema Documentation
 
-To document the schema, download the
-[documentation application](https://github.com/craigahobbs/schema-markdown-doc#the-schema-markdown-documentation-viewer)
-stub and save the type model as JSON:
+You can document a schema with BareScript's
+[schemaDoc application](https://craigahobbs.github.io/bare-script-py/library/#var.vGroup='schemaDoc.bare')
+running on the
+[MarkdownUp application](https://craigahobbs.github.io/markdown-up/).
 
-~~~ sh
-curl -O https://craigahobbs.github.io/schema-markdown-doc/extra/index.html
-python3 \
-    -c 'from model import model_types; import json; print(json.dumps(model_types))' \
-    > model.json
+If your
+[type model JSON file](https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='Types')
+or
+[Schema Markdown file](https://craigahobbs.github.io/schema-markdown-js/language/)
+is publicly visible, you can use the BareScript model application with the `var.vURL` query argument:
+
+<https://craigahobbs.github.io/bare-script-py/model/#var.vURL='https://craigahobbs.github.io/bare-script-py/library/model.json'>
+
+**Note:** Schema Markdown files use the `.smd` file extension.
+
+
+### Self-Hosting Schema Documentation
+
+You can host the schemaDoc application yourself by downloading the
+[MarkdownUp Application HTML stub](https://craigahobbs.github.io/markdown-up/#host-markdown-web-pages).
+
+~~~sh
+curl -O https://craigahobbs.github.io/markdown-up/extra/index.html
 ~~~
 
-To host locally, start a local static web server:
+Replace the MarkdownUp application creation line:
+
+~~~javascript
+        const app = new MarkdownUp(window);
+~~~
+
+With the following:
+
+```javascript
+        const app = new MarkdownUp(window, {
+            'markdownText': `\
+~~~markdown-script
+include <schemaDoc.bare>
+
+schemaDocMain('model.json', 'My Model')
+~~~
+`
+        });
+```
+
+To view locally, start a local static web server:
 
 ~~~ sh
 python3 -m http.server
