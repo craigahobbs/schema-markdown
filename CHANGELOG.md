@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.13 (2026-04-25)
+
+- [f6ee10b](https://github.com/craigahobbs/schema-markdown/commit/f6ee10b) - update self-hosting schema docs instructions
+
 ## 1.2.12 (2025-11-21)
 
 - [c9f6e29](https://github.com/craigahobbs/schema-markdown/commit/c9f6e29) - update schema documentation instructions
