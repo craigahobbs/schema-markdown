@@ -105,22 +105,21 @@ is publicly visible, you can use the BareScript model application with the `var.
 
 ### Self-Hosting Schema Documentation
 
-You can host the schemaDoc application yourself by downloading the
-[MarkdownUp Application HTML stub](https://craigahobbs.github.io/markdown-up/#host-markdown-web-pages).
+You can host the schemaDoc application yourself by adding a schemaDoc HTML stub:
 
-~~~sh
-curl -O https://craigahobbs.github.io/markdown-up/extra/index.html
-~~~
-
-Replace the MarkdownUp application creation line:
-
-~~~javascript
-        const app = new MarkdownUp(window);
-~~~
-
-With the following:
-
-```javascript
+``` html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>MarkdownUp</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://craigahobbs.github.io/markdown-up/app.css">
+        <link rel="preload" href="https://craigahobbs.github.io/markdown-up/bare-script/static/markdown.css" as="style">
+        <link rel="modulepreload" href="https://craigahobbs.github.io/markdown-up/lib/appImports.js" as="script">
+    </head>
+    <script type="module">
+        import {MarkdownUp} from 'https://craigahobbs.github.io/markdown-up/lib/appImports.js';
         const app = new MarkdownUp(window, {
             'markdownText': `\
 ~~~markdown-script
@@ -130,6 +129,9 @@ schemaDocMain('model.json', 'My Model')
 ~~~
 `
         });
+        app.run();
+    </script>
+</html>
 ```
 
 To view locally, start a local static web server:
