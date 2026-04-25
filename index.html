@@ -5,11 +5,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>schema-markdown &#8212; schema-markdown 1.2.12 documentation</title>
+    <title>schema-markdown &#8212; schema-markdown 1.2.13 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=5ecbeea2" />
     <link rel="stylesheet" type="text/css" href="_static/basic.css?v=b08954a9" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=50cdfb0a" />
-    <script src="_static/documentation_options.js?v=817200f7"></script>
+    <script src="_static/documentation_options.js?v=250a84ee"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -178,17 +178,20 @@ is publicly visible, you can use the BareScript model application with the <code
 <p><strong>Note:</strong> Schema Markdown files use the <code class="docutils literal notranslate"><span class="pre">.smd</span></code> file extension.</p>
 <section id="self-hosting-schema-documentation">
 <h3>Self-Hosting Schema Documentation<a class="headerlink" href="#self-hosting-schema-documentation" title="Link to this heading">¶</a></h3>
-<p>You can host the schemaDoc application yourself by downloading the
-<a class="reference external" href="https://craigahobbs.github.io/markdown-up/#host-markdown-web-pages">MarkdownUp Application HTML stub</a>.</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-O<span class="w"> </span>https://craigahobbs.github.io/markdown-up/extra/index.html
-</pre></div>
-</div>
-<p>Replace the MarkdownUp application creation line:</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MarkdownUp</span><span class="p">(</span><span class="nb">window</span><span class="p">);</span>
-</pre></div>
-</div>
-<p>With the following:</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MarkdownUp</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<p>You can host the schemaDoc application yourself by adding a schemaDoc HTML stub:</p>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>MarkdownUp<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;viewport&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;width=device-width, initial-scale=1&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;https://craigahobbs.github.io/markdown-up/app.css&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;preload&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;https://craigahobbs.github.io/markdown-up/bare-script/static/markdown.css&quot;</span> <span class="na">as</span><span class="o">=</span><span class="s">&quot;style&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;modulepreload&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;https://craigahobbs.github.io/markdown-up/lib/appImports.js&quot;</span> <span class="na">as</span><span class="o">=</span><span class="s">&quot;script&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;module&quot;</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">MarkdownUp</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;https://craigahobbs.github.io/markdown-up/lib/appImports.js&#39;</span><span class="p">;</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MarkdownUp</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
 <span class="w">            </span><span class="s1">&#39;markdownText&#39;</span><span class="o">:</span><span class="w"> </span><span class="sb">`\</span>
 <span class="sb">~~~markdown-script</span>
 <span class="sb">include &lt;schemaDoc.bare&gt;</span>
@@ -197,6 +200,9 @@ is publicly visible, you can use the BareScript model application with the <code
 <span class="sb">~~~</span>
 <span class="sb">`</span>
 <span class="w">        </span><span class="p">});</span>
+<span class="w">        </span><span class="nx">app</span><span class="p">.</span><span class="nx">run</span><span class="p">();</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
 </pre></div>
 </div>
 <p>To view locally, start a local static web server:</p>
