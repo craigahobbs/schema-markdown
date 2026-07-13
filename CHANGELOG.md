@@ -4,19 +4,19 @@
 
 - [5a9713c](https://github.com/craigahobbs/schema-markdown/commit/5a9713c)
 
-    **Breaking changes:**
+  **Breaking changes:**
 
-    - validated `uuid` values are now strings (previously converted to `uuid.UUID`)
-    - rename `ValidationError.member` to `member_fqn`
-    - `date` accepts only date-only strings; `datetime` requires a timezone
-    - reject non-canonical `uuid` strings and invalid calendar dates (e.g. February 30)
-    - report a syntax error for trailing text after an `action` definition
-    - remove Python 3.10 support
+  - validated `uuid` values are now strings (previously converted to `uuid.UUID`)
+  - rename `ValidationError.member` to `member_fqn`
+  - `date` accepts only date-only strings; `datetime` requires a timezone
+  - reject non-canonical `uuid` strings and invalid calendar dates (e.g. February 30)
+  - report a syntax error for trailing text after an `action` definition
+  - remove Python 3.10 support
 
-    **Other changes:**
+  **Other changes:**
 
-    - reformat validation error messages (double-quoted names, JSON-formatted values)
-    - improve unit tests
+  - reformat validation error messages (double-quoted names, JSON-formatted values)
+  - improve unit tests
 
 ## 1.2.13 (2026-04-25)
 
