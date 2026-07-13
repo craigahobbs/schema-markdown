@@ -257,6 +257,25 @@ action MyAction4 \\
             }
         })
 
+    def test_action_trailing_whitespace(self):
+        types = parse_schema_markdown('action MyAction  \n')
+        self.assertDictEqual(types, {
+            'MyAction': {
+                'action': {
+                    'name': 'MyAction'
+                }
+            }
+        })
+
+    def test_action_trailing_garbage(self):
+        errors = [
+            ':1: error: Syntax error'
+        ]
+        with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
+            parse_schema_markdown('action MyAction garbage\n')
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
+
     def test_action_urls(self):
         types = parse_schema_markdown('''\
 action MyAction
@@ -304,6 +323,32 @@ action MyAction
         GET
     urls
         GET
+''')
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
+
+    def test_action_urls_empty(self):
+        types = parse_schema_markdown('''\
+action MyAction
+    urls
+''')
+        self.assertDictEqual(types, {
+            'MyAction': {
+                'action': {
+                    'name': 'MyAction'
+                }
+            }
+        })
+
+    def test_action_urls_empty_redefinition(self):
+        errors = [
+            ':3: error: Redefinition of action urls'
+        ]
+        with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
+            parse_schema_markdown('''\
+action MyAction
+    urls
+    urls
 ''')
         self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
         self.assertListEqual(cm_exc.exception.errors, errors)
@@ -437,10 +482,10 @@ struct MyStruct5 (MyStruct2, MyTypedef)
 
     def test_struct_base_types_error(self):
         errors = [
-            ":1: error: Invalid struct base type 'MyEnum'",
-            ":8: error: Redefinition of 'MyStruct3' member 'a'",
-            ":15: error: Invalid struct base type 'MyDict'",
-            ":16: error: Redefinition of 'MyStruct5' member 'b'"
+            ':1: error: Invalid struct base type "MyEnum"',
+            ':8: error: Redefinition of "MyStruct3" member "a"',
+            ':15: error: Invalid struct base type "MyDict"',
+            ':16: error: Redefinition of "MyStruct5" member "b"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -466,9 +511,9 @@ struct MyStruct5 (MyStruct4, MyDict)
 
     def test_struct_base_types_circular(self):
         errors = [
-            ":1: error: Circular base type detected for type 'MyStruct'",
-            ":4: error: Circular base type detected for type 'MyStruct2'",
-            ":7: error: Circular base type detected for type 'MyStruct3'"
+            ':1: error: Circular base type detected for type "MyStruct"',
+            ':4: error: Circular base type detected for type "MyStruct2"',
+            ':7: error: Circular base type detected for type "MyStruct3"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -514,10 +559,10 @@ enum MyEnum5 (MyEnum2, MyTypedef)
 
     def test_enum_base_types_error(self):
         errors = [
-            ":1: error: Invalid enum base type 'MyStruct'",
-            ":8: error: Redefinition of 'MyEnum3' value 'A'",
-            ":15: error: Invalid enum base type 'MyDict'",
-            ":16: error: Redefinition of 'MyEnum5' value 'B'"
+            ':1: error: Invalid enum base type "MyStruct"',
+            ':8: error: Redefinition of "MyEnum3" value "A"',
+            ':15: error: Invalid enum base type "MyDict"',
+            ':16: error: Redefinition of "MyEnum5" value "B"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -543,9 +588,9 @@ enum MyEnum5 (MyEnum4, MyDict)
 
     def test_enum_base_types_circular(self):
         errors = [
-            ":1: error: Circular base type detected for type 'MyEnum'",
-            ":4: error: Circular base type detected for type 'MyEnum2'",
-            ":7: error: Circular base type detected for type 'MyEnum3'"
+            ':1: error: Circular base type detected for type "MyEnum"',
+            ':4: error: Circular base type detected for type "MyEnum2"',
+            ':7: error: Circular base type detected for type "MyEnum3"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -683,7 +728,7 @@ enum MyEnum2
 
     def test_error_multiple(self):
         errors = [
-            ":1: error: Invalid struct base type 'MyStruct2'"
+            ':1: error: Invalid struct base type "MyStruct2"'
         ]
         types = parse_schema_markdown('''\
 struct MyStruct (MyStruct2)
@@ -811,7 +856,7 @@ struct MyStruct
 
     def test_invalid_attr(self):
         errors = [
-            ":2: error: Invalid attribute 'len > 0' from 'MyStruct' member 'a'"
+            ':2: error: Invalid attribute "len > 0" from "MyStruct" member "a"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -824,9 +869,9 @@ struct MyStruct2
 
     def test_error_unknown_type(self):
         errors = [
-            "foo:2: error: Unknown type 'MyBadType' from 'Foo' member 'a'",
-            "foo:6: error: Unknown type 'MyBadType2' from 'MyAction_input' member 'a'",
-            "foo:8: error: Unknown type 'MyBadType' from 'MyAction_output' member 'b'"
+            'foo:2: error: Unknown type "MyBadType" from "Foo" member "a"',
+            'foo:6: error: Unknown type "MyBadType2" from "MyAction_input" member "a"',
+            'foo:8: error: Unknown type "MyBadType" from "MyAction_output" member "b"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -844,9 +889,9 @@ action MyAction
 
     def test_error_unknown_array_type(self):
         errors = [
-            "foo:2: error: Unknown type 'MyBadType' from 'MyStruct' member 'a'",
-            "foo:3: error: Unknown type 'MyBadType' from 'MyStruct' member 'b'",
-            "foo:5: error: Unknown type 'MyBadType' from 'MyTypedef'"
+            'foo:2: error: Unknown type "MyBadType" from "MyStruct" member "a"',
+            'foo:3: error: Unknown type "MyBadType" from "MyStruct" member "b"',
+            'foo:5: error: Unknown type "MyBadType" from "MyTypedef"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -861,9 +906,9 @@ typedef MyBadType MyTypedef
 
     def test_error_unknown_dict_type(self):
         errors = [
-            "foo:2: error: Unknown type 'MyBadType' from 'MyStruct' member 'a'",
-            "foo:3: error: Unknown type 'MyBadType' from 'MyStruct' member 'b'",
-            "foo:5: error: Unknown type 'MyBadType' from 'MyTypedef'"
+            'foo:2: error: Unknown type "MyBadType" from "MyStruct" member "a"',
+            'foo:3: error: Unknown type "MyBadType" from "MyStruct" member "b"',
+            'foo:5: error: Unknown type "MyBadType" from "MyTypedef"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -878,11 +923,11 @@ typedef MyBadType MyTypedef
 
     def test_error_unknown_dict_key_type(self):
         errors = [
-            "foo:2: error: Invalid dictionary key type from 'MyStruct' member 'a'",
-            "foo:2: error: Unknown type 'MyBadType' from 'MyStruct' member 'a'",
-            "foo:3: error: Invalid dictionary key type from 'MyStruct' member 'b'",
-            "foo:3: error: Unknown type 'MyBadType' from 'MyStruct' member 'b'",
-            "foo:5: error: Unknown type 'MyBadType' from 'MyTypedef'"
+            'foo:2: error: Invalid dictionary key type from "MyStruct" member "a"',
+            'foo:2: error: Unknown type "MyBadType" from "MyStruct" member "a"',
+            'foo:3: error: Invalid dictionary key type from "MyStruct" member "b"',
+            'foo:3: error: Unknown type "MyBadType" from "MyStruct" member "b"',
+            'foo:5: error: Unknown type "MyBadType" from "MyTypedef"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -897,7 +942,7 @@ typedef MyBadType MyTypedef
 
     def test_error_action_type(self):
         errors = [
-            "foo:2: error: Invalid reference to action 'MyAction' from 'Foo' member 'a'",
+            'foo:2: error: Invalid reference to action "MyAction" from "Foo" member "a"',
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1193,7 +1238,7 @@ struct MyStruct
 
     def test_error_attribute_eq(self):
         errors = [
-            ":2: error: Invalid attribute '== 7' from 'MyStruct' member 's'"
+            ':2: error: Invalid attribute "== 7" from "MyStruct" member "s"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1205,7 +1250,7 @@ struct MyStruct
 
     def test_error_attribute_lt(self):
         errors = [
-            ":2: error: Invalid attribute '< 7' from 'MyStruct' member 's'"
+            ':2: error: Invalid attribute "< 7" from "MyStruct" member "s"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1217,7 +1262,7 @@ struct MyStruct
 
     def test_error_attribute_gt(self):
         errors = [
-            ":2: error: Invalid attribute '> 7' from 'MyStruct' member 's'"
+            ':2: error: Invalid attribute "> 7" from "MyStruct" member "s"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1229,8 +1274,8 @@ struct MyStruct
 
     def test_error_attribute_lt_gt(self):
         errors = [
-            ":2: error: Invalid attribute '< 7' from 'MyStruct' member 's'",
-            ":2: error: Invalid attribute '> 7' from 'MyStruct' member 's'"
+            ':2: error: Invalid attribute "< 7" from "MyStruct" member "s"',
+            ':2: error: Invalid attribute "> 7" from "MyStruct" member "s"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1242,8 +1287,8 @@ struct MyStruct
 
     def test_error_attribute_lte_gte(self):
         errors = [
-            ":6: error: Invalid attribute '>= 1' from 'MyStruct' member 'a'",
-            ":7: error: Invalid attribute '<= 2' from 'MyStruct' member 'b'"
+            ':6: error: Invalid attribute ">= 1" from "MyStruct" member "a"',
+            ':7: error: Invalid attribute "<= 2" from "MyStruct" member "b"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1260,7 +1305,7 @@ struct MyStruct
 
     def test_error_attribute_len_eq(self):
         errors = [
-            ":2: error: Invalid attribute 'len == 1' from 'MyStruct' member 'i'"
+            ':2: error: Invalid attribute "len == 1" from "MyStruct" member "i"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1272,7 +1317,7 @@ struct MyStruct
 
     def test_error_attribute_len_lt(self):
         errors = [
-            ":2: error: Invalid attribute 'len < 10' from 'MyStruct' member 'f'"
+            ':2: error: Invalid attribute "len < 10" from "MyStruct" member "f"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1284,7 +1329,7 @@ struct MyStruct
 
     def test_error_attribute_len_gt(self):
         errors = [
-            ":2: error: Invalid attribute 'len > 1' from 'MyStruct' member 'i'"
+            ':2: error: Invalid attribute "len > 1" from "MyStruct" member "i"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1296,8 +1341,8 @@ struct MyStruct
 
     def test_error_attribute_len_lt_gt(self):
         errors = [
-            ":2: error: Invalid attribute 'len < 10' from 'MyStruct' member 'f'",
-            ":2: error: Invalid attribute 'len > 10' from 'MyStruct' member 'f'"
+            ':2: error: Invalid attribute "len < 10" from "MyStruct" member "f"',
+            ':2: error: Invalid attribute "len > 10" from "MyStruct" member "f"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1309,8 +1354,8 @@ struct MyStruct
 
     def test_error_attribute_len_lte_gte(self):
         errors = [
-            ":2: error: Invalid attribute 'len <= 10' from 'MyStruct' member 'f'",
-            ":3: error: Invalid attribute 'len >= 10' from 'MyStruct' member 'f2'"
+            ':2: error: Invalid attribute "len <= 10" from "MyStruct" member "f"',
+            ':3: error: Invalid attribute "len >= 10" from "MyStruct" member "f2"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1351,7 +1396,7 @@ enum MyEnum
 
     def test_error_member_redefinition(self):
         errors = [
-            ":4: error: Redefinition of 'MyStruct' member 'b'"
+            ':4: error: Redefinition of "MyStruct" member "b"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1365,7 +1410,7 @@ struct MyStruct
 
     def test_error_enum_duplicate_value(self):
         errors = [
-            ":4: error: Redefinition of 'MyEnum' value 'bar'"
+            ':4: error: Redefinition of "MyEnum" value "bar"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1543,7 +1588,7 @@ struct MyStruct
 
     def test_error_dict_non_string_key(self):
         errors = [
-            ":2: error: Invalid dictionary key type from 'Foo' member 'a'",
+            ':2: error: Invalid dictionary key type from "Foo" member "a"',
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1591,14 +1636,14 @@ action Foo
 
     def test_error_action_input_member_redefinition(self):
         errors = [
-            ":3: error: Redefinition of 'MyAction_path' member 'a'",
-            ":4: error: Redefinition of 'MyAction_path' member 'b'",
-            ":6: error: Redefinition of 'MyAction_query' member 'a'",
-            ":8: error: Redefinition of 'MyAction_input' member 'b'",
-            ":11: error: Redefinition of 'MyAction2_path' member 'a'",
-            ":11: error: Redefinition of 'MyAction2_path' member 'b'",
-            ":13: error: Redefinition of 'MyAction2_query' member 'a'",
-            ":15: error: Redefinition of 'MyAction2_input' member 'b'"
+            ':3: error: Redefinition of "MyAction_path" member "a"',
+            ':4: error: Redefinition of "MyAction_path" member "b"',
+            ':6: error: Redefinition of "MyAction_query" member "a"',
+            ':8: error: Redefinition of "MyAction_input" member "b"',
+            ':11: error: Redefinition of "MyAction2_path" member "a"',
+            ':11: error: Redefinition of "MyAction2_path" member "b"',
+            ':13: error: Redefinition of "MyAction2_query" member "a"',
+            ':15: error: Redefinition of "MyAction2_input" member "b"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1702,11 +1747,11 @@ action BarAction
 
     def test_action_path_non_struct(self):
         errors = [
-            ":2: error: Invalid struct base type 'Foo'",
-            ":14: error: Invalid struct base type 'Foo'",
-            ":19: error: Invalid struct base type 'MyUnion'",
-            ":20: error: Redefinition of 'BonkAction_path' member 'a'",
-            ":25: error: Invalid struct base type 'MyDict'"
+            ':2: error: Invalid struct base type "Foo"',
+            ':14: error: Invalid struct base type "Foo"',
+            ':19: error: Invalid struct base type "MyUnion"',
+            ':20: error: Redefinition of "BonkAction_path" member "a"',
+            ':25: error: Invalid struct base type "MyDict"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1817,11 +1862,11 @@ action BarAction
 
     def test_action_query_non_struct(self):
         errors = [
-            ":2: error: Invalid struct base type 'Foo'",
-            ":14: error: Invalid struct base type 'Foo'",
-            ":19: error: Invalid struct base type 'MyUnion'",
-            ":20: error: Redefinition of 'BonkAction_query' member 'a'",
-            ":25: error: Invalid struct base type 'MyDict'"
+            ':2: error: Invalid struct base type "Foo"',
+            ':14: error: Invalid struct base type "Foo"',
+            ':19: error: Invalid struct base type "MyUnion"',
+            ':20: error: Redefinition of "BonkAction_query" member "a"',
+            ':25: error: Invalid struct base type "MyDict"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1932,11 +1977,11 @@ action BarAction
 
     def test_action_input_non_struct(self):
         errors = [
-            ":2: error: Invalid struct base type 'Foo'",
-            ":14: error: Invalid struct base type 'Foo'",
-            ":19: error: Invalid struct base type 'MyUnion'",
-            ":20: error: Redefinition of 'BonkAction_input' member 'a'",
-            ":25: error: Invalid struct base type 'MyDict'",
+            ':2: error: Invalid struct base type "Foo"',
+            ':14: error: Invalid struct base type "Foo"',
+            ':19: error: Invalid struct base type "MyUnion"',
+            ':20: error: Redefinition of "BonkAction_input" member "a"',
+            ':25: error: Invalid struct base type "MyDict"',
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -1972,11 +2017,11 @@ action MyDictAction
 
     def test_action_input_member_redef(self):
         errors = [
-            ":2: error: Invalid struct base type 'Foo'",
-            ":14: error: Invalid struct base type 'Foo'",
-            ":19: error: Invalid struct base type 'MyUnion'",
-            ":20: error: Redefinition of 'BonkAction_input' member 'a'",
-            ":25: error: Invalid struct base type 'MyDict'"
+            ':2: error: Invalid struct base type "Foo"',
+            ':14: error: Invalid struct base type "Foo"',
+            ':19: error: Invalid struct base type "MyUnion"',
+            ':20: error: Redefinition of "BonkAction_input" member "a"',
+            ':25: error: Invalid struct base type "MyDict"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -2087,11 +2132,11 @@ action BarAction
 
     def test_action_output_non_struct(self):
         errors = [
-            ":2: error: Invalid struct base type 'Foo'",
-            ":14: error: Invalid struct base type 'Foo'",
-            ":19: error: Invalid struct base type 'MyUnion'",
-            ":20: error: Redefinition of 'BonkAction_output' member 'a'",
-            ":25: error: Invalid struct base type 'MyDict'"
+            ':2: error: Invalid struct base type "Foo"',
+            ':14: error: Invalid struct base type "Foo"',
+            ':19: error: Invalid struct base type "MyUnion"',
+            ':20: error: Redefinition of "BonkAction_output" member "a"',
+            ':25: error: Invalid struct base type "MyDict"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\
@@ -2203,10 +2248,10 @@ action BarAction
 
     def test_action_errors_non_enum(self):
         errors = [
-            ":2: error: Invalid enum base type 'Foo'",
-            ":14: error: Invalid enum base type 'Bar'",
-            ":15: error: Redefinition of 'BarAction_errors' value 'A'",
-            ":19: error: Redefinition of 'BonkAction_errors' value 'A'"
+            ':2: error: Invalid enum base type "Foo"',
+            ':14: error: Invalid enum base type "Bar"',
+            ':15: error: Redefinition of "BarAction_errors" value "A"',
+            ':19: error: Redefinition of "BonkAction_errors" value "A"'
         ]
         with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
             parse_schema_markdown('''\

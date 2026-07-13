@@ -254,8 +254,8 @@ class TestValidateType(unittest.TestCase):
     def test_unknown(self):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type({}, 'Unknown', None)
-        self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "Unknown"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_string(self):
         obj = 'abc'
@@ -265,8 +265,8 @@ class TestValidateType(unittest.TestCase):
         obj = 7
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'string'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'string'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 7 (type "int"), expected type "string"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_int(self):
         obj = 7
@@ -280,15 +280,15 @@ class TestValidateType(unittest.TestCase):
         obj = 7.1
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'int'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7.1 (type 'float'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 7.1 (type "float"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_int_float_string(self):
         obj = '7.1'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'int'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value '7.1' (type 'str'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "7.1" (type "str"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_int_decimal(self):
         obj = Decimal('7')
@@ -298,29 +298,29 @@ class TestValidateType(unittest.TestCase):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'int'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_int_error_float(self):
         obj = 7.5
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'int'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7.5 (type 'float'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 7.5 (type "float"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_int_error_decimal(self):
         obj = Decimal('7.5')
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'int'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value Decimal('7.5') (type 'Decimal'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "7.5" (type "Decimal"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_int_error_bool(self):
         obj = True
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'int'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value True (type 'bool'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value true (type "bool"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_float(self):
         obj = 7.5
@@ -342,29 +342,29 @@ class TestValidateType(unittest.TestCase):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'float'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'float'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "float"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_float_error_nan(self):
         obj = 'nan'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'float'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'nan' (type 'str'), expected type 'float'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "nan" (type "str"), expected type "float"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_float_error_inf(self):
         obj = 'inf'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'float'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'inf' (type 'str'), expected type 'float'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "inf" (type "str"), expected type "float"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_float_error_bool(self):
         obj = True
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'float'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value True (type 'bool'), expected type 'float'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value true (type "bool"), expected type "float"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_bool(self):
         obj = False
@@ -382,15 +382,15 @@ class TestValidateType(unittest.TestCase):
         obj = 0
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'bool'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 0 (type 'int'), expected type 'bool'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 0 (type "int"), expected type "bool"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_bool_error_string(self):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'bool'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'bool'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "bool"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_date(self):
         obj = date(2013, 5, 26)
@@ -402,7 +402,7 @@ class TestValidateType(unittest.TestCase):
             self._validate_type({'builtin': 'date'}, obj)
         self.assertEqual(
             str(cm_exc.exception),
-            "Invalid value datetime.datetime(2020, 6, 17, 13, 11, tzinfo=datetime.timezone.utc) (type 'datetime'), expected type 'date'"
+            'Invalid value "2020-06-17 13:11:00+00:00" (type "datetime"), expected type "date"'
         )
 
     def test_date_string(self):
@@ -411,21 +411,45 @@ class TestValidateType(unittest.TestCase):
 
     def test_date_string_datetime(self):
         obj = '2013-05-26T13:11:00-07:00'
-        self.assertEqual(self._validate_type({'builtin': 'date'}, obj), date(2013, 5, 26))
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'date'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2013-05-26T13:11:00-07:00" (type "str"), expected type "date"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_date_string_error(self):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'date'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'date'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "date"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_date_string_invalid(self):
+        obj = '2020-13-01'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'date'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-13-01" (type "str"), expected type "date"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_date_string_invalid_day(self):
+        obj = '2020-02-30'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'date'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-02-30" (type "str"), expected type "date"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_date_error(self):
         obj = 0
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'date'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 0 (type 'int'), expected type 'date'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 0 (type "int"), expected type "date"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_date_error_excluded(self):
+        obj = 'December 17, 1995 03:24:00'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'date'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "December 17, 1995 03:24:00" (type "str"), expected type "date"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_datetime(self):
         obj = datetime(2013, 5, 26, 13, 11, tzinfo=timezone(-timedelta(hours=7)))
@@ -435,8 +459,8 @@ class TestValidateType(unittest.TestCase):
         obj = date(2020, 6, 17)
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'datetime'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value datetime.date(2020, 6, 17) (type 'date'), expected type 'datetime'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-06-17" (type "date"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_datetime_string(self):
         obj = '2013-05-26T13:11:00-07:00'
@@ -447,46 +471,161 @@ class TestValidateType(unittest.TestCase):
 
     def test_datetime_string_date(self):
         obj = '2013-05-26'
-        self.assertEqual(
-            self._validate_type({'builtin': 'datetime'}, obj),
-            datetime(2013, 5, 26, tzinfo=timezone.utc)
-        )
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'datetime'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2013-05-26" (type "str"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_datetime_string_error(self):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'datetime'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'datetime'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_datetime_string_invalid(self):
+        obj = '2020-01-01T99:99:99Z'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'datetime'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-01-01T99:99:99Z" (type "str"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_datetime_string_invalid_day(self):
+        obj = '2020-02-30T00:00:00Z'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'datetime'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-02-30T00:00:00Z" (type "str"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_datetime_string_timezone_z(self):
+        obj = '2020-01-01T12:00:00Z'
+        self.assertEqual(
+            self._validate_type({'builtin': 'datetime'}, obj),
+            datetime(2020, 1, 1, 12, 0, tzinfo=timezone.utc)
+        )
+
+    def test_datetime_string_timezone_no_colon(self):
+        obj = '2020-06-13T13:25:00-0700'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'datetime'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-06-13T13:25:00-0700" (type "str"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_datetime_string_no_seconds(self):
+        obj = '2020-01-01T12:00Z'
+        self.assertEqual(
+            self._validate_type({'builtin': 'datetime'}, obj),
+            datetime(2020, 1, 1, 12, 0, tzinfo=timezone.utc)
+        )
+
+    def test_datetime_string_fraction(self):
+        obj = '2020-01-01T12:00:00.123456789Z'
+        self.assertEqual(
+            self._validate_type({'builtin': 'datetime'}, obj),
+            datetime(2020, 1, 1, 12, 0, 0, 123456, tzinfo=timezone.utc)
+        )
+
+    def test_datetime_string_fraction_comma(self):
+        obj = '2020-01-01T12:00:00,5'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'datetime'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-01-01T12:00:00,5" (type "str"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_datetime_error(self):
         obj = 0
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'datetime'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 0 (type 'int'), expected type 'datetime'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 0 (type "int"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_datetime_error_excluded(self):
+        obj = 'December 17, 1995 03:24:00'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'datetime'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "December 17, 1995 03:24:00" (type "str"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_uuid(self):
         obj = UUID('AED91C7B-DCFD-49B3-A483-DBC9EA2031A3')
         self.assertIs(self._validate_type({'builtin': 'uuid'}, obj), obj)
 
+    def test_uuid_string(self):
+        obj = 'AED91C7B-DCFD-49B3-A483-DBC9EA2031A3'
+        self.assertEqual(self._validate_type({'builtin': 'uuid'}, obj), obj)
+
     def test_uuid_lowercase(self):
-        obj = UUID('aed91c7b-dcfd-49b3-a483-dbc9ea2031a3')
-        self.assertIs(self._validate_type({'builtin': 'uuid'}, obj), obj)
+        obj = 'aed91c7b-dcfd-49b3-a483-dbc9ea2031a3'
+        self.assertEqual(self._validate_type({'builtin': 'uuid'}, obj), obj)
 
     def test_uuid_error(self):
         obj = 0
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'uuid'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 0 (type 'int'), expected type 'uuid'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 0 (type "int"), expected type "uuid"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_uuid_error_string(self):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'uuid'}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'uuid'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "uuid"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_uuid_error_string_non_canonical(self):
+        obj = 'aed91c7bdcfd49b3a483dbc9ea2031a3'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'uuid'}, obj)
+        self.assertEqual(
+            str(cm_exc.exception),
+            'Invalid value "aed91c7bdcfd49b3a483dbc9ea2031a3" (type "str"), expected type "uuid"'
+        )
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_uuid_error_string_non_ascii(self):
+        obj = 'aed91c7b-dcfd-49b3-a483-dbc9ea2031aé'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'uuid'}, obj)
+        self.assertEqual(
+            str(cm_exc.exception),
+            'Invalid value "aed91c7b-dcfd-49b3-a483-dbc9ea2031aé" (type "str"), expected type "uuid"'
+        )
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_uuid_error_string_escape(self):
+        obj = 'a"b\\c'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'uuid'}, obj)
+        self.assertEqual(
+            str(cm_exc.exception),
+            'Invalid value "a\\"b\\\\c" (type "str"), expected type "uuid"'
+        )
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_uuid_version_nibble(self):
+        obj = '00000000-0000-6000-8000-000000000000'
+        self.assertEqual(self._validate_type({'builtin': 'uuid'}, obj), obj)
+
+    def test_datetime_string_no_timezone(self):
+        obj = '2020-01-01T12:00:00'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'datetime'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-01-01T12:00:00" (type "str"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_datetime_string_space_separator(self):
+        obj = '2020-01-01 12:00:00'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'datetime'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-01-01 12:00:00" (type "str"), expected type "datetime"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_date_string_datetime_no_timezone(self):
+        obj = '2020-01-01T12:00:00'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'date'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "2020-01-01T12:00:00" (type "str"), expected type "date"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_any(self):
         obj = object()
@@ -514,8 +653,8 @@ class TestValidateType(unittest.TestCase):
 
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'array': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType') for member '1', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, '1')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType") for member "1", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, '1')
 
     def test_array_nullable_as_string(self):
         obj = ['1', 'null', '3']
@@ -526,8 +665,8 @@ class TestValidateType(unittest.TestCase):
 
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'array': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'null' (type 'str') for member '1', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, '1')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "null" (type "str") for member "1", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, '1')
 
     def test_array_empty_string(self):
         obj = []
@@ -541,29 +680,29 @@ class TestValidateType(unittest.TestCase):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'array': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'array'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "array"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_array_error_value(self):
         obj = [1, 'abc', 3]
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'array': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str') for member '1', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, '1')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str") for member "1", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, '1')
 
     def test_array_error_value_nested(self):
         obj = [[1, 2], [1, 'abc', 3]]
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'array': {'type': {'array': {'type': {'builtin': 'int'}}}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str') for member '1.1', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, '1.1')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str") for member "1.1", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, '1.1')
 
     def test_array_attribute_error(self):
         obj = [1, 2, 5]
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'array': {'type': {'builtin': 'int'}, 'attr': {'lt': 5}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int') for member '2', expected type 'int' [< 5]")
-        self.assertEqual(cm_exc.exception.member, '2')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 5 (type "int") for member "2", expected type "int" [< 5]')
+        self.assertEqual(cm_exc.exception.member_fqn, '2')
 
     def test_dict(self):
         obj = {'a': 1, 'b': 2, 'c': 3}
@@ -573,7 +712,7 @@ class TestValidateType(unittest.TestCase):
         obj = None
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'dict'")
+        self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType"), expected type "dict"')
 
     def test_dict_nullable(self):
         obj = {'a': 1, 'b': None, 'c': 3}
@@ -581,8 +720,8 @@ class TestValidateType(unittest.TestCase):
 
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType') for member 'b', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, 'b')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType") for member "b", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'b')
 
     def test_dict_nullable_as_string(self):
         obj = {'a': '1', 'b': 'null', 'c': '3'}
@@ -593,8 +732,8 @@ class TestValidateType(unittest.TestCase):
 
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'null' (type 'str') for member 'b', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, 'b')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "null" (type "str") for member "b", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'b')
 
     def test_dict_key_nullable(self):
         obj = {'a': 1, None: 2, 'c': 3}
@@ -602,8 +741,8 @@ class TestValidateType(unittest.TestCase):
 
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'string'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType"), expected type "string"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_dict_key_nullable_as_string(self):
         obj = {'a': 1, 'null': 2, 'c': 3}
@@ -625,29 +764,36 @@ class TestValidateType(unittest.TestCase):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'dict'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "dict"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_dict_error_array(self):
+        obj = [1, 2, 3]
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value [1,2,3] (type "list"), expected type "dict"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_dict_error_value(self):
         obj = {'a': 1, 'b': 'abc', 'c': 3}
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str') for member 'b', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, 'b')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str") for member "b", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'b')
 
     def test_dict_error_value_nested(self):
         obj = [{'a': 1}, {'a': 1, 'b': 'abc', 'c': 3}]
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'array': {'type': {'dict': {'type': {'builtin': 'int'}}}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str') for member '1.b', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, '1.b')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str") for member "1.b", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, '1.b')
 
     def test_dict_attribute_error(self):
         obj = {'a': 1, 'b': 2, 'c': 5}
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'dict': {'type': {'builtin': 'int'}, 'attr': {'lt': 5}}}, obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int') for member 'c', expected type 'int' [< 5]")
-        self.assertEqual(cm_exc.exception.member, 'c')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 5 (type "int") for member "c", expected type "int" [< 5]')
+        self.assertEqual(cm_exc.exception.member_fqn, 'c')
 
     def test_dict_key_type(self):
         types = {
@@ -674,8 +820,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'A': 1, 'C': 2}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'C' (type 'str'), expected type 'MyEnum'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "C" (type "str"), expected type "MyEnum"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_dict_key_attr(self):
         types = {
@@ -693,8 +839,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'abc': 1, 'abcdefghij': 2}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abcdefghij' (type 'str'), expected type 'string' [len < 10]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abcdefghij" (type "str"), expected type "string" [len < 10]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_enum(self):
         types = {
@@ -715,8 +861,8 @@ class TestValidateType(unittest.TestCase):
         obj = 'c'
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'enum', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'c' (type 'str'), expected type 'enum'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "c" (type "str"), expected type "enum"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_enum_empty(self):
         types = {
@@ -729,8 +875,8 @@ class TestValidateType(unittest.TestCase):
         obj = 'a'
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyEnum', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'a' (type 'str'), expected type 'MyEnum'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "a" (type "str"), expected type "MyEnum"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_enum_base(self):
         types = {
@@ -774,8 +920,8 @@ class TestValidateType(unittest.TestCase):
         obj = 'c'
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyEnum', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'c' (type 'str'), expected type 'MyEnum'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "c" (type "str"), expected type "MyEnum"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef(self):
         types = {
@@ -793,20 +939,20 @@ class TestValidateType(unittest.TestCase):
         obj = 4
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'typedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 4 (type 'int'), expected type 'typedef' [>= 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 4 (type "int"), expected type "typedef" [>= 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
         obj = None
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'typedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
         obj = 'null'
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'typedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'null' (type 'str'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "null" (type "str"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_no_attr(self):
         types = {
@@ -833,8 +979,8 @@ class TestValidateType(unittest.TestCase):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'typedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_eq(self):
         types = {
@@ -849,8 +995,8 @@ class TestValidateType(unittest.TestCase):
         validate_type(types, 'MyTypedef', 5)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', 7)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'MyTypedef' [== 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 7 (type "int"), expected type "MyTypedef" [== 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_nullable(self):
         types = {
@@ -867,8 +1013,8 @@ class TestValidateType(unittest.TestCase):
         self.assertEqual(validate_type(types, 'MyTypedef', 'null'), None)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', 'abc')
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'int'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_lt(self):
         types = {
@@ -883,12 +1029,12 @@ class TestValidateType(unittest.TestCase):
         validate_type(types, 'MyTypedef', 3)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', 5)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int'), expected type 'MyTypedef' [< 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 5 (type "int"), expected type "MyTypedef" [< 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', 7)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'MyTypedef' [< 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 7 (type "int"), expected type "MyTypedef" [< 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_lte(self):
         types = {
@@ -903,8 +1049,8 @@ class TestValidateType(unittest.TestCase):
         validate_type(types, 'MyTypedef', 5)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', 7)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int'), expected type 'MyTypedef' [<= 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 7 (type "int"), expected type "MyTypedef" [<= 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_gt(self):
         types = {
@@ -919,12 +1065,12 @@ class TestValidateType(unittest.TestCase):
         validate_type(types, 'MyTypedef', 7)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', 3)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 3 (type 'int'), expected type 'MyTypedef' [> 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 3 (type "int"), expected type "MyTypedef" [> 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', 5)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int'), expected type 'MyTypedef' [> 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 5 (type "int"), expected type "MyTypedef" [> 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_gte(self):
         types = {
@@ -939,8 +1085,8 @@ class TestValidateType(unittest.TestCase):
         validate_type(types, 'MyTypedef', 5)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', 3)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 3 (type 'int'), expected type 'MyTypedef' [>= 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 3 (type "int"), expected type "MyTypedef" [>= 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_len_eq(self):
         types = {
@@ -955,8 +1101,8 @@ class TestValidateType(unittest.TestCase):
         validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', [1, 2, 3])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3] (type 'list'), expected type 'MyTypedef' [len == 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value [1,2,3] (type "list"), expected type "MyTypedef" [len == 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_len_lt(self):
         types = {
@@ -970,12 +1116,12 @@ class TestValidateType(unittest.TestCase):
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5] (type 'list'), expected type 'MyTypedef' [len < 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value [1,2,3,4,5] (type "list"), expected type "MyTypedef" [len < 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5, 6, 7])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5, 6, 7] (type 'list'), expected type 'MyTypedef' [len < 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value [1,2,3,4,5,6,7] (type "list"), expected type "MyTypedef" [len < 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_len_lte(self):
         types = {
@@ -990,8 +1136,8 @@ class TestValidateType(unittest.TestCase):
         validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5, 6, 7])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5, 6, 7] (type 'list'), expected type 'MyTypedef' [len <= 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value [1,2,3,4,5,6,7] (type "list"), expected type "MyTypedef" [len <= 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_len_gt(self):
         types = {
@@ -1005,12 +1151,12 @@ class TestValidateType(unittest.TestCase):
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3, 4, 5] (type 'list'), expected type 'MyTypedef' [len > 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value [1,2,3,4,5] (type "list"), expected type "MyTypedef" [len > 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', [1, 2, 3])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3] (type 'list'), expected type 'MyTypedef' [len > 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value [1,2,3] (type "list"), expected type "MyTypedef" [len > 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_attr_len_gte(self):
         types = {
@@ -1025,8 +1171,8 @@ class TestValidateType(unittest.TestCase):
         validate_type(types, 'MyTypedef', [1, 2, 3, 4, 5])
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', [1, 2, 3])
-        self.assertEqual(str(cm_exc.exception), "Invalid value [1, 2, 3] (type 'list'), expected type 'MyTypedef' [len >= 5]")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value [1,2,3] (type "list"), expected type "MyTypedef" [len >= 5]')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct(self):
         types = {
@@ -1093,7 +1239,6 @@ class TestValidateType(unittest.TestCase):
         }
         self.assertDictEqual(validate_type(types, 'MyStruct', obj), obj)
 
-        obj_transform = obj
         obj = {
             'a': 'abc',
             'b': '7', # transform
@@ -1110,6 +1255,22 @@ class TestValidateType(unittest.TestCase):
             'j': 'A',
             'k': '1' # transform
         }
+        obj_transform = {
+            'a': 'abc',
+            'b': 7,
+            'c': 7.1,
+            'd': True,
+            'e': date.fromisoformat('2020-06-13'),
+            'f': datetime.fromisoformat('2020-06-13T13:25:00-07:00'),
+            'g': 'a3597528-a253-4c76-bc2d-8da0026cc838',
+            'h': {'foo': 'bar'},
+            'i': {
+                'a': 'abc',
+                'b': 7
+            },
+            'j': 'A',
+            'k': 1
+        }
         self.assertDictEqual(validate_type(types, 'MyStruct', obj), obj_transform)
 
     def test_struct_null(self):
@@ -1122,7 +1283,7 @@ class TestValidateType(unittest.TestCase):
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', None)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType'), expected type 'MyStruct'")
+        self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType"), expected type "MyStruct"')
 
     def test_struct_empty_string(self):
         types = {
@@ -1146,8 +1307,22 @@ class TestValidateType(unittest.TestCase):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'Empty', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'Empty'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "Empty"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_struct_array_error(self):
+        types = {
+            'Empty': {
+                'struct': {
+                    'name': 'Empty'
+                }
+            }
+        }
+        obj = []
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'Empty', obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value [] (type "list"), expected type "Empty"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_union(self):
         types = {
@@ -1172,14 +1347,14 @@ class TestValidateType(unittest.TestCase):
         obj = {}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyUnion', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value {} (type 'dict'), expected type 'MyUnion'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value {} (type "dict"), expected type "MyUnion"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
         obj = {'c': 7}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyUnion', obj)
-        self.assertEqual(str(cm_exc.exception), "Unknown member 'c'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown member "c"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_base(self):
         types = {
@@ -1220,8 +1395,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': 7}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Required member 'b' missing")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Required member "b" missing')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_optional(self):
         types = {
@@ -1246,8 +1421,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': 7}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Required member 'c' missing")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Required member "c" missing')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_nullable(self):
         types = {
@@ -1279,20 +1454,20 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': None, 'b': None, 'c': None, 'd': 7.1}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType') for member 'a', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, 'a')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType") for member "a", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'a')
 
         obj = {'a': 7, 'b': None, 'c': None, 'd': None}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType') for member 'd', expected type 'float'")
-        self.assertEqual(cm_exc.exception.member, 'd')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType") for member "d", expected type "float"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'd')
 
         obj = {'a': 7, 'c': None, 'd': 7.1}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Required member 'b' missing")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Required member "b" missing')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_nullable_attr(self):
         types = {
@@ -1313,8 +1488,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': 7, 'b': 5}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 5 (type 'int') for member 'b', expected type 'int' [< 5]")
-        self.assertEqual(cm_exc.exception.member, 'b')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 5 (type "int") for member "b", expected type "int" [< 5]')
+        self.assertEqual(cm_exc.exception.member_fqn, 'b')
 
         obj = {'a': 7, 'b': None}
         self.assertDictEqual(validate_type(types, 'MyStruct', obj), obj)
@@ -1347,8 +1522,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': 7}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 7 (type 'int') for member 'a', expected type 'int' [< 5]")
-        self.assertEqual(cm_exc.exception.member, 'a')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value 7 (type "int") for member "a", expected type "int" [< 5]')
+        self.assertEqual(cm_exc.exception.member_fqn, 'a')
 
     def test_struct_error_invalid_value(self):
         types = {
@@ -1364,8 +1539,8 @@ class TestValidateType(unittest.TestCase):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str'), expected type 'MyStruct'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "MyStruct"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_error_optional_none_value(self):
         types = {
@@ -1381,8 +1556,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': None}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value None (type 'NoneType') for member 'a', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, 'a')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType") for member "a", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'a')
 
     def test_struct_error_member_validation(self):
         types = {
@@ -1398,8 +1573,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': 'abc'}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str') for member 'a', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, 'a')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str") for member "a", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'a')
 
     def test_struct_error_nested_member_validation(self):
         types = {
@@ -1423,8 +1598,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': {'b': 'abc'}}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Invalid value 'abc' (type 'str') for member 'a.b', expected type 'int'")
-        self.assertEqual(cm_exc.exception.member, 'a.b')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str") for member "a.b", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'a.b')
 
     def test_struct_error_unknown_member(self):
         types = {
@@ -1440,8 +1615,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': 7, 'b': 8}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Unknown member 'b'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown member "b"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_error_unknown_member_nested(self):
         types = {
@@ -1463,8 +1638,8 @@ class TestValidateType(unittest.TestCase):
         obj = [{'a': 5}, {'a': 7, 'b': 'abc'}]
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyTypedef', obj)
-        self.assertEqual(str(cm_exc.exception), "Unknown member '1.b'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown member "1.b"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_error_unknown_member_empty(self):
         types = {
@@ -1477,8 +1652,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'b': 8}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Unknown member 'b'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown member "b"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_error_unknown_member_long(self):
         types = {
@@ -1494,8 +1669,8 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': 7, 'b' * 2000: 8}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Unknown member '" + 'b' * 99)
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown member "' + "b" * 100 + '"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_error_missing_member(self):
         types = {
@@ -1511,8 +1686,8 @@ class TestValidateType(unittest.TestCase):
         obj = {}
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyStruct', obj)
-        self.assertEqual(str(cm_exc.exception), "Required member 'a' missing")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Required member "a" missing')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_action(self):
         types = {
@@ -1524,8 +1699,8 @@ class TestValidateType(unittest.TestCase):
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type(types, 'MyAction', {})
-        self.assertEqual(str(cm_exc.exception), "Invalid value {} (type 'dict'), expected type 'MyAction'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value {} (type "dict"), expected type "MyAction"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_invalid_model(self):
         types = {
@@ -1569,8 +1744,8 @@ class TestValidateTypeModelTypes(unittest.TestCase):
                     'struct': {}
                 }
             })
-        self.assertEqual(str(cm_exc.exception), "Required member 'MyStruct.struct.name' missing")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Required member "MyStruct.struct.name" missing')
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_empty(self):
         types = {
@@ -1591,8 +1766,30 @@ class TestValidateTypeModelTypes(unittest.TestCase):
                     }
                 }
             })
-        self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyStruct2' for 'MyStruct'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Inconsistent type name "MyStruct2" for "MyStruct"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_struct_inconsistent_type_name_and_duplicate_member(self):
+        # Type-level (null memberName) and member-level errors for the same type
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model({
+                'MyStruct': {
+                    'struct': {
+                        'name': 'MyStructWrong',
+                        'members': [
+                            {'name': 'a', 'type': {'builtin': 'int'}},
+                            {'name': 'a', 'type': {'builtin': 'string'}}
+                        ]
+                    }
+                }
+            })
+        self.assertEqual(str(cm_exc.exception), '''\
+Inconsistent type name "MyStructWrong" for "MyStruct"
+Redefinition of "MyStruct" member "a"\
+''')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_unknown_member_type(self):
         with self.assertRaises(ValidationError) as cm_exc:
@@ -1606,8 +1803,9 @@ class TestValidateTypeModelTypes(unittest.TestCase):
                     }
                 }
             })
-        self.assertEqual(str(cm_exc.exception), "Unknown type 'UnknownType' from 'MyStruct' member 'a'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "UnknownType" from "MyStruct" member "a"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_duplicate_member(self):
         with self.assertRaises(ValidationError) as cm_exc:
@@ -1623,8 +1821,9 @@ class TestValidateTypeModelTypes(unittest.TestCase):
                     }
                 }
             })
-        self.assertEqual(str(cm_exc.exception), "Redefinition of 'MyStruct' member 'a'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Redefinition of "MyStruct" member "a"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_member_attributes(self):
         types = {
@@ -1653,10 +1852,10 @@ class TestValidateTypeModelTypes(unittest.TestCase):
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
         self.assertEqual(str(cm_exc.exception), '''\
-Invalid attribute 'len <= 10' from 'MyStruct' member 'a'
-Invalid attribute 'len > 0' from 'MyStruct' member 'a'\
+Invalid attribute "len <= 10" from "MyStruct" member "a"
+Invalid attribute "len > 0" from "MyStruct" member "a"\
 ''')
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_base(self):
         types = {
@@ -1703,8 +1902,9 @@ Invalid attribute 'len > 0' from 'MyStruct' member 'a'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid struct base type 'Unknown'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid struct base type "Unknown"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_base_typedef_unknown(self):
         types = {
@@ -1724,10 +1924,10 @@ Invalid attribute 'len > 0' from 'MyStruct' member 'a'\
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
         self.assertEqual(str(cm_exc.exception), '''\
-Invalid struct base type 'MyTypedef'
-Unknown type 'Unknown' from 'MyTypedef'\
+Invalid struct base type "MyTypedef"
+Unknown type "Unknown" from "MyTypedef"\
 ''')
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_base_non_user(self):
         types = {
@@ -1746,8 +1946,9 @@ Unknown type 'Unknown' from 'MyTypedef'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid struct base type 'MyInt'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid struct base type "MyInt"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_base_enum(self):
         types = {
@@ -1765,8 +1966,9 @@ Unknown type 'Unknown' from 'MyTypedef'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid struct base type 'MyEnum'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid struct base type "MyEnum"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_base_circular(self):
         types = {
@@ -1786,10 +1988,10 @@ Unknown type 'Unknown' from 'MyTypedef'\
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
         self.assertEqual(str(cm_exc.exception), '''\
-Circular base type detected for type 'MyStruct'
-Circular base type detected for type 'MyStruct2'\
+Circular base type detected for type "MyStruct"
+Circular base type detected for type "MyStruct2"\
 ''')
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_base_union(self):
         types = {
@@ -1808,8 +2010,9 @@ Circular base type detected for type 'MyStruct2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid struct base type 'MyUnion'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid struct base type "MyUnion"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_struct_base_union_struct(self):
         types = {
@@ -1828,8 +2031,9 @@ Circular base type detected for type 'MyStruct2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid struct base type 'MyStruct'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid struct base type "MyStruct"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_enum_empty(self):
         types = {
@@ -1850,8 +2054,9 @@ Circular base type detected for type 'MyStruct2'\
                     }
                 }
             })
-        self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyEnum2' for 'MyEnum'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Inconsistent type name "MyEnum2" for "MyEnum"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_enum_duplicate_value(self):
         types = {
@@ -1868,8 +2073,9 @@ Circular base type detected for type 'MyStruct2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Redefinition of 'MyEnum' value 'A'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Redefinition of "MyEnum" value "A"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_enum_base(self):
         types = {
@@ -1916,8 +2122,9 @@ Circular base type detected for type 'MyStruct2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid enum base type 'Unknown'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid enum base type "Unknown"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_enum_base_non_user(self):
         types = {
@@ -1936,8 +2143,9 @@ Circular base type detected for type 'MyStruct2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid enum base type 'MyInt'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid enum base type "MyInt"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_enum_base_struct(self):
         types = {
@@ -1955,8 +2163,9 @@ Circular base type detected for type 'MyStruct2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid enum base type 'MyStruct'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid enum base type "MyStruct"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_enum_base_circular(self):
         types = {
@@ -1976,10 +2185,10 @@ Circular base type detected for type 'MyStruct2'\
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
         self.assertEqual(str(cm_exc.exception), '''\
-Circular base type detected for type 'MyEnum'
-Circular base type detected for type 'MyEnum2'\
+Circular base type detected for type "MyEnum"
+Circular base type detected for type "MyEnum2"\
 ''')
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_array(self):
         types = {
@@ -2014,8 +2223,9 @@ Circular base type detected for type 'MyEnum2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid attribute 'len > 0' from 'MyTypedef'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid attribute "len > 0" from "MyTypedef"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_array_unknown_type(self):
         types = {
@@ -2028,8 +2238,9 @@ Circular base type detected for type 'MyEnum2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyTypedef'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "Unknown" from "MyTypedef"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_dict(self):
         types = {
@@ -2095,8 +2306,9 @@ Circular base type detected for type 'MyEnum2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid attribute 'len > 0' from 'MyTypedef'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid attribute "len > 0" from "MyTypedef"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_dict_invalid_key_attribute(self):
         types = {
@@ -2109,8 +2321,9 @@ Circular base type detected for type 'MyEnum2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid attribute '> 0' from 'MyTypedef'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid attribute "> 0" from "MyTypedef"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_dict_unknown_type(self):
         types = {
@@ -2123,8 +2336,9 @@ Circular base type detected for type 'MyEnum2'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyTypedef'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "Unknown" from "MyTypedef"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_dict_unknown_key_type(self):
         types = {
@@ -2138,10 +2352,10 @@ Circular base type detected for type 'MyEnum2'\
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
         self.assertEqual(str(cm_exc.exception), '''\
-Invalid dictionary key type from 'MyTypedef'
-Unknown type 'Unknown' from 'MyTypedef'\
+Invalid dictionary key type from "MyTypedef"
+Unknown type "Unknown" from "MyTypedef"\
 ''')
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_invalid_attribute(self):
         types = {
@@ -2160,8 +2374,9 @@ Unknown type 'Unknown' from 'MyTypedef'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid attribute '< 0' from 'MyTypedef'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid attribute "< 0" from "MyTypedef"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_nullable(self):
         types = {
@@ -2208,8 +2423,9 @@ Unknown type 'Unknown' from 'MyTypedef'\
                     }
                 }
             })
-        self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyTypedef2' for 'MyTypedef'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Inconsistent type name "MyTypedef2" for "MyTypedef"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_typedef_unknown_type(self):
         types = {
@@ -2228,8 +2444,9 @@ Unknown type 'Unknown' from 'MyTypedef'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Unknown type 'MyTypedef3' from 'MyTypedef2'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "MyTypedef3" from "MyTypedef2"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_action_empty_struct(self):
         types = {
@@ -2256,8 +2473,9 @@ Unknown type 'Unknown' from 'MyTypedef'\
                     }
                 }
             })
-        self.assertEqual(str(cm_exc.exception), "Inconsistent type name 'MyAction2' for 'MyAction'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Inconsistent type name "MyAction2" for "MyAction"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_action_unknown_type(self):
         types = {
@@ -2270,8 +2488,9 @@ Unknown type 'Unknown' from 'MyTypedef'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Unknown type 'Unknown' from 'MyAction'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "Unknown" from "MyAction"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_action_action(self):
         types = {
@@ -2289,8 +2508,9 @@ Unknown type 'Unknown' from 'MyTypedef'\
         }
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
-        self.assertEqual(str(cm_exc.exception), "Invalid reference to action 'MyAction2' from 'MyAction'")
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertEqual(str(cm_exc.exception), 'Invalid reference to action "MyAction2" from "MyAction"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_action_duplicate_member(self):
         types = {
@@ -2323,10 +2543,10 @@ Unknown type 'Unknown' from 'MyTypedef'\
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
         self.assertEqual(str(cm_exc.exception), '''\
-Redefinition of 'MyAction_input' member 'c'
-Redefinition of 'MyAction_query' member 'c'\
+Redefinition of "MyAction_input" member "c"
+Redefinition of "MyAction_query" member "c"\
 ''')
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_action_duplicate_member_inherited(self):
         types = {
@@ -2367,10 +2587,10 @@ Redefinition of 'MyAction_query' member 'c'\
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
         self.assertEqual(str(cm_exc.exception), '''\
-Redefinition of 'MyAction_input' member 'c'
-Redefinition of 'MyAction_query' member 'c'\
+Redefinition of "MyAction_input" member "c"
+Redefinition of "MyAction_query" member "c"\
 ''')
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_action_duplicate_member_circular(self):
         types = {
@@ -2412,7 +2632,7 @@ Redefinition of 'MyAction_query' member 'c'\
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
         self.assertEqual(str(cm_exc.exception), '''\
-Circular base type detected for type 'MyAction_input'
-Circular base type detected for type 'MyBase'\
+Circular base type detected for type "MyAction_input"
+Circular base type detected for type "MyBase"\
 ''')
-        self.assertIsNone(cm_exc.exception.member)
+        self.assertIsNone(cm_exc.exception.member_fqn)

@@ -108,16 +108,16 @@ struct Array
 # A dictionary type
 struct Dict
 
-    # The contained key type
+    # The contained value type
     Type type
 
-    # The contained key type's attributes
+    # The contained value type's attributes
     optional Attributes attr
 
-    # The contained value type
+    # The contained key type
     optional Type keyType
 
-    # The contained value type's attributes
+    # The contained key type's attributes
     optional Attributes keyAttr
 
 

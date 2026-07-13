@@ -29,7 +29,7 @@ RE_FIND_ATTRS = re.compile(RE_PART_ATTR + r'(?:\s*,\s*|\s*\Z)')
 RE_LINE_CONT = re.compile(r'\\s*$')
 RE_COMMENT = re.compile(r'^\s*(?:#-.*|#(?P<doc>.*))?$')
 RE_GROUP = re.compile(r'^group(?:\s+"(?P<group>.+?)")?\s*$')
-RE_ACTION = re.compile(r'^action\s+(?P<id>' + RE_PART_ID + r')')
+RE_ACTION = re.compile(r'^action\s+(?P<id>' + RE_PART_ID + r')\s*$')
 RE_PART_BASE_IDS = r'(?:\s*\(\s*(?P<base_ids>' + RE_PART_ID + r'(?:\s*,\s*' + RE_PART_ID + r')*)\s*\)\s*)'
 RE_BASE_IDS_SPLIT = re.compile(r'\s*,\s*')
 RE_DEFINITION = re.compile(r'^(?P<type>struct|union|enum)\s+(?P<id>' + RE_PART_ID + r')' + RE_PART_BASE_IDS + r'?\s*$')
@@ -266,8 +266,11 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
             # Clear parser state
             user_type = None
 
-            # Update the parser state
+            # Update the parser state - attach urls immediately so a second empty
+            # "urls" section is detected as a redefinition (even with no URL lines)
             urls = []
+            if section_string not in action:
+                action[section_string] = urls
 
         # Enum value?
         elif match_name == 'value':
@@ -330,8 +333,6 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
                 add_error(f'Duplicate URL: {method}{padded_path}', filename, linenum)
 
             # Add the URL
-            if 'urls' not in action:
-                action['urls'] = urls
             urls.append(action_url)
 
         # Typedef?
@@ -368,6 +369,13 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
         # Unrecognized line syntax
         else:
             add_error('Syntax error', filename, linenum)
+
+    # Drop empty action urls arrays (type model requires len > 0 when present)
+    for user_type in types.values():
+        if 'action' in user_type:
+            action_type = user_type['action']
+            if 'urls' in action_type and len(action_type['urls']) == 0:
+                del action_type['urls']
 
     # Validate the type model, if requested
     if validate:

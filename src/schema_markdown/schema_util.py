@@ -25,7 +25,7 @@ def validate_type_model_errors(types):
 
             # Inconsistent type name?
             if type_name != struct['name']:
-                errors.append((type_name, None, f'Inconsistent type name {struct["name"]!r} for {type_name!r}'))
+                errors.append((type_name, None, f'Inconsistent type name "{struct["name"]}" for "{type_name}"'))
 
             # Check base types
             if 'bases' in struct:
@@ -37,7 +37,7 @@ def validate_type_model_errors(types):
                         if is_union == base_user_type['struct'].get('union', False):
                             invalid_base = False
                     if invalid_base:
-                        errors.append((type_name, None, f'Invalid struct base type {base_name!r}'))
+                        errors.append((type_name, None, f'Invalid struct base type "{base_name}"'))
 
             # Iterate the members
             try:
@@ -49,13 +49,13 @@ def validate_type_model_errors(types):
                     if member_name not in members:
                         members.add(member_name)
                     else:
-                        errors.append((type_name, member_name, f'Redefinition of {type_name!r} member {member_name!r}'))
+                        errors.append((type_name, member_name, f'Redefinition of "{type_name}" member "{member_name}"'))
 
                     # Check member type and attributes
                     _validate_type_model_type(errors, types, member['type'], member.get('attr'), struct['name'], member['name'])
 
             except ValueError:
-                errors.append((type_name, None, f'Circular base type detected for type {type_name!r}'))
+                errors.append((type_name, None, f'Circular base type detected for type "{type_name}"'))
 
         # Enum?
         elif 'enum' in user_type:
@@ -63,14 +63,14 @@ def validate_type_model_errors(types):
 
             # Inconsistent type name?
             if type_name != enum['name']:
-                errors.append((type_name, None, f'Inconsistent type name {enum["name"]!r} for {type_name!r}'))
+                errors.append((type_name, None, f'Inconsistent type name "{enum["name"]}" for "{type_name}"'))
 
             # Check base types
             if 'bases' in enum:
                 for base_name in enum['bases']:
                     base_user_type = _get_effective_user_type(types, base_name)
                     if base_user_type is None or 'enum' not in base_user_type:
-                        errors.append((type_name, None, f'Invalid enum base type {base_name!r}'))
+                        errors.append((type_name, None, f'Invalid enum base type "{base_name}"'))
 
             # Get the enumeration values
             try:
@@ -82,10 +82,10 @@ def validate_type_model_errors(types):
                     if value_name not in values:
                         values.add(value_name)
                     else:
-                        errors.append((type_name, value_name, f'Redefinition of {type_name!r} value {value_name!r}'))
+                        errors.append((type_name, value_name, f'Redefinition of "{type_name}" value "{value_name}"'))
 
             except ValueError:
-                errors.append((type_name, None, f'Circular base type detected for type {type_name!r}'))
+                errors.append((type_name, None, f'Circular base type detected for type "{type_name}"'))
 
         # Typedef?
         elif 'typedef' in user_type:
@@ -93,7 +93,7 @@ def validate_type_model_errors(types):
 
             # Inconsistent type name?
             if type_name != typedef['name']:
-                errors.append((type_name, None, f'Inconsistent type name {typedef["name"]!r} for {type_name!r}'))
+                errors.append((type_name, None, f'Inconsistent type name "{typedef["name"]}" for "{type_name}"'))
 
             # Check the type and its attributes
             _validate_type_model_type(errors, types, typedef['type'], typedef.get('attr'), type_name, None)
@@ -104,7 +104,7 @@ def validate_type_model_errors(types):
 
             # Inconsistent type name?
             if type_name != action['name']:
-                errors.append((type_name, None, f'Inconsistent type name {action["name"]!r} for {type_name!r}'))
+                errors.append((type_name, None, f'Inconsistent type name "{action["name"]}" for "{type_name}"'))
 
             # Check action section types
             for section in ('path', 'query', 'input', 'output', 'errors'):
@@ -137,8 +137,8 @@ def validate_type_model_errors(types):
             # Check for duplicate input members
             for member_name, member_section_names in member_sections.items():
                 if len(member_section_names) > 1:
-                    for section_type in member_section_names:
-                        errors.append((section_type, member_name, f'Redefinition of {section_type!r} member {member_name!r}'))
+                    for section_type in sorted(member_section_names):
+                        errors.append((section_type, member_name, f'Redefinition of "{section_type}" member "{member_name}"'))
 
     return errors
 
@@ -214,9 +214,9 @@ def _validate_type_model_type(errors, types, type_, attr, type_name, member_name
     # Helper function to push an error tuple
     def error(message):
         if member_name is not None:
-            errors.append((type_name, member_name, f'{message} from {type_name!r} member {member_name!r}'))
+            errors.append((type_name, member_name, f'{message} from "{type_name}" member "{member_name}"'))
         else:
-            errors.append((type_name, None, f'{message} from {type_name!r}'))
+            errors.append((type_name, None, f'{message} from "{type_name}"'))
 
     # Array?
     if 'array' in type_:
@@ -250,13 +250,13 @@ def _validate_type_model_type(errors, types, type_, attr, type_name, member_name
 
         # Unknown user type?
         if user_type_name not in types:
-            error(f'Unknown type {user_type_name!r}')
+            error(f'Unknown type "{user_type_name}"')
         else:
             user_type = types[user_type_name]
 
             # Action type references not allowed
             if 'action' in user_type:
-                error(f'Invalid reference to action {user_type_name!r}')
+                error(f'Invalid reference to action "{user_type_name}"')
 
     # Any not-allowed attributes?
     if attr is not None:
@@ -271,4 +271,4 @@ def _validate_type_model_type(errors, types, type_, attr, type_name, member_name
             for attr_key in disallowed_attr:
                 attr_value = f'{attr[attr_key]:.6f}'.rstrip('0').rstrip('.')
                 attr_text = f'{_ATTR_TO_TEXT[attr_key]} {attr_value}'
-                error(f'Invalid attribute {attr_text!r}')
+                error(f'Invalid attribute "{attr_text}"')

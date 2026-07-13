@@ -70,7 +70,7 @@ try:
 except ValidationError as exc:
     str(exc)
 
-"Invalid value 'asdf' (type 'str') for member 'numbers.2', expected type 'int'"
+'Invalid value "asdf" (type "str") for member "numbers.2", expected type "int"'
 ~~~
 
 Validation also fails if a member constraint is violated:
@@ -81,8 +81,14 @@ try:
 except ValidationError as exc:
     str(exc)
 
-"Invalid value [] (type 'list') for member 'numbers', expected type 'array' [len > 0]"
+'Invalid value [] (type "list") for member "numbers", expected type "array" [len > 0]'
 ~~~
+
+`validate_type` validates JSON-like values. In this Python implementation, date values are
+`datetime.date`, datetime values are `datetime.datetime`, and uuid strings remain strings.
+`datetime.date`, `datetime.datetime`, and `uuid.UUID` inputs are left unchanged. See
+[The Schema Markdown Language - Built-in Types](https://craigahobbs.github.io/schema-markdown-js/language/#built-in-types)
+for accepted JSON input formats and host-runtime behavior.
 
 
 ## Schema Documentation

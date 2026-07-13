@@ -5,8 +5,10 @@
 schema-markdown schema type model
 """
 
-from datetime import date, datetime, timezone
+from datetime import date, datetime
 from decimal import Decimal
+import json
+import re
 from math import isnan, isinf
 from uuid import UUID
 
@@ -101,19 +103,26 @@ class ValidationError(Exception):
     :type member_fqn: str or None
     """
 
-    __slots__ = ('member',)
+    __slots__ = ('member_fqn',)
 
     def __init__(self, msg, member_fqn=None):
         super().__init__(msg)
 
         #: The fully qualified member name or None
-        self.member = member_fqn
+        self.member_fqn = member_fqn
 
 
 def validate_type(types, type_name, value, member_fqn=None):
     """
     Type-validate a value using the schema-markdown user type model. Container values are duplicated
     since some member types are transformed during validation.
+
+    Validates JSON-like values. In this implementation, date values are :class:`~datetime.date`,
+    datetime values are :class:`~datetime.datetime`, and uuid strings remain strings.
+    :class:`~datetime.date`, :class:`~datetime.datetime`, and :class:`~uuid.UUID` inputs are left
+    unchanged. See the language documentation on
+    `built-in types <https://craigahobbs.github.io/schema-markdown-js/language/#built-in-types>`__
+    for accepted JSON input formats and host-runtime behavior.
 
     :param dict types: The `type model <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='Types'>`__
     :param str type_name: The type name
@@ -124,8 +133,14 @@ def validate_type(types, type_name, value, member_fqn=None):
     """
 
     if type_name not in types:
-        raise ValidationError(f"Unknown type {type_name!r}")
+        raise ValidationError(f'Unknown type "{type_name}"')
     return _validate_type(types, {'user': type_name}, value, member_fqn)
+
+
+# Regular expressions used by _validate_type
+_RE_DATE = re.compile(r'\d{4}-\d{2}-\d{2}')
+_RE_DATETIME = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})')
+_RE_UUID = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', re.IGNORECASE)
 
 
 def _validate_type(types, type_, value, member_fqn=None):
@@ -195,8 +210,10 @@ def _validate_type(types, type_, value, member_fqn=None):
 
             # Convert string?
             if isinstance(value, str):
+                if _RE_DATE.fullmatch(value) is None:
+                    raise _member_error(type_, value, member_fqn)
                 try:
-                    value_new = datetime.fromisoformat(value).date()
+                    value_new = date.fromisoformat(value)
                 except ValueError:
                     raise _member_error(type_, value, member_fqn)
 
@@ -209,14 +226,12 @@ def _validate_type(types, type_, value, member_fqn=None):
 
             # Convert string?
             if isinstance(value, str):
+                if _RE_DATETIME.fullmatch(value) is None:
+                    raise _member_error(type_, value, member_fqn)
                 try:
                     value_new = datetime.fromisoformat(value)
                 except ValueError:
                     raise _member_error(type_, value, member_fqn)
-
-                # No timezone?
-                if value_new.tzinfo is None:
-                    value_new = value_new.replace(tzinfo=timezone.utc)
 
             # Not a datetime?
             elif not isinstance(value, datetime):
@@ -225,15 +240,17 @@ def _validate_type(types, type_, value, member_fqn=None):
         # uuid?
         elif builtin == 'uuid':
 
-            # Convert string?
-            if isinstance(value, str):
-                try:
-                    value_new = UUID(value)
-                except ValueError:
+            # UUID object?
+            if isinstance(value, UUID):
+                pass
+
+            # Validate string?
+            elif isinstance(value, str):
+                if _RE_UUID.fullmatch(value) is None:
                     raise _member_error(type_, value, member_fqn)
 
-            # Not a UUID?
-            elif not isinstance(value, UUID):
+            # Not a UUID or string?
+            else:
                 raise _member_error(type_, value, member_fqn)
 
     # array?
@@ -360,7 +377,7 @@ def _validate_type(types, type_, value, member_fqn=None):
                 # Missing non-optional member?
                 if member_name not in value_new:
                     if not member_optional and not is_union:
-                        raise ValidationError(f"Required member {member_fqn_member!r} missing")
+                        raise ValidationError(f'Required member "{member_fqn_member}" missing')
                 else:
                     # Validate the member value
                     member_value = value_new[member_name]
@@ -378,7 +395,7 @@ def _validate_type(types, type_, value, member_fqn=None):
                 member_set = {member['name'] for member in get_struct_members(types, struct)}
                 unknown_key = next(value_name for value_name in value_new.keys() if value_name not in member_set) # pragma: no branch
                 unknown_fqn = unknown_key if member_fqn is None else f'{member_fqn}.{unknown_key}'
-                raise ValidationError(f"Unknown member {unknown_fqn!r:.100s}")
+                raise ValidationError(f'Unknown member "{unknown_fqn[:100]}"')
 
             # Return the validated, transformed copy
             value_new = value_copy
@@ -387,11 +404,12 @@ def _validate_type(types, type_, value, member_fqn=None):
 
 
 def _member_error(type_, value, member_fqn, attr=None):
-    member_part = f" for member {member_fqn!r}" if member_fqn else ''
+    value_str = json.dumps(value, separators=(',', ':'), ensure_ascii=False, default=str)[:100]
+    member_part = f' for member "{member_fqn}"' if member_fqn else ''
     type_name = type_['builtin'] if 'builtin' in type_ else (
         'array' if 'array' in type_ else ('dict' if 'dict' in type_ else type_['user']))
     attr_part = f' [{attr}]' if attr else ''
-    msg = f"Invalid value {value!r:.1000s} (type {value.__class__.__name__!r}){member_part}, expected type {type_name!r}{attr_part}"
+    msg = f'Invalid value {value_str} (type "{value.__class__.__name__}"){member_part}, expected type "{type_name}"{attr_part}'
     return ValidationError(msg, member_fqn)
 
 
@@ -473,6 +491,6 @@ def validate_type_model(types):
     # Do additional type model validation
     errors = validate_type_model_errors(validated_types)
     if errors:
-        raise ValidationError('\n'.join(message for _, _, message in sorted(errors)))
+        raise ValidationError('\n'.join(message for _, _, message in sorted(errors, key=lambda e: (e[0], e[1] or '', e[2]))))
 
     return validated_types
