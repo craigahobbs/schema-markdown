@@ -115,6 +115,18 @@ class TestDecodeQueryString(unittest.TestCase):
             {'a': 'abc' + chr(40960), 'b': ['c', 'd']}
         )
 
+    def test_decode_object_property_names(self):
+        self.assertEqual(
+            decode_query_string('constructor.a=1&b=2'),
+            {'constructor': {'a': '1'}, 'b': '2'}
+        )
+
+    def test_decode_proto_key(self):
+        self.assertEqual(
+            decode_query_string('__proto__.a=1'),
+            {'__proto__': {'a': '1'}}
+        )
+
     def test_key_values_special_characters(self):
         self.assertEqual(
             decode_query_string('a%26b%3Dc%2ed=a%26b%3Dc.d'),

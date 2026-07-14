@@ -8,7 +8,8 @@ from decimal import Decimal
 import unittest
 from uuid import UUID
 
-from schema_markdown import TYPE_MODEL, ValidationError, get_referenced_types, validate_type, validate_type_model
+from schema_markdown import \
+    TYPE_MODEL, ValidationError, get_enum_values, get_referenced_types, get_struct_members, validate_type, validate_type_model
 
 
 class TestReferencedTypes(unittest.TestCase):
@@ -238,6 +239,146 @@ class TestReferencedTypes(unittest.TestCase):
         self.assertDictEqual(referenced_types, expected_types)
 
 
+    def test_object_property_names(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'user': 'constructor'}}
+                    ]
+                }
+            },
+            'constructor': {
+                'struct': {
+                    'name': 'constructor',
+                    'members': [
+                        {'name': 'b', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            }
+        }
+        referenced_types = get_referenced_types(types, 'MyStruct')
+        self.assertDictEqual(referenced_types, types)
+
+    def test_proto_type(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'user': '__proto__'}}
+                    ]
+                }
+            },
+            '__proto__': {
+                'struct': {
+                    'name': '__proto__',
+                    'members': [
+                        {'name': 'b', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            }
+        }
+        referenced_types = get_referenced_types(types, 'MyStruct')
+        self.assertDictEqual(referenced_types, types)
+
+    def test_proto_type_recursive(self):
+        types = {
+            '__proto__': {
+                'struct': {
+                    'name': '__proto__',
+                    'members': [
+                        {'name': 'a', 'type': {'user': '__proto__'}}
+                    ]
+                }
+            }
+        }
+        referenced_types = get_referenced_types(types, '__proto__')
+        self.assertDictEqual(referenced_types, types)
+
+    def test_unknown_type(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'user': 'Unknown'}}
+                    ]
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            get_referenced_types(types, 'MyStruct')
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "Unknown"')
+
+
+class TestGetStructMembers(unittest.TestCase):
+
+    def test_no_bases(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            }
+        }
+        # The returned list is the type model's live members list (not a copy) - mutating it mutates the model
+        self.assertIs(get_struct_members(types, types['MyStruct']['struct']), types['MyStruct']['struct']['members'])
+
+    def test_unknown_base(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['constructor'],
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            get_struct_members(types, types['MyStruct']['struct'])
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "constructor"')
+
+
+class TestGetEnumValues(unittest.TestCase):
+
+    def test_no_bases(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'values': [
+                        {'name': 'A'}
+                    ]
+                }
+            }
+        }
+        # The returned list is the type model's live values list (not a copy) - mutating it mutates the model
+        self.assertIs(get_enum_values(types, types['MyEnum']['enum']), types['MyEnum']['enum']['values'])
+
+    def test_unknown_base(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'bases': ['constructor'],
+                    'values': [
+                        {'name': 'A'}
+                    ]
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            get_enum_values(types, types['MyEnum']['enum'])
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "constructor"')
+
+
 class TestValidateType(unittest.TestCase):
 
     @staticmethod
@@ -256,6 +397,77 @@ class TestValidateType(unittest.TestCase):
             validate_type({}, 'Unknown', None)
         self.assertEqual(str(cm_exc.exception), 'Unknown type "Unknown"')
         self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_unknown_object_property_name(self):
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type({}, 'constructor', None)
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "constructor"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_unknown_member_type(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'user': 'constructor'}}
+                    ]
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyStruct', {'a': 5})
+        self.assertEqual(str(cm_exc.exception), 'Unknown type "constructor"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_member_fqn(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'array': {'type': {'builtin': 'int'}}}}
+                    ]
+                }
+            }
+        }
+        obj = {'a': [1, 'abc']}
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyStruct', obj, 'request')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str") for member "request.a.1", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'request.a.1')
+
+    def test_member_fqn_non_str(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'array': {'type': {'builtin': 'int'}}}}
+                    ]
+                }
+            }
+        }
+        obj = {'a': [1, 'abc']}
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyStruct', obj, 5)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str") for member "5.a.1", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, '5.a.1')
+
+    def test_member_fqn_empty_string(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'builtin': 'int'}
+                }
+            }
+        }
+        # The member part is omitted for an empty-string FQN
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type(types, 'MyTypedef', 'abc', '')
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "abc" (type "str"), expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, '')
 
     def test_string(self):
         obj = 'abc'
@@ -708,6 +920,13 @@ class TestValidateType(unittest.TestCase):
         obj = {'a': 1, 'b': 2, 'c': 3}
         self.assertDictEqual(self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj), obj)
 
+    def test_dict_proto_key(self):
+        obj = {'__proto__': {'a': 1}, 'b': {'c': 2}}
+        self.assertDictEqual(
+            self._validate_type({'dict': {'type': {'dict': {'type': {'builtin': 'int'}}}}}, obj),
+            {'__proto__': {'a': 1}, 'b': {'c': 2}}
+        )
+
     def test_dict_null(self):
         obj = None
         with self.assertRaises(ValidationError) as cm_exc:
@@ -743,6 +962,14 @@ class TestValidateType(unittest.TestCase):
             self._validate_type({'dict': {'type': {'builtin': 'int'}}}, obj)
         self.assertEqual(str(cm_exc.exception), 'Invalid value null (type "NoneType"), expected type "string"')
         self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_dict_key_nullable_value_error(self):
+        obj = {None: 'bad'}
+        # The null key is stringified host-natively in the FQN ("None" here, "null" in the JS port)
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'dict': {'type': {'builtin': 'int'}, 'keyAttr': {'nullable': True}}}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "bad" (type "str") for member "None", expected type "int"')
+        self.assertEqual(cm_exc.exception.member_fqn, 'None')
 
     def test_dict_key_nullable_as_string(self):
         obj = {'a': 1, 'null': 2, 'c': 3}
@@ -1104,6 +1331,20 @@ class TestValidateType(unittest.TestCase):
         self.assertEqual(str(cm_exc.exception), 'Invalid value [1,2,3] (type "list"), expected type "MyTypedef" [len == 5]')
         self.assertIsNone(cm_exc.exception.member_fqn)
 
+    def test_typedef_attr_len_eq_non_container(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'builtin': 'int'},
+                    'attr': {'lenEq': 5}
+                }
+            }
+        }
+        # Known issue: an invalid type model (len attribute on int) raises TypeError; the JS port raises ValidationError
+        with self.assertRaises(TypeError):
+            validate_type(types, 'MyTypedef', 5)
+
     def test_typedef_attr_len_lt(self):
         types = {
             'MyTypedef': {
@@ -1423,6 +1664,32 @@ class TestValidateType(unittest.TestCase):
             validate_type(types, 'MyStruct', obj)
         self.assertEqual(str(cm_exc.exception), 'Required member "c" missing')
         self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_struct_member_inherited_name(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'constructor', 'type': {'builtin': 'string'}, 'optional': True}
+                    ]
+                }
+            }
+        }
+        self.assertDictEqual(validate_type(types, 'MyStruct', {}), {})
+
+    def test_struct_member_proto(self):
+        types = {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': '__proto__', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            }
+        }
+        self.assertDictEqual(validate_type(types, 'MyStruct', {'__proto__': 5}), {'__proto__': 5})
 
     def test_struct_nullable(self):
         types = {
@@ -1825,6 +2092,23 @@ Redefinition of "MyStruct" member "a"\
 
         self.assertIsNone(cm_exc.exception.member_fqn)
 
+    def test_struct_duplicate_member_proto(self):
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model({
+                'MyStruct': {
+                    'struct': {
+                        'name': 'MyStruct',
+                        'members': [
+                            {'name': '__proto__', 'type': {'builtin': 'string'}},
+                            {'name': '__proto__', 'type': {'builtin': 'int'}}
+                        ]
+                    }
+                }
+            })
+        self.assertEqual(str(cm_exc.exception), 'Redefinition of "MyStruct" member "__proto__"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
     def test_struct_member_attributes(self):
         types = {
             'MyStruct': {
@@ -2074,6 +2358,24 @@ Circular base type detected for type "MyStruct2"\
         with self.assertRaises(ValidationError) as cm_exc:
             validate_type_model(types)
         self.assertEqual(str(cm_exc.exception), 'Redefinition of "MyEnum" value "A"')
+
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_enum_duplicate_value_proto(self):
+        types = {
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'values': [
+                        {'name': '__proto__'},
+                        {'name': '__proto__'}
+                    ]
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model(types)
+        self.assertEqual(str(cm_exc.exception), 'Redefinition of "MyEnum" value "__proto__"')
 
         self.assertIsNone(cm_exc.exception.member_fqn)
 
@@ -2545,6 +2847,40 @@ Unknown type "Unknown" from "MyTypedef"\
         self.assertEqual(str(cm_exc.exception), '''\
 Redefinition of "MyAction_input" member "c"
 Redefinition of "MyAction_query" member "c"\
+''')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_action_duplicate_member_proto(self):
+        types = {
+            'MyAction': {
+                'action': {
+                    'name': 'MyAction',
+                    'query': 'MyAction_query',
+                    'input': 'MyAction_input'
+                }
+            },
+            'MyAction_query': {
+                'struct': {
+                    'name': 'MyAction_query',
+                    'members': [
+                        {'name': '__proto__', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            },
+            'MyAction_input': {
+                'struct': {
+                    'name': 'MyAction_input',
+                    'members': [
+                        {'name': '__proto__', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Redefinition of "MyAction_input" member "__proto__"
+Redefinition of "MyAction_query" member "__proto__"\
 ''')
         self.assertIsNone(cm_exc.exception.member_fqn)
 

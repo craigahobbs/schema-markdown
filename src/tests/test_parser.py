@@ -257,6 +257,162 @@ action MyAction4 \\
             }
         })
 
+    def test_line_continuation_trailing_whitespace(self):
+        types = parse_schema_markdown('struct MyStruct\n    int \\ \n        a\n')
+        self.assertDictEqual(types, {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            }
+        })
+
+    def test_line_continuation_backslash_not_continuation(self):
+        types = parse_schema_markdown('# The struct \\s\nstruct MyStruct\n')
+        self.assertDictEqual(types, {
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'doc': ['The struct \\s']
+                }
+            }
+        })
+
+    def test_keyword_prefix_syntax_error(self):
+        errors = [
+            ':1: error: Syntax error',
+            ':2: error: Syntax error',
+            ':3: error: Syntax error',
+            ':4: error: Syntax error',
+            ':5: error: Syntax error',
+            ':6: error: Syntax error'
+        ]
+        with self.assertRaises(SchemaMarkdownParserError) as cm_exc:
+            parse_schema_markdown('''\
+groups "Group"
+actions MyAction
+structs MyStruct
+unions MyUnion
+enums MyEnum
+typedefs int MyTypedef
+''')
+        self.assertEqual(str(cm_exc.exception), '\n'.join(errors))
+        self.assertListEqual(cm_exc.exception.errors, errors)
+
+    def test_object_property_names(self):
+        types = parse_schema_markdown('''\
+struct constructor
+    string toString
+    int valueOf
+
+enum hasOwnProperty
+    constructor
+    toString
+
+action isPrototypeOf
+    query
+        string toString
+    output
+        constructor propertyIsEnumerable
+''')
+        self.assertDictEqual(types, {
+            'constructor': {
+                'struct': {
+                    'name': 'constructor',
+                    'members': [
+                        {'name': 'toString', 'type': {'builtin': 'string'}},
+                        {'name': 'valueOf', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            },
+            'hasOwnProperty': {
+                'enum': {
+                    'name': 'hasOwnProperty',
+                    'values': [
+                        {'name': 'constructor'},
+                        {'name': 'toString'}
+                    ]
+                }
+            },
+            'isPrototypeOf': {
+                'action': {
+                    'name': 'isPrototypeOf',
+                    'query': 'isPrototypeOf_query',
+                    'output': 'isPrototypeOf_output'
+                }
+            },
+            'isPrototypeOf_query': {
+                'struct': {
+                    'name': 'isPrototypeOf_query',
+                    'members': [
+                        {'name': 'toString', 'type': {'builtin': 'string'}}
+                    ]
+                }
+            },
+            'isPrototypeOf_output': {
+                'struct': {
+                    'name': 'isPrototypeOf_output',
+                    'members': [
+                        {'name': 'propertyIsEnumerable', 'type': {'user': 'constructor'}}
+                    ]
+                }
+            }
+        })
+
+    def test_object_property_name_bases(self):
+        types = parse_schema_markdown('''\
+struct constructor
+    int a
+
+struct MyStruct (constructor)
+    int b
+
+enum toString
+    A
+
+enum MyEnum (toString)
+    B
+''')
+        self.assertDictEqual(types, {
+            'constructor': {
+                'struct': {
+                    'name': 'constructor',
+                    'members': [
+                        {'name': 'a', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            },
+            'MyStruct': {
+                'struct': {
+                    'name': 'MyStruct',
+                    'bases': ['constructor'],
+                    'members': [
+                        {'name': 'b', 'type': {'builtin': 'int'}}
+                    ]
+                }
+            },
+            'toString': {
+                'enum': {
+                    'name': 'toString',
+                    'values': [
+                        {'name': 'A'}
+                    ]
+                }
+            },
+            'MyEnum': {
+                'enum': {
+                    'name': 'MyEnum',
+                    'bases': ['toString'],
+                    'values': [
+                        {'name': 'B'}
+                    ]
+                }
+            }
+        })
+
     def test_action_trailing_whitespace(self):
         types = parse_schema_markdown('action MyAction  \n')
         self.assertDictEqual(types, {

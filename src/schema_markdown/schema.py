@@ -53,7 +53,7 @@ def _get_referenced_types(types, type_, referenced_types=None):
 
         # Already encountered?
         if type_name not in referenced_types:
-            user_type = types[type_name]
+            user_type = _get_user_type(types, type_name)
             referenced_types[type_name] = user_type
 
             # Struct?
@@ -112,6 +112,14 @@ class ValidationError(Exception):
         self.member_fqn = member_fqn
 
 
+# Helper to look up a user type by name - raises ValidationError for unknown type names
+def _get_user_type(types, type_name):
+    user_type = types.get(type_name)
+    if user_type is None:
+        raise ValidationError(f'Unknown type "{type_name}"')
+    return user_type
+
+
 def validate_type(types, type_name, value, member_fqn=None):
     """
     Type-validate a value using the schema-markdown user type model. Container values are duplicated
@@ -132,8 +140,6 @@ def validate_type(types, type_name, value, member_fqn=None):
     :raises ValidationError: A validation error occurred
     """
 
-    if type_name not in types:
-        raise ValidationError(f'Unknown type "{type_name}"')
     return _validate_type(types, {'user': type_name}, value, member_fqn)
 
 
@@ -141,6 +147,10 @@ def validate_type(types, type_name, value, member_fqn=None):
 _RE_DATE = re.compile(r'\d{4}-\d{2}-\d{2}')
 _RE_DATETIME = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})')
 _RE_UUID = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', re.IGNORECASE)
+
+
+# Default dict key type used by _validate_type
+_DEFAULT_DICT_KEY_TYPE = {'builtin': 'string'}
 
 
 def _validate_type(types, type_, value, member_fqn=None):
@@ -269,12 +279,13 @@ def _validate_type(types, type_, value, member_fqn=None):
         value_copy = []
         array_value_nullable = array_attr is not None and 'nullable' in array_attr and array_attr['nullable']
         for ix_array_value, array_value in enumerate(value_new):
-            member_fqn_value = f'{ix_array_value}' if member_fqn is None else f'{member_fqn}.{ix_array_value}'
+            member_fqn_value = (member_fqn, ix_array_value)
             if array_value_nullable and (array_value is None or array_value == 'null'):
                 array_value = None
             else:
                 array_value = _validate_type(types, array_type, array_value, member_fqn_value)
-                _validate_attr(array_type, array_attr, array_value, member_fqn_value)
+                if array_attr is not None:
+                    _validate_attr(array_type, array_attr, array_value, member_fqn_value)
             value_copy.append(array_value)
 
         # Return the validated, transformed copy
@@ -287,7 +298,7 @@ def _validate_type(types, type_, value, member_fqn=None):
         dict_ = type_['dict']
         dict_type = dict_['type']
         dict_attr = dict_.get('attr')
-        dict_key_type = dict_['keyType'] if 'keyType' in dict_ else {'builtin': 'string'}
+        dict_key_type = dict_['keyType'] if 'keyType' in dict_ else _DEFAULT_DICT_KEY_TYPE
         dict_key_attr = dict_.get('keyAttr')
         if isinstance(value, str) and value == '':
             value_new = {}
@@ -299,21 +310,23 @@ def _validate_type(types, type_, value, member_fqn=None):
         dict_key_nullable = dict_key_attr is not None and 'nullable' in dict_key_attr and dict_key_attr['nullable']
         dict_value_nullable = dict_attr is not None and 'nullable' in dict_attr and dict_attr['nullable']
         for dict_key, dict_value in value_new.items():
-            member_fqn_key = dict_key if member_fqn is None else f'{member_fqn}.{dict_key}'
+            member_fqn_key = (member_fqn, dict_key)
 
             # Validate the key
             if dict_key_nullable and (dict_key is None or dict_key == 'null'):
                 dict_key = None
             else:
                 dict_key = _validate_type(types, dict_key_type, dict_key, member_fqn)
-                _validate_attr(dict_key_type, dict_key_attr, dict_key, member_fqn)
+                if dict_key_attr is not None:
+                    _validate_attr(dict_key_type, dict_key_attr, dict_key, member_fqn)
 
             # Validate the value
             if dict_value_nullable and (dict_value is None or dict_value == 'null'):
                 dict_value = None
             else:
                 dict_value = _validate_type(types, dict_type, dict_value, member_fqn_key)
-                _validate_attr(dict_type, dict_attr, dict_value, member_fqn_key)
+                if dict_attr is not None:
+                    _validate_attr(dict_type, dict_attr, dict_value, member_fqn_key)
 
             # Copy the key/value
             value_copy[dict_key] = dict_value
@@ -323,7 +336,7 @@ def _validate_type(types, type_, value, member_fqn=None):
 
     # User type?
     elif 'user' in type_:
-        user_type = types[type_['user']]
+        user_type = _get_user_type(types, type_['user'])
 
         # action?
         if 'action' in user_type:
@@ -340,14 +353,15 @@ def _validate_type(types, type_, value, member_fqn=None):
                 value_new = None
             else:
                 value_new = _validate_type(types, typedef['type'], value, member_fqn)
-                _validate_attr(type_, typedef_attr, value_new, member_fqn)
+                if typedef_attr is not None:
+                    _validate_attr(type_, typedef_attr, value_new, member_fqn)
 
         # enum?
         elif 'enum' in user_type:
             enum = user_type['enum']
 
             # Not a valid enum value?
-            if value not in (enum_value['name'] for enum_value in get_enum_values(types, enum)):
+            if not any(value == enum_value['name'] for enum_value in get_enum_values(types, enum)):
                 raise _member_error(type_, value, member_fqn)
 
         # struct?
@@ -363,21 +377,22 @@ def _validate_type(types, type_, value, member_fqn=None):
             # Valid union?
             is_union = struct.get('union', False)
             if is_union:
-                if len(value) != 1:
+                if len(value_new) != 1:
                     raise _member_error({'user': struct['name']}, value, member_fqn)
 
             # Validate the struct members
             value_copy = {}
             for member in get_struct_members(types, struct):
                 member_name = member['name']
-                member_fqn_member = member_name if member_fqn is None else f'{member_fqn}.{member_name}'
+                member_fqn_member = (member_fqn, member_name)
                 member_optional = member.get('optional', False)
-                member_nullable = 'attr' in member and member['attr'].get('nullable', False)
+                member_attr = member.get('attr')
+                member_nullable = member_attr is not None and 'nullable' in member_attr and member_attr['nullable']
 
                 # Missing non-optional member?
                 if member_name not in value_new:
                     if not member_optional and not is_union:
-                        raise ValidationError(f'Required member "{member_fqn_member}" missing')
+                        raise ValidationError(f'Required member "{_member_fqn_str(member_fqn_member)}" missing')
                 else:
                     # Validate the member value
                     member_value = value_new[member_name]
@@ -385,7 +400,8 @@ def _validate_type(types, type_, value, member_fqn=None):
                         member_value = None
                     else:
                         member_value = _validate_type(types, member['type'], member_value, member_fqn_member)
-                        _validate_attr(member['type'], member.get('attr'), member_value, member_fqn_member)
+                        if member_attr is not None:
+                            _validate_attr(member['type'], member_attr, member_value, member_fqn_member)
 
                     # Copy the validated member
                     value_copy[member_name] = member_value
@@ -394,7 +410,7 @@ def _validate_type(types, type_, value, member_fqn=None):
             if len(value_copy) != len(value_new):
                 member_set = {member['name'] for member in get_struct_members(types, struct)}
                 unknown_key = next(value_name for value_name in value_new.keys() if value_name not in member_set) # pragma: no branch
-                unknown_fqn = unknown_key if member_fqn is None else f'{member_fqn}.{unknown_key}'
+                unknown_fqn = _member_fqn_str((member_fqn, unknown_key))
                 raise ValidationError(f'Unknown member "{unknown_fqn[:100]}"')
 
             # Return the validated, transformed copy
@@ -403,7 +419,24 @@ def _validate_type(types, type_, value, member_fqn=None):
     return value_new
 
 
+# Helper to materialize a member's fully-qualified name string. For performance, member FQNs are
+# built lazily as (parent, key) pairs and only converted to strings on error.
+def _member_fqn_str(member_fqn):
+    if member_fqn is None or isinstance(member_fqn, str):
+        return member_fqn
+    parts = []
+    fqn_part = member_fqn
+    while isinstance(fqn_part, tuple):
+        parts.append(f'{fqn_part[1]}')
+        fqn_part = fqn_part[0]
+    if fqn_part is not None:
+        parts.append(f'{fqn_part}')
+    parts.reverse()
+    return '.'.join(parts)
+
+
 def _member_error(type_, value, member_fqn, attr=None):
+    member_fqn = _member_fqn_str(member_fqn)
     value_str = json.dumps(value, separators=(',', ':'), ensure_ascii=False, default=str)[:100]
     member_part = f' for member "{member_fqn}"' if member_fqn else ''
     type_name = type_['builtin'] if 'builtin' in type_ else (
@@ -414,66 +447,83 @@ def _member_error(type_, value, member_fqn, attr=None):
 
 
 def _validate_attr(type_, attr, value, member_fqn):
-    if attr is not None:
-        if 'eq' in attr and not value == attr['eq']:
-            raise _member_error(type_, value, member_fqn, f'== {attr["eq"]}')
-        if 'lt' in attr and not value < attr['lt']:
-            raise _member_error(type_, value, member_fqn, f'< {attr["lt"]}')
-        if 'lte' in attr and not value <= attr['lte']:
-            raise _member_error(type_, value, member_fqn, f'<= {attr["lte"]}')
-        if 'gt' in attr and not value > attr['gt']:
-            raise _member_error(type_, value, member_fqn, f'> {attr["gt"]}')
-        if 'gte' in attr and not value >= attr['gte']:
-            raise _member_error(type_, value, member_fqn, f'>= {attr["gte"]}')
-        if 'lenEq' in attr and not len(value) == attr['lenEq']:
-            raise _member_error(type_, value, member_fqn, f'len == {attr["lenEq"]}')
-        if 'lenLT' in attr and not len(value) < attr['lenLT']:
-            raise _member_error(type_, value, member_fqn, f'len < {attr["lenLT"]}')
-        if 'lenLTE' in attr and not len(value) <= attr['lenLTE']:
-            raise _member_error(type_, value, member_fqn, f'len <= {attr["lenLTE"]}')
-        if 'lenGT' in attr and not len(value) > attr['lenGT']:
-            raise _member_error(type_, value, member_fqn, f'len > {attr["lenGT"]}')
-        if 'lenGTE' in attr and not len(value) >= attr['lenGTE']:
-            raise _member_error(type_, value, member_fqn, f'len >= {attr["lenGTE"]}')
+    if 'eq' in attr and not value == attr['eq']:
+        raise _member_error(type_, value, member_fqn, f'== {attr["eq"]}')
+    if 'lt' in attr and not value < attr['lt']:
+        raise _member_error(type_, value, member_fqn, f'< {attr["lt"]}')
+    if 'lte' in attr and not value <= attr['lte']:
+        raise _member_error(type_, value, member_fqn, f'<= {attr["lte"]}')
+    if 'gt' in attr and not value > attr['gt']:
+        raise _member_error(type_, value, member_fqn, f'> {attr["gt"]}')
+    if 'gte' in attr and not value >= attr['gte']:
+        raise _member_error(type_, value, member_fqn, f'>= {attr["gte"]}')
+    if 'lenEq' in attr and not len(value) == attr['lenEq']:
+        raise _member_error(type_, value, member_fqn, f'len == {attr["lenEq"]}')
+    if 'lenLT' in attr and not len(value) < attr['lenLT']:
+        raise _member_error(type_, value, member_fqn, f'len < {attr["lenLT"]}')
+    if 'lenLTE' in attr and not len(value) <= attr['lenLTE']:
+        raise _member_error(type_, value, member_fqn, f'len <= {attr["lenLTE"]}')
+    if 'lenGT' in attr and not len(value) > attr['lenGT']:
+        raise _member_error(type_, value, member_fqn, f'len > {attr["lenGT"]}')
+    if 'lenGTE' in attr and not len(value) >= attr['lenGTE']:
+        raise _member_error(type_, value, member_fqn, f'len >= {attr["lenGTE"]}')
 
 
 def get_struct_members(types, struct):
     """
-    Iterate the struct's members (inherited members first)
+    Get the struct's members (inherited members first)
 
     :param dict types: The `type model <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='Types'>`__
     :param dict struct: The `struct model <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='Struct'>`__
-    :returns: An iterator of
+    :returns: The list of
         `struct member models <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='StructMember'>`__
     """
 
-    if 'bases' in struct:
-        for base in struct['bases']:
-            base_user_type = types[base]
-            while 'typedef' in base_user_type:
-                base_user_type = types[base_user_type['typedef']['type']['user']]
-            yield from get_struct_members(types, base_user_type['struct'])
+    # No base structs?
+    if 'bases' not in struct:
+        return struct['members'] if 'members' in struct else []
+
+    # Get base struct members
+    members = []
+    for base in struct['bases']:
+        base_user_type = _get_user_type(types, base)
+        while 'typedef' in base_user_type:
+            base_user_type = _get_user_type(types, base_user_type['typedef']['type']['user'])
+        members.extend(get_struct_members(types, base_user_type['struct']))
+
+    # Add struct members
     if 'members' in struct:
-        yield from struct['members']
+        members.extend(struct['members'])
+
+    return members
 
 
 def get_enum_values(types, enum):
     """
-    Iterate the enum's values (inherited values first)
+    Get the enum's values (inherited values first)
 
     :param dict types: The `type model <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='Types'>`__
     :param dict enum: The `enum model <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='Enum'>`__
-    :returns: An iterator of `enum value models <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='EnumValue'>`__
+    :returns: The list of `enum value models <https://craigahobbs.github.io/bare-script-py/model/#var.vURL=''&var.vName='EnumValue'>`__
     """
 
-    if 'bases' in enum:
-        for base in enum['bases']:
-            base_user_type = types[base]
-            while 'typedef' in base_user_type:
-                base_user_type = types[base_user_type['typedef']['type']['user']]
-            yield from get_enum_values(types, base_user_type['enum'])
+    # No base enums?
+    if 'bases' not in enum:
+        return enum['values'] if 'values' in enum else []
+
+    # Get base enum values
+    values = []
+    for base in enum['bases']:
+        base_user_type = _get_user_type(types, base)
+        while 'typedef' in base_user_type:
+            base_user_type = _get_user_type(types, base_user_type['typedef']['type']['user'])
+        values.extend(get_enum_values(types, base_user_type['enum']))
+
+    # Add enum values
     if 'values' in enum:
-        yield from enum['values']
+        values.extend(enum['values'])
+
+    return values
 
 
 def validate_type_model(types):

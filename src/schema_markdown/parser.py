@@ -26,7 +26,7 @@ RE_PART_ATTR = re.sub(r'\(\?P<[^>]+>', r'(?:', RE_PART_ATTR_GROUP)
 RE_PART_ATTRS = r'(?:' + RE_PART_ATTR + r'(?:\s*,\s*' + RE_PART_ATTR + r')*)'
 RE_ATTR_GROUP = re.compile(RE_PART_ATTR_GROUP)
 RE_FIND_ATTRS = re.compile(RE_PART_ATTR + r'(?:\s*,\s*|\s*\Z)')
-RE_LINE_CONT = re.compile(r'\\s*$')
+RE_LINE_CONT = re.compile(r'\\\s*$')
 RE_COMMENT = re.compile(r'^\s*(?:#-.*|#(?P<doc>.*))?$')
 RE_GROUP = re.compile(r'^group(?:\s+"(?P<group>.+?)")?\s*$')
 RE_ACTION = re.compile(r'^action\s+(?P<id>' + RE_PART_ID + r')\s*$')
@@ -107,7 +107,7 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
         linenum += 1
 
         # Line continuation?
-        line_part_no_continuation = RE_LINE_CONT.sub('', line_part)
+        line_part_no_continuation = RE_LINE_CONT.sub('', line_part) if '\\' in line_part else line_part
         if line_continuation or line_part_no_continuation is not line_part:
             line_continuation.append(line_part_no_continuation)
         if line_part_no_continuation is not line_part:
@@ -118,30 +118,32 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
         else:
             line = line_part
 
-        # Match syntax
-        match_name, match = 'comment', RE_COMMENT.search(line)
+        # Match syntax - each regex is guarded by a cheap string test that only skips it when it cannot match
+        line_indented = line[:1].isspace()
+        line_trimmed = line.strip()
+        match_name, match = 'comment', (RE_COMMENT.search(line) if not line_trimmed or line_trimmed.startswith('#') else None)
         if match is None:
-            match_name, match = 'group', RE_GROUP.search(line)
+            match_name, match = 'group', (RE_GROUP.search(line) if line.startswith('group') else None)
         if match is None:
-            match_name, match = 'action', RE_ACTION.search(line)
+            match_name, match = 'action', (RE_ACTION.search(line) if line.startswith('action') else None)
         if match is None:
-            match_name, match = 'definition', RE_DEFINITION.search(line)
-        if match is None and action is not None:
+            match_name, match = 'definition', (RE_DEFINITION.search(line) if line.startswith(('struct', 'union', 'enum')) else None)
+        if match is None and action is not None and line_indented:
             match_name, match = 'section', RE_SECTION.search(line)
-        if match is None and action is not None:
+        if match is None and action is not None and line_indented:
             match_name, match = 'section_plain', RE_SECTION_PLAIN.search(line)
-        if match is None and user_type is not None and 'enum' in user_type:
+        if match is None and user_type is not None and 'enum' in user_type and line_indented:
             match_value = RE_VALUE.search(line)
             if match_value is not None:
                 match_name, match = 'value', match_value
             else:
                 match_name, match = 'value', RE_VALUE_QUOTED.search(line)
-        if match is None and user_type is not None and 'struct' in user_type:
+        if match is None and user_type is not None and 'struct' in user_type and line_indented:
             match_name, match = 'member', RE_MEMBER.search(line)
-        if match is None and urls is not None:
+        if match is None and urls is not None and line_indented:
             match_name, match = 'urls', RE_URL.search(line)
         if match is None:
-            match_name, match = 'typedef', RE_TYPEDEF.search(line)
+            match_name, match = 'typedef', (RE_TYPEDEF.search(line) if line.startswith('typedef') else None)
         if match is None:
             match_name = None
 
