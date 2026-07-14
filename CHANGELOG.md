@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.1 (2026-07-14)
+
+- [da519b2](https://github.com/craigahobbs/schema-markdown/commit/da519b2) - performance optimizations: 24% faster validation, 14% faster parsing, 100% test coverage
+
 ## 1.3.0 (2026-07-13)
 
 - [5a9713c](https://github.com/craigahobbs/schema-markdown/commit/5a9713c)
