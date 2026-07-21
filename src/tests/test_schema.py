@@ -488,6 +488,21 @@ class TestValidateType(unittest.TestCase):
         obj = '7'
         self.assertEqual(self._validate_type({'builtin': 'int'}, obj), 7)
 
+    def test_int_string_exp(self):
+        obj = '1e3'
+        self.assertEqual(self._validate_type({'builtin': 'int'}, obj), 1000)
+
+    def test_int_string_exp_float(self):
+        obj = '1.5e1'
+        self.assertEqual(self._validate_type({'builtin': 'int'}, obj), 15)
+
+    def test_int_string_exp_error(self):
+        obj = '1e400'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'int'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "1e400" (type "str"), expected type "int"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
     def test_int_float(self):
         obj = 7.1
         with self.assertRaises(ValidationError) as cm_exc:
@@ -562,6 +577,13 @@ class TestValidateType(unittest.TestCase):
         with self.assertRaises(ValidationError) as cm_exc:
             self._validate_type({'builtin': 'float'}, obj)
         self.assertEqual(str(cm_exc.exception), 'Invalid value "nan" (type "str"), expected type "float"')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_float_error_infinity(self):
+        obj = 'Infinity'
+        with self.assertRaises(ValidationError) as cm_exc:
+            self._validate_type({'builtin': 'float'}, obj)
+        self.assertEqual(str(cm_exc.exception), 'Invalid value "Infinity" (type "str"), expected type "float"')
         self.assertIsNone(cm_exc.exception.member_fqn)
 
     def test_float_error_inf(self):

@@ -173,10 +173,11 @@ def _validate_type(types, type_, value, member_fqn=None):
             # Convert string, float, or Decimal?
             if isinstance(value, (str, float, Decimal)):
                 try:
-                    value_new = int(value)
-                    if not isinstance(value, str) and value_new != value:
+                    value_number = float(value) if isinstance(value, str) else value
+                    value_new = int(value_number)
+                    if value_new != value_number:
                         raise ValueError()
-                except ValueError:
+                except (ValueError, OverflowError):
                     raise _member_error(type_, value, member_fqn) from None
 
             # Not an int?
