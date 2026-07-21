@@ -245,6 +245,16 @@ class TestDecodeQueryString(unittest.TestCase):
             decode_query_string('a.0=0&a.b=0')
         self.assertEqual(str(cm_exc.exception), "Invalid array index 'b' in key 'a.b'")
 
+    def test_first_dict_value_then_dict(self):
+        with self.assertRaises(ValueError) as cm_exc:
+            decode_query_string('a=5&a.b=7')
+        self.assertEqual(str(cm_exc.exception), "Invalid key 'a.b'")
+
+    def test_first_dict_value_then_dict_long(self):
+        with self.assertRaises(ValueError) as cm_exc:
+            decode_query_string('a' * 2000 + '=5&' + 'a' * 2000 + '.b=7')
+        self.assertEqual(str(cm_exc.exception), f"Invalid key '{'a' * 99}")
+
     def test_first_list_then_dict_long(self):
         with self.assertRaises(ValueError) as cm_exc:
             decode_query_string('a' * 2000 + '.0=0&' + 'a' * 2000 + '.b=0')

@@ -147,6 +147,8 @@ def decode_query_string(query_string, encoding='utf-8'):
                 # Create this key's container, if necessary
                 if obj is None:
                     obj = parent[key_parent] = {}
+                elif not isinstance(obj, dict):
+                    raise ValueError(f"Invalid key {key_str!r:.100s}")
 
                 # Create the index for this key
                 if obj.get(key) is None:
