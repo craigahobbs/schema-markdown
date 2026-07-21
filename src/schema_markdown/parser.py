@@ -5,7 +5,6 @@
 Schema Markdown parser
 """
 
-from itertools import chain
 import re
 
 from .schema_util import validate_type_model_errors
@@ -98,7 +97,11 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
     if isinstance(text, str):
         lines = text.splitlines()
     else:
-        lines = list(chain.from_iterable(text_part.splitlines() for text_part in text))
+        lines = []
+        for text_part in text:
+            if not isinstance(text_part, str):
+                raise TypeError(f'Invalid Schema Markdown text {text_part!r:.100s}')
+            lines.extend(text_part.splitlines())
     lines.append('')
 
     # Process each line

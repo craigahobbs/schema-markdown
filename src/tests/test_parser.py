@@ -257,6 +257,15 @@ action MyAction4 \\
             }
         })
 
+    def test_invalid_text(self):
+        with self.assertRaises(TypeError) as cm_exc:
+            parse_schema_markdown(['struct MyStruct', None])
+        self.assertEqual(str(cm_exc.exception), 'Invalid Schema Markdown text None')
+
+        with self.assertRaises(TypeError) as cm_exc:
+            parse_schema_markdown([7])
+        self.assertEqual(str(cm_exc.exception), 'Invalid Schema Markdown text 7')
+
     def test_line_continuation_trailing_whitespace(self):
         types = parse_schema_markdown('struct MyStruct\n    int \\ \n        a\n')
         self.assertDictEqual(types, {
