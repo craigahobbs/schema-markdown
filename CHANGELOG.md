@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.2 (2026-07-29)
+
+- [651edae](https://github.com/craigahobbs/schema-markdown/commit/651edae) - restructure the parse loop and type validation to align with the bare-script ports
+
+- [f25660c](https://github.com/craigahobbs/schema-markdown/commit/f25660c) - detect circular typedefs in type model validation
+
+- [9dd975c](https://github.com/craigahobbs/schema-markdown/commit/9dd975c) - error on invalid Schema Markdown text input
+
+- [e72ef29](https://github.com/craigahobbs/schema-markdown/commit/e72ef29) - accept scientific-notation int strings
+
+- [a75220b](https://github.com/craigahobbs/schema-markdown/commit/a75220b) - error on sub-keying a scalar value in decode_query_string
+
 ## 1.3.1 (2026-07-14)
 
 - [da519b2](https://github.com/craigahobbs/schema-markdown/commit/da519b2) - performance optimizations: 24% faster validation, 14% faster parsing, 100% test coverage
