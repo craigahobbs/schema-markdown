@@ -95,6 +95,20 @@ def validate_type_model_errors(types):
             if type_name != typedef['name']:
                 errors.append((type_name, None, f'Inconsistent type name "{typedef["name"]}" for "{type_name}"'))
 
+            # Circular typedef?
+            visited = {type_name}
+            typedef_type = typedef['type']
+            while 'user' in typedef_type:
+                typedef_user_name = typedef_type['user']
+                typedef_user_type = types.get(typedef_user_name)
+                if typedef_user_type is None or 'typedef' not in typedef_user_type:
+                    break
+                if typedef_user_name in visited:
+                    errors.append((type_name, None, f'Circular typedef detected for type "{type_name}"'))
+                    break
+                visited.add(typedef_user_name)
+                typedef_type = typedef_user_type['typedef']['type']
+
             # Check the type and its attributes
             _validate_type_model_type(errors, types, typedef['type'], typedef.get('attr'), type_name, None)
 
@@ -143,11 +157,14 @@ def validate_type_model_errors(types):
     return errors
 
 
-def _get_effective_type(types, type_):
-    if 'user' in type_ and type_['user'] in types:
+def _get_effective_type(types, type_, visited=None):
+    if visited is None:
+        visited = set()
+    if 'user' in type_ and type_['user'] in types and type_['user'] not in visited:
         user_type = types[type_['user']]
         if 'typedef' in user_type:
-            return _get_effective_type(types, user_type['typedef']['type'])
+            visited.add(type_['user'])
+            return _get_effective_type(types, user_type['typedef']['type'], visited)
     return type_
 
 

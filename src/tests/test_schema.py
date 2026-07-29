@@ -2772,6 +2772,47 @@ Unknown type "Unknown" from "MyTypedef"\
 
         self.assertIsNone(cm_exc.exception.member_fqn)
 
+    def test_typedef_circular(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'user': 'MyTypedef2'}
+                }
+            },
+            'MyTypedef2': {
+                'typedef': {
+                    'name': 'MyTypedef2',
+                    'type': {'user': 'MyTypedef'}
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Circular typedef detected for type "MyTypedef"
+Circular typedef detected for type "MyTypedef2"\
+''')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_typedef_circular_attribute(self):
+        types = {
+            'MyTypedef': {
+                'typedef': {
+                    'name': 'MyTypedef',
+                    'type': {'user': 'MyTypedef'},
+                    'attr': {'gt': 0}
+                }
+            }
+        }
+        with self.assertRaises(ValidationError) as cm_exc:
+            validate_type_model(types)
+        self.assertEqual(str(cm_exc.exception), '''\
+Circular typedef detected for type "MyTypedef"
+Invalid attribute "> 0" from "MyTypedef"\
+''')
+        self.assertIsNone(cm_exc.exception.member_fqn)
+
     def test_action_empty_struct(self):
         types = {
             'MyAction': {
