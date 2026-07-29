@@ -264,6 +264,93 @@ def _validate_type(types, type_, value, member_fqn=None):
             else:
                 raise _member_error(type_, value, member_fqn)
 
+    # User type?
+    elif 'user' in type_:
+        user_type = _get_user_type(types, type_['user'])
+
+        # action?
+        if 'action' in user_type:
+            raise _member_error(type_, value, member_fqn)
+
+        # typedef?
+        if 'typedef' in user_type:
+            typedef = user_type['typedef']
+            typedef_attr = typedef.get('attr')
+
+            # Validate the value
+            value_nullable = typedef_attr is not None and 'nullable' in typedef_attr and typedef_attr['nullable']
+            if value_nullable and (value is None or value == 'null'):
+                value_new = None
+            else:
+                value_new = _validate_type(types, typedef['type'], value, member_fqn)
+                if typedef_attr is not None:
+                    _validate_attr(type_, typedef_attr, value_new, member_fqn)
+
+        # enum?
+        elif 'enum' in user_type:
+            enum = user_type['enum']
+
+            # Not a valid enum value?
+            if not any(value == enum_value['name'] for enum_value in get_enum_values(types, enum)):
+                raise _member_error(type_, value, member_fqn)
+
+        # struct?
+        elif 'struct' in user_type:
+            struct = user_type['struct']
+
+            # Valid value type?
+            if isinstance(value, str) and value == '':
+                value_new = {}
+            elif not isinstance(value, dict):
+                raise _member_error({'user': struct['name']}, value, member_fqn)
+
+            # Valid union?
+            is_union = struct.get('union', False)
+            if is_union:
+                if len(value_new) != 1:
+                    raise _member_error({'user': struct['name']}, value, member_fqn)
+
+            # Validate the struct members
+            value_copy = {}
+            for member in get_struct_members(types, struct):
+                member_name = member['name']
+                member_fqn_member = (member_fqn, member_name)
+                member_optional = member.get('optional', False)
+                member_attr = member.get('attr')
+
+                # Missing non-optional member?
+                if member_name not in value_new:
+                    if not member_optional and not is_union:
+                        raise ValidationError(f'Required member "{_member_fqn_str(member_fqn_member)}" missing')
+                else:
+                    # Validate the member value
+                    member_value = value_new[member_name]
+
+                    # No member attributes? Validate the member value directly
+                    if member_attr is None:
+                        member_value = _validate_type(types, member['type'], member_value, member_fqn_member)
+
+                    # Nullable null?
+                    elif 'nullable' in member_attr and member_attr['nullable'] and \
+                         (member_value is None or member_value == 'null'):
+                        member_value = None
+                    else:
+                        member_value = _validate_type(types, member['type'], member_value, member_fqn_member)
+                        _validate_attr(member['type'], member_attr, member_value, member_fqn_member)
+
+                    # Copy the validated member
+                    value_copy[member_name] = member_value
+
+            # Any unknown members?
+            if len(value_copy) != len(value_new):
+                member_set = {member['name'] for member in get_struct_members(types, struct)}
+                unknown_key = next(value_name for value_name in value_new.keys() if value_name not in member_set) # pragma: no branch
+                unknown_fqn = _member_fqn_str((member_fqn, unknown_key))
+                raise ValidationError(f'Unknown member "{unknown_fqn[:100]}"')
+
+            # Return the validated, transformed copy
+            value_new = value_copy
+
     # array?
     elif 'array' in type_:
 
@@ -334,88 +421,6 @@ def _validate_type(types, type_, value, member_fqn=None):
 
         # Return the validated, transformed copy
         value_new = value_copy
-
-    # User type?
-    elif 'user' in type_:
-        user_type = _get_user_type(types, type_['user'])
-
-        # action?
-        if 'action' in user_type:
-            raise _member_error(type_, value, member_fqn)
-
-        # typedef?
-        if 'typedef' in user_type:
-            typedef = user_type['typedef']
-            typedef_attr = typedef.get('attr')
-
-            # Validate the value
-            value_nullable = typedef_attr is not None and 'nullable' in typedef_attr and typedef_attr['nullable']
-            if value_nullable and (value is None or value == 'null'):
-                value_new = None
-            else:
-                value_new = _validate_type(types, typedef['type'], value, member_fqn)
-                if typedef_attr is not None:
-                    _validate_attr(type_, typedef_attr, value_new, member_fqn)
-
-        # enum?
-        elif 'enum' in user_type:
-            enum = user_type['enum']
-
-            # Not a valid enum value?
-            if not any(value == enum_value['name'] for enum_value in get_enum_values(types, enum)):
-                raise _member_error(type_, value, member_fqn)
-
-        # struct?
-        elif 'struct' in user_type:
-            struct = user_type['struct']
-
-            # Valid value type?
-            if isinstance(value, str) and value == '':
-                value_new = {}
-            elif not isinstance(value, dict):
-                raise _member_error({'user': struct['name']}, value, member_fqn)
-
-            # Valid union?
-            is_union = struct.get('union', False)
-            if is_union:
-                if len(value_new) != 1:
-                    raise _member_error({'user': struct['name']}, value, member_fqn)
-
-            # Validate the struct members
-            value_copy = {}
-            for member in get_struct_members(types, struct):
-                member_name = member['name']
-                member_fqn_member = (member_fqn, member_name)
-                member_optional = member.get('optional', False)
-                member_attr = member.get('attr')
-                member_nullable = member_attr is not None and 'nullable' in member_attr and member_attr['nullable']
-
-                # Missing non-optional member?
-                if member_name not in value_new:
-                    if not member_optional and not is_union:
-                        raise ValidationError(f'Required member "{_member_fqn_str(member_fqn_member)}" missing')
-                else:
-                    # Validate the member value
-                    member_value = value_new[member_name]
-                    if member_nullable and (member_value is None or member_value == 'null'):
-                        member_value = None
-                    else:
-                        member_value = _validate_type(types, member['type'], member_value, member_fqn_member)
-                        if member_attr is not None:
-                            _validate_attr(member['type'], member_attr, member_value, member_fqn_member)
-
-                    # Copy the validated member
-                    value_copy[member_name] = member_value
-
-            # Any unknown members?
-            if len(value_copy) != len(value_new):
-                member_set = {member['name'] for member in get_struct_members(types, struct)}
-                unknown_key = next(value_name for value_name in value_new.keys() if value_name not in member_set) # pragma: no branch
-                unknown_fqn = _member_fqn_str((member_fqn, unknown_key))
-                raise ValidationError(f'Unknown member "{unknown_fqn[:100]}"')
-
-            # Return the validated, transformed copy
-            value_new = value_copy
 
     return value_new
 

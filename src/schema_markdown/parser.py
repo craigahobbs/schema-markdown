@@ -111,44 +111,45 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
 
         # Line continuation?
         line_part_no_continuation = RE_LINE_CONT.sub('', line_part) if '\\' in line_part else line_part
-        if line_continuation or line_part_no_continuation is not line_part:
+        if line_part_no_continuation is line_part and not line_continuation:
+            line = line_part
+        else:
             line_continuation.append(line_part_no_continuation)
-        if line_part_no_continuation is not line_part:
-            continue
-        if line_continuation:
+            if line_part_no_continuation is not line_part:
+                continue
             line = ''.join(line_continuation)
             del line_continuation[:]
-        else:
-            line = line_part
 
         # Match syntax - each regex is guarded by a cheap string test that only skips it when it cannot match
-        line_indented = line[:1].isspace()
         line_trimmed = line.strip()
         match_name, match = 'comment', (RE_COMMENT.search(line) if not line_trimmed or line_trimmed.startswith('#') else None)
+
+        # Not a comment or blank line? Try the remaining syntax
         if match is None:
+            line_indented = line[:1].isspace()
             match_name, match = 'group', (RE_GROUP.search(line) if line.startswith('group') else None)
-        if match is None:
-            match_name, match = 'action', (RE_ACTION.search(line) if line.startswith('action') else None)
-        if match is None:
-            match_name, match = 'definition', (RE_DEFINITION.search(line) if line.startswith(('struct', 'union', 'enum')) else None)
-        if match is None and action is not None and line_indented:
-            match_name, match = 'section', RE_SECTION.search(line)
-        if match is None and action is not None and line_indented:
-            match_name, match = 'section_plain', RE_SECTION_PLAIN.search(line)
-        if match is None and user_type is not None and 'enum' in user_type and line_indented:
-            match_value = RE_VALUE.search(line)
-            if match_value is not None:
-                match_name, match = 'value', match_value
-            else:
-                match_name, match = 'value', RE_VALUE_QUOTED.search(line)
-        if match is None and user_type is not None and 'struct' in user_type and line_indented:
-            match_name, match = 'member', RE_MEMBER.search(line)
-        if match is None and urls is not None and line_indented:
-            match_name, match = 'urls', RE_URL.search(line)
-        if match is None:
-            match_name, match = 'typedef', (RE_TYPEDEF.search(line) if line.startswith('typedef') else None)
-        if match is None:
-            match_name = None
+            if match is None:
+                match_name, match = 'action', (RE_ACTION.search(line) if line.startswith('action') else None)
+            if match is None:
+                match_name, match = 'definition', (RE_DEFINITION.search(line) if line.startswith(('struct', 'union', 'enum')) else None)
+            if match is None and action is not None and line_indented:
+                match_name, match = 'section', RE_SECTION.search(line)
+            if match is None and action is not None and line_indented:
+                match_name, match = 'section_plain', RE_SECTION_PLAIN.search(line)
+            if match is None and user_type is not None and 'enum' in user_type and line_indented:
+                match_value = RE_VALUE.search(line)
+                if match_value is not None:
+                    match_name, match = 'value', match_value
+                else:
+                    match_name, match = 'value', RE_VALUE_QUOTED.search(line)
+            if match is None and user_type is not None and 'struct' in user_type and line_indented:
+                match_name, match = 'member', RE_MEMBER.search(line)
+            if match is None and urls is not None and line_indented:
+                match_name, match = 'urls', RE_URL.search(line)
+            if match is None:
+                match_name, match = 'typedef', (RE_TYPEDEF.search(line) if line.startswith('typedef') else None)
+            if match is None:
+                match_name = None
 
         # Comment?
         if match_name == 'comment':
@@ -156,34 +157,31 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
             if doc_string is not None:
                 doc.append(doc_string if not doc_string.startswith(' ') else doc_string[1:])
 
-        # Documentation group?
-        elif match_name == 'group':
-            doc_group = match.group('group')
-            if doc_group is not None:
-                doc_group = doc_group.strip()
-            else:
-                doc_group = None
+        # Struct member?
+        elif match_name == 'member':
+            optional = match.group('optional') is not None
+            member_name = match.group('id')
 
-        # Action?
-        elif match_name == 'action':
-            action_id = match.group('id')
+            # Add the member
+            struct = user_type['struct']
+            if 'members' not in struct:
+                struct['members'] = []
+            member_type, member_attr = _parse_typedef(match)
+            member_doc = get_doc()
+            member = {
+                'name': member_name,
+                'type': member_type
+            }
+            struct['members'].append(member)
+            if member_attr is not None:
+                member['attr'] = member_attr
+            if member_doc is not None:
+                member['doc'] = member_doc
+            if optional:
+                member['optional'] = True
 
-            # Action already defined?
-            if action_id in types:
-                add_error(f"Redefinition of action '{action_id}'", filename, linenum)
-
-            # Clear parser state
-            urls = None
-            user_type = None
-            action_doc = get_doc()
-
-            # Create the new action
-            action = {'name': action_id}
-            types[action_id] = {'action': action}
-            if action_doc is not None:
-                action['doc'] = action_doc
-            if doc_group is not None:
-                action['docGroup'] = doc_group
+            # Record finalization information
+            filepos[f'{struct["name"]}.{member_name}'] = linenum
 
         # Definition?
         elif match_name == 'definition':
@@ -231,6 +229,83 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
             # Record finalization information
             filepos[definition_id] = linenum
 
+        # Enum value?
+        elif match_name == 'value':
+            value_string = match.group('id')
+
+            # Add the enum value
+            enum = user_type['enum']
+            if 'values' not in enum:
+                enum['values'] = []
+            enum_value = {'name': value_string}
+            enum['values'].append(enum_value)
+            enum_value_doc = get_doc()
+            if enum_value_doc is not None:
+                enum_value['doc'] = enum_value_doc
+
+            # Record finalization information
+            filepos[f'{enum["name"]}.{value_string}'] = linenum
+
+        # Typedef?
+        elif match_name == 'typedef':
+            definition_id = match.group('id')
+
+            # Type already defined?
+            if definition_id in BUILTIN_TYPES or definition_id in BUILTIN_DEPRECATED or definition_id in types:
+                add_error(f"Redefinition of type '{definition_id}'", filename, linenum)
+
+            # Clear parser state
+            action = None
+            urls = None
+            user_type = None
+            typedef_doc = get_doc()
+
+            # Create the typedef
+            typedef_type, typedef_attr = _parse_typedef(match)
+            typedef = {
+                'name': definition_id,
+                'type': typedef_type
+            }
+            types[definition_id] = {'typedef': typedef}
+            if typedef_attr is not None:
+                typedef['attr'] = typedef_attr
+            if typedef_doc is not None:
+                typedef['doc'] = typedef_doc
+            if doc_group is not None:
+                typedef['docGroup'] = doc_group
+
+            # Record finalization information
+            filepos[definition_id] = linenum
+
+        # Documentation group?
+        elif match_name == 'group':
+            doc_group = match.group('group')
+            if doc_group is not None:
+                doc_group = doc_group.strip()
+            else:
+                doc_group = None
+
+        # Action?
+        elif match_name == 'action':
+            action_id = match.group('id')
+
+            # Action already defined?
+            if action_id in types:
+                add_error(f"Redefinition of action '{action_id}'", filename, linenum)
+
+            # Clear parser state
+            urls = None
+            user_type = None
+            action_doc = get_doc()
+
+            # Create the new action
+            action = {'name': action_id}
+            types[action_id] = {'action': action}
+            if action_doc is not None:
+                action['doc'] = action_doc
+            if doc_group is not None:
+                action['docGroup'] = doc_group
+
         # Action section?
         elif match_name == 'section':
             section_string = match.group('type')
@@ -277,49 +352,6 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
             if section_string not in action:
                 action[section_string] = urls
 
-        # Enum value?
-        elif match_name == 'value':
-            value_string = match.group('id')
-
-            # Add the enum value
-            enum = user_type['enum']
-            if 'values' not in enum:
-                enum['values'] = []
-            enum_value = {'name': value_string}
-            enum['values'].append(enum_value)
-            enum_value_doc = get_doc()
-            if enum_value_doc is not None:
-                enum_value['doc'] = enum_value_doc
-
-            # Record finalization information
-            filepos[f'{enum["name"]}.{value_string}'] = linenum
-
-        # Struct member?
-        elif match_name == 'member':
-            optional = match.group('optional') is not None
-            member_name = match.group('id')
-
-            # Add the member
-            struct = user_type['struct']
-            if 'members' not in struct:
-                struct['members'] = []
-            member_type, member_attr = _parse_typedef(match)
-            member_doc = get_doc()
-            member = {
-                'name': member_name,
-                'type': member_type
-            }
-            struct['members'].append(member)
-            if member_attr is not None:
-                member['attr'] = member_attr
-            if member_doc is not None:
-                member['doc'] = member_doc
-            if optional:
-                member['optional'] = True
-
-            # Record finalization information
-            filepos[f'{struct["name"]}.{member_name}'] = linenum
-
         # URL?
         elif match_name == 'urls':
             method = match.group('method')
@@ -339,37 +371,6 @@ def parse_schema_markdown(text, types=None, filename='', validate=True):
 
             # Add the URL
             urls.append(action_url)
-
-        # Typedef?
-        elif match_name == 'typedef':
-            definition_id = match.group('id')
-
-            # Type already defined?
-            if definition_id in BUILTIN_TYPES or definition_id in BUILTIN_DEPRECATED or definition_id in types:
-                add_error(f"Redefinition of type '{definition_id}'", filename, linenum)
-
-            # Clear parser state
-            action = None
-            urls = None
-            user_type = None
-            typedef_doc = get_doc()
-
-            # Create the typedef
-            typedef_type, typedef_attr = _parse_typedef(match)
-            typedef = {
-                'name': definition_id,
-                'type': typedef_type
-            }
-            types[definition_id] = {'typedef': typedef}
-            if typedef_attr is not None:
-                typedef['attr'] = typedef_attr
-            if typedef_doc is not None:
-                typedef['doc'] = typedef_doc
-            if doc_group is not None:
-                typedef['docGroup'] = doc_group
-
-            # Record finalization information
-            filepos[definition_id] = linenum
 
         # Unrecognized line syntax
         else:
