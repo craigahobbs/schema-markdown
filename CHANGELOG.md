@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.3 (2026-08-06)
+
+- [e1a9c0d](https://github.com/craigahobbs/schema-markdown/commit/e1a9c0d) - migrate package metadata from setup.cfg to pyproject.toml
+
 ## 1.3.2 (2026-07-29)
 
 - [651edae](https://github.com/craigahobbs/schema-markdown/commit/651edae) - restructure the parse loop and type validation to align with the bare-script ports
