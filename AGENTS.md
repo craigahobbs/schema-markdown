@@ -35,7 +35,7 @@ Do **not** force parity for host surface that is not the shared core:
 
 | Area | Examples |
 |------|----------|
-| Naming / packaging | `snake_case` vs `camelCase`; `setup.cfg` vs `package.json`; `__init__.py` re-exports vs ESM named exports |
+| Naming / packaging | `snake_case` vs `camelCase`; `pyproject.toml` vs `package.json`; `__init__.py` re-exports vs ESM named exports |
 | Native validated types | Host objects accepted/returned as-is: Python `date` / `datetime` (returned), `Decimal` and `uuid.UUID` (accepted input); JS `Date` (returned), `Map` (accepted as dict/struct input). `uuid` **strings** are dual-port aligned — canonical `8-4-4-4-12` form, validated as strings on both ports |
 | Native return types for date/datetime | Python `date` / `datetime` vs JS `Date`. Accepted ISO string inputs are dual-port aligned (a timezone is required, so the resulting instant matches); JS `Date` is millisecond-precision while Python keeps microseconds |
 | Encode utilities | **By design** not dual-port identical: Python `JSONEncoder` + encoding args vs JS `jsonStringifySortKeys`; query-string helpers may differ in extras. Do not force encode API parity. |
@@ -59,11 +59,11 @@ Separate git repositories (not a monorepo): commits, PRs, and `make` run per-rep
 |--|----------------------------|----------------------------------|
 | Package | `schema_markdown` under `src/schema_markdown/` | npm `schema-markdown`, ESM (`"type": "module"`) |
 | Library / tests | `src/schema_markdown/`, `src/tests/` | `lib/`, `test/` |
-| Version / metadata | `setup.cfg` (`pyproject.toml` is build-backend only) | `package.json` |
+| Version / metadata | `pyproject.toml` | `package.json` |
 | Docs | Sphinx + MyST under `doc/` | JSDoc; language docs in `static/language/` |
 | Runtime deps | none | none |
 | License | MIT | MIT |
-| Language | Python 3.11–3.14 | modern Node (ESM) |
+| Language | Python 3.11–3.15 | modern Node (ESM) |
 
 Downstream consumers include BareScript, Chisel, and other craigahobbs packages.
 
@@ -195,7 +195,7 @@ Shared (both ports):
 
 - Prefer structural parity over language-idiomatic rewrites in the **shared core**.
 - New features, bug fixes, tests, and error-message tweaks ship as **paired changes**.
-- Bump **both** versions together (`setup.cfg` and `package.json`) for shared releases.
+- Bump **both** versions together (`pyproject.toml` and `package.json`) for shared releases.
 - No new runtime dependencies without a strong reason (same constraint on both sides).
 - Language doc updates go in `schema-markdown-js/static/language/`. Match existing section style (plain `##` sections, `**name** - description` lists; no novel tables or subsection titles unless the surrounding doc already uses them). Describe the language as multi-runtime capable, not Python+JS only. Per-package READMEs may mention this implementation's native types. Keep README/API examples accurate.
 - Keep these two `AGENTS.md` files identical when editing project rules.
