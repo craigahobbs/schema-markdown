@@ -111,11 +111,11 @@ which is parsed by the
 function. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">schema_markdown</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_schema_markdown</span>
 
-<span class="n">model_types</span> <span class="o">=</span> <span class="n">parse_schema_markdown</span><span class="p">(</span><span class="s1">&#39;&#39;&#39;</span><span class="se">\</span>
+<span class="n">model_types</span> <span class="o">=</span> <span class="n">parse_schema_markdown</span><span class="p">(</span><span class="s1">'''</span><span class="se">\</span>
 <span class="s1"># An aggregate numerical operation</span>
 <span class="s1">struct Aggregation</span>
 
-<span class="s1">    # The aggregation function - default is &quot;Sum&quot;</span>
+<span class="s1">    # The aggregation function - default is "Sum"</span>
 <span class="s1">    optional AggregationFunction aggregation</span>
 
 <span class="s1">    # The numbers to aggregate on</span>
@@ -125,7 +125,7 @@ function. For example:</p>
 <span class="s1">enum AggregationFunction</span>
 <span class="s1">    Average</span>
 <span class="s1">    Sum</span>
-<span class="s1">&#39;&#39;&#39;</span><span class="p">)</span>
+<span class="s1">'''</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -136,9 +136,9 @@ function. For example:</p>
 function. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">schema_markdown</span><span class="w"> </span><span class="kn">import</span> <span class="n">validate_type</span>
 
-<span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">&#39;Aggregation&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
+<span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">'Aggregation'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'numbers'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">'3'</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
 
-<span class="p">{</span><span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}</span>
+<span class="p">{</span><span class="s1">'numbers'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}</span>
 </pre></div>
 </div>
 <p>Notice that the numerical input ‘3’ above is <em>type-massaged</em> to the integer 3 by validation.</p>
@@ -146,20 +146,20 @@ function. For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">schema_markdown</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">&#39;Aggregation&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;asdf&#39;</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
+    <span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">'Aggregation'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'numbers'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">'asdf'</span><span class="p">,</span> <span class="mi">4</span><span class="p">]})</span>
 <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
     <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
 
-<span class="s1">&#39;Invalid value &quot;asdf&quot; (type &quot;str&quot;) for member &quot;numbers.2&quot;, expected type &quot;int&quot;&#39;</span>
+<span class="s1">'Invalid value "asdf" (type "str") for member "numbers.2", expected type "int"'</span>
 </pre></div>
 </div>
 <p>Validation also fails if a member constraint is violated:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
-    <span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">&#39;Aggregation&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;numbers&#39;</span><span class="p">:</span> <span class="p">[]})</span>
+    <span class="n">validate_type</span><span class="p">(</span><span class="n">model_types</span><span class="p">,</span> <span class="s1">'Aggregation'</span><span class="p">,</span> <span class="p">{</span><span class="s1">'numbers'</span><span class="p">:</span> <span class="p">[]})</span>
 <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
     <span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">)</span>
 
-<span class="s1">&#39;Invalid value [] (type &quot;list&quot;) for member &quot;numbers&quot;, expected type &quot;array&quot; [len &gt; 0]&#39;</span>
+<span class="s1">'Invalid value [] (type "list") for member "numbers", expected type "array" [len &gt; 0]'</span>
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">validate_type</span></code> validates JSON-like values. In this Python implementation, date values are
@@ -185,23 +185,23 @@ is publicly visible, you can use the BareScript model application with the <code
 <h3>Self-Hosting Schema Documentation<a class="headerlink" href="#self-hosting-schema-documentation" title="Link to this heading">¶</a></h3>
 <p>You can host the schemaDoc application yourself by adding a schemaDoc HTML stub:</p>
 <div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
-<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">"en"</span><span class="p">&gt;</span>
     <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
         <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>MarkdownUp<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;viewport&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;width=device-width, initial-scale=1&quot;</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;stylesheet&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;https://craigahobbs.github.io/markdown-up/app.css&quot;</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;preload&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;https://craigahobbs.github.io/markdown-up/bare-script/static/markdown.css&quot;</span> <span class="na">as</span><span class="o">=</span><span class="s">&quot;style&quot;</span><span class="p">&gt;</span>
-        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">&quot;modulepreload&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;https://craigahobbs.github.io/markdown-up/lib/appImports.js&quot;</span> <span class="na">as</span><span class="o">=</span><span class="s">&quot;script&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">"utf-8"</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">"viewport"</span> <span class="na">content</span><span class="o">=</span><span class="s">"width=device-width, initial-scale=1"</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"stylesheet"</span> <span class="na">href</span><span class="o">=</span><span class="s">"https://craigahobbs.github.io/markdown-up/app.css"</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"preload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"https://craigahobbs.github.io/markdown-up/bare-script/static/markdown.css"</span> <span class="na">as</span><span class="o">=</span><span class="s">"style"</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel</span><span class="o">=</span><span class="s">"modulepreload"</span> <span class="na">href</span><span class="o">=</span><span class="s">"https://craigahobbs.github.io/markdown-up/lib/appImports.js"</span> <span class="na">as</span><span class="o">=</span><span class="s">"script"</span><span class="p">&gt;</span>
     <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
-    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;module&quot;</span><span class="p">&gt;</span>
-<span class="w">        </span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">MarkdownUp</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;https://craigahobbs.github.io/markdown-up/lib/appImports.js&#39;</span><span class="p">;</span>
+    <span class="p">&lt;</span><span class="nt">script</span> <span class="na">type</span><span class="o">=</span><span class="s">"module"</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="nx">MarkdownUp</span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">'https://craigahobbs.github.io/markdown-up/lib/appImports.js'</span><span class="p">;</span>
 <span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">MarkdownUp</span><span class="p">(</span><span class="nb">window</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
-<span class="w">            </span><span class="s1">&#39;markdownText&#39;</span><span class="o">:</span><span class="w"> </span><span class="sb">`\</span>
+<span class="w">            </span><span class="s1">'markdownText'</span><span class="o">:</span><span class="w"> </span><span class="sb">`\</span>
 <span class="sb">~~~markdown-script</span>
 <span class="sb">include &lt;schemaDoc.bare&gt;</span>
 
-<span class="sb">schemaDocMain(&#39;model.json&#39;, &#39;My Model&#39;)</span>
+<span class="sb">schemaDocMain('model.json', 'My Model')</span>
 <span class="sb">~~~</span>
 <span class="sb">`</span>
 <span class="w">        </span><span class="p">});</span>
@@ -220,7 +220,7 @@ is publicly visible, you can use the BareScript model application with the <code
 <h2>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h2>
 <p>This package is developed using <a class="reference external" href="https://github.com/craigahobbs/python-build#readme">python-build</a>.
 It was started using <a class="reference external" href="https://github.com/craigahobbs/python-template#readme">python-template</a> as follows:</p>
-<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>template-specialize<span class="w"> </span>python-template/template/<span class="w"> </span>schema-markdown/<span class="w"> </span>-k<span class="w"> </span>package<span class="w"> </span>schema-markdown<span class="w"> </span>-k<span class="w"> </span>name<span class="w"> </span><span class="s1">&#39;Craig A. Hobbs&#39;</span><span class="w"> </span>-k<span class="w"> </span>email<span class="w"> </span><span class="s1">&#39;craigahobbs@gmail.com&#39;</span><span class="w"> </span>-k<span class="w"> </span>github<span class="w"> </span><span class="s1">&#39;craigahobbs&#39;</span><span class="w"> </span>-k<span class="w"> </span>nomain<span class="w"> </span><span class="m">1</span>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>template-specialize<span class="w"> </span>python-template/template/<span class="w"> </span>schema-markdown/<span class="w"> </span>-k<span class="w"> </span>package<span class="w"> </span>schema-markdown<span class="w"> </span>-k<span class="w"> </span>name<span class="w"> </span><span class="s1">'Craig A. Hobbs'</span><span class="w"> </span>-k<span class="w"> </span>email<span class="w"> </span><span class="s1">'craigahobbs@gmail.com'</span><span class="w"> </span>-k<span class="w"> </span>github<span class="w"> </span><span class="s1">'craigahobbs'</span><span class="w"> </span>-k<span class="w"> </span>nomain<span class="w"> </span><span class="m">1</span>
 </pre></div>
 </div>
 <div class="toctree-wrapper compound">
