@@ -61,9 +61,7 @@ Separate git repositories (not a monorepo): commits, PRs, and `make` run per-rep
 | Library / tests | `src/schema_markdown/`, `src/tests/` | `lib/`, `test/` |
 | Version / metadata | `pyproject.toml` | `package.json` |
 | Docs | Sphinx + MyST under `doc/` | JSDoc; language docs in `static/language/` |
-| Runtime deps | none | none |
 | License | MIT | MIT |
-| Language | Python 3.11–3.15 | modern Node (ESM) |
 
 Downstream consumers include BareScript, Chisel, and other craigahobbs packages.
 
@@ -85,89 +83,24 @@ Naming: Python `parse_schema_markdown`, `validate_type`; JS `parseSchemaMarkdown
 
 ## Build system
 
-Both repos use Craig Hobbs’s Make-based build systems with a **nearly identical target surface**. **Always drive work through `make`** in the repo you are changing — do not invent ad-hoc tool invocations for the normal workflow.
+**Always drive work through `make`** in the repo you are changing. Read the matching skill before running tests, lint, coverage, or changing that Makefile:
 
-| Repo | Build system | Local sibling (preferred base-file source) |
-|------|----------------|--------------------------------------------|
-| `schema-markdown` | [python-build](https://github.com/craigahobbs/python-build) | `../python-build` (`PYTHON_BUILD_DIR`) |
-| `schema-markdown-js` | [javascript-build](https://github.com/craigahobbs/javascript-build) | `../javascript-build` (`JAVASCRIPT_BUILD_DIR`) |
+| Repo | Skill |
+|------|-------|
+| `schema-markdown` | [python-build](https://github.com/craigahobbs/python-build#readme): [`../python-build/SKILL.md`](../python-build/SKILL.md) if that file exists, otherwise [https://raw.githubusercontent.com/craigahobbs/python-build/main/SKILL.md](https://raw.githubusercontent.com/craigahobbs/python-build/main/SKILL.md) |
+| `schema-markdown-js` | [javascript-build](https://github.com/craigahobbs/javascript-build#readme): [`../javascript-build/SKILL.md`](../javascript-build/SKILL.md) if that file exists, otherwise [https://raw.githubusercontent.com/craigahobbs/javascript-build/main/SKILL.md](https://raw.githubusercontent.com/craigahobbs/javascript-build/main/SKILL.md) |
 
-### Design constraints (do not “fix” or work around)
+Local Makefile overrides:
 
-1. **Cold `make` is by design.** First run may download base files, create a venv/`node_modules`, and install tools. Accept the cost; do not bypass Make to “save time.”
-2. **100% coverage is extremely important** — line coverage always; **branch coverage where the toolchain supports it** (Python `coverage --branch` + fail-under 100; JS c8 `--100`). Never lower the gate, skip `cover`, or leave untested branches. If coverage fails, add tests or remove dead code.
-3. **No multi-repo orchestration in Make is by design.** Coordinating Python + JS (paired edits, both gates, both commits/PRs) is the **agent’s and human’s job**, not the build system’s.
-4. **`changelog` / `publish` / `gh-pages` are gated and potentially damaging.** They exist on purpose and typically run `commit` first, but they still mutate changelogs, registries, or gh-pages trees. **Never run them unless the user explicitly asks.** Even then, confirm intent before publish/gh-pages; do not chain them into routine bugfix or feature work.
+- **Python:** `SPHINX_DOC := doc` (Sphinx + MyST under `doc/`)
+- **JS:** `doc` also copies `static/*` into `build/doc/`
 
-### How the Makefile works
+`TEST=` shape differs by port (see the skills): Python unittest ids use the `tests.` prefix; JavaScript is a `node --test` name pattern.
 
-Each repo’s thin `Makefile` downloads (or copies from the sibling dir) base files on first use, then `include`s them:
+### Dual-port constraints (not in the skills)
 
-- **Python:** `Makefile.base`, `pylintrc` (gitignored). Sets `SPHINX_DOC := doc` before include.
-- **JS:** `Makefile.base`, `eslint.config.js`, `jsdoc.json` (gitignored). `doc` also copies `static/*` into `build/doc/`.
-
-Do **not** commit those downloaded files, hand-edit them in the package repo, or check in `build/`, venvs, or `node_modules/`. To refresh base files: `make clean` then any target (they re-download). `make superclean` also drops container images / heavier caches.
-
-Default `make` (no target) prints usage:  
-`changelog | clean | commit | cover | doc | gh-pages | lint | publish | superclean | test`.
-
-### Targets — day-to-day (same names both ports)
-
-| Target | When to use | Notes |
-|--------|-------------|--------|
-| `make test` | After code/test changes | Fast feedback loop |
-| `make lint` | Style / static analysis | pylint (Python) / eslint (JS) |
-| `make cover` | Before finishing a change | **Must stay at 100%** |
-| `make doc` | API / language docs | Python: Sphinx → `build/doc/html/`; JS: JSDoc → `build/doc/`; coverage HTML: `build/coverage/` |
-| **`make commit`** | **Before every commit** | `test` + `lint` + `doc` + `cover`. Required gate on **both** ports. |
-| `make clean` | Reset local artifacts | Also removes downloaded base files (repo `clean` rule) |
-| `make superclean` | Full reset | `clean` + container/image cleanup |
-
-### Targets — explicit user request only
-
-| Target | Purpose | Agent rule |
-|--------|---------|------------|
-| `make changelog` | Update `CHANGELOG.md` | Only if asked |
-| `make publish` | PyPI (Python) / npm (JS); runs `commit` first | Only if asked; confirm first |
-| `make gh-pages` | Docs → `gh-pages` via `../<repo>.gh-pages` | Only if asked; confirm first |
-
-### Running a subset of tests
-
-`TEST=` is supported on both ports; the value shape differs by test runner:
-
-**Python** — unittest module or test id (discovery root `src/`):
-
-```bash
-make test TEST=src.tests.test_parser
-make test TEST=src.tests.test_parser.TestParseSchemaMarkdown.test_simple
-make cover TEST=src.tests.test_schema
-```
-
-**JavaScript** — `node --test` name pattern (string):
-
-```bash
-make test TEST='test simple'
-make cover TEST='test simple'
-```
-
-### Containers and multi-version
-
-By default, targets use the **system** Python / Node. For official images:
-
-```bash
-make commit USE_DOCKER=1    # or USE_PODMAN=1
-```
-
-Python then runs across `PYTHON_IMAGES`; JS uses `NODE_IMAGE`. Parallel make: `make -j commit`. Dry-run: `make -n test`.
-
-### Dual-port build checklist (agent-owned)
-
-1. Change **both** ports (see Dual-port rule) — Make will not do this for you.
-2. `make test` (or targeted `TEST=…`) in each repo while iterating.
-3. `make commit` in **both** repos before commit/PR.
-4. Never weaken coverage, skip lint/doc, or run publish/gh-pages/changelog as part of ordinary work.
-
-Full reference: [python-build](https://github.com/craigahobbs/python-build#readme), [javascript-build](https://github.com/craigahobbs/javascript-build#readme).
+1. **No multi-repo orchestration in Make is by design.** Coordinating Python + JS (paired edits, both gates, both commits/PRs) is the **agent’s and human’s job**, not the build system’s.
+2. Dual-port checklist: change **both** ports; `make test` in each while iterating; `make commit` in **both** repos before commit/PR. Never weaken coverage, skip lint/doc, or run publish/gh-pages/changelog as part of ordinary work.
 
 ## Architecture (shared)
 
