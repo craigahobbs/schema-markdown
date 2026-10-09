@@ -650,6 +650,29 @@ class TestValidateType(unittest.TestCase):
         self.assertEqual(str(cm_exc.exception), 'Invalid value "2013-05-26T13:11:00-07:00" (type "str"), expected type "date"')
         self.assertIsNone(cm_exc.exception.member_fqn)
 
+    def test_date_string_datetime_midnight(self):
+        # A datetime at midnight in its own offset is the string's date
+        self.assertEqual(self._validate_type({'builtin': 'date'}, '2013-05-26T00:00:00-07:00'), date(2013, 5, 26))
+        self.assertEqual(self._validate_type({'builtin': 'date'}, '2013-05-26T00:00Z'), date(2013, 5, 26))
+        self.assertEqual(self._validate_type({'builtin': 'date'}, '2013-05-26T00:00:00.000+09:00'), date(2013, 5, 26))
+
+    def test_date_string_datetime_midnight_invalid(self):
+        for obj in (
+            '2013-05-26T00:00:00.001Z',
+            '2013-05-26T00:00:00',
+            '2013-05-26T00:00:00+24:00',
+            '2013-05-26T00:00:00+05:60',
+            '2013-05-26T00:00:00+\u0660\u0665:00'
+        ):
+            with self.assertRaises(ValidationError) as cm_exc:
+                self._validate_type({'builtin': 'date'}, obj)
+            self.assertEqual(str(cm_exc.exception), f'Invalid value "{obj}" (type "str"), expected type "date"')
+            self.assertIsNone(cm_exc.exception.member_fqn)
+
+    def test_date_string_year_before_100(self):
+        self.assertEqual(self._validate_type({'builtin': 'date'}, '0050-01-01'), date(50, 1, 1))
+        self.assertEqual(self._validate_type({'builtin': 'date'}, '0050-01-01T00:00Z'), date(50, 1, 1))
+
     def test_date_string_error(self):
         obj = 'abc'
         with self.assertRaises(ValidationError) as cm_exc:

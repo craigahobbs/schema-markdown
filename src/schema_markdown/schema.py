@@ -144,7 +144,7 @@ def validate_type(types, type_name, value, member_fqn=None):
 
 
 # Regular expressions used by _validate_type
-_RE_DATE = re.compile(r'\d{4}-\d{2}-\d{2}')
+_RE_DATE = re.compile(r'([0-9]{4}-[0-9]{2}-[0-9]{2})(?:T00:00(?::00(?:\.0+)?)?(?:Z|([+-][0-9]{2}):([0-9]{2})))?')
 _RE_DATETIME = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:\d{2})')
 _RE_UUID = re.compile(r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}', re.IGNORECASE)
 
@@ -219,12 +219,16 @@ def _validate_type(types, type_, value, member_fqn=None):
         # date?
         elif builtin == 'date':
 
-            # Convert string?
+            # Convert string? A date, or a datetime at midnight in its own offset - the date is the string's date.
             if isinstance(value, str):
-                if _RE_DATE.fullmatch(value) is None:
+                match_date = _RE_DATE.fullmatch(value)
+                if match_date is None:
+                    raise _member_error(type_, value, member_fqn)
+                tz_hour, tz_minute = match_date.group(2), match_date.group(3)
+                if tz_hour is not None and (abs(int(tz_hour)) > 23 or int(tz_minute) > 59):
                     raise _member_error(type_, value, member_fqn)
                 try:
-                    value_new = date.fromisoformat(value)
+                    value_new = date.fromisoformat(match_date.group(1))
                 except ValueError:
                     raise _member_error(type_, value, member_fqn)
 
