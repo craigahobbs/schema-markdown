@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.4 (2026-10-09)
+
+- [44f8944](https://github.com/craigahobbs/schema-markdown/commit/44f8944) - a date member also accepts a datetime string at midnight in its own timezone, so a serialized date value \(e.g. "2026-10-09T00:00:00-07:00"\) validates as a date, and a date string matches only ASCII digits
+
 ## 1.3.3 (2026-08-06)
 
 - [e1a9c0d](https://github.com/craigahobbs/schema-markdown/commit/e1a9c0d) - migrate package metadata from setup.cfg to pyproject.toml
