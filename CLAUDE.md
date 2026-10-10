@@ -1,4 +1,4 @@
-# AGENTS.md
+# CLAUDE.md
 
 Guidance for AI assistants working in the schema-markdown dual-port projects.
 
@@ -9,7 +9,7 @@ This file is maintained in **both** repositories and should stay as identical as
 | Python | `schema-markdown` |
 | JavaScript | `schema-markdown-js` |
 
-When you change `AGENTS.md`, update **both** copies.
+When you change `CLAUDE.md`, update **both** copies.
 
 ## Dual-port rule (mandatory)
 
@@ -131,7 +131,7 @@ Shared (both ports):
 - Bump **both** versions together (`pyproject.toml` and `package.json`) for shared releases.
 - No new runtime dependencies without a strong reason (same constraint on both sides).
 - Language doc updates go in `schema-markdown-js/static/language/`. Match existing section style (plain `##` sections, `**name** - description` lists; no novel tables or subsection titles unless the surrounding doc already uses them). Describe the language as multi-runtime capable, not Python+JS only. Per-package READMEs may mention this implementation's native types. Keep README/API examples accurate.
-- Keep these two `AGENTS.md` files identical when editing project rules.
+- Keep these two `CLAUDE.md` files identical when editing project rules.
 
 ### Python
 
